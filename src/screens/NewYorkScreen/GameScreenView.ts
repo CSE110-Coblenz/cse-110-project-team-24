@@ -1,5 +1,7 @@
 import Konva from "konva";
 import type { View } from "../../types.ts";
+import { Road } from "./Road.ts";
+import { Taxi } from "./Taxi.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
 
 /**
@@ -12,85 +14,27 @@ export class GameScreenView implements View {
     // Note: onLemonClick parameter kept for compatibility with Controller
     this.group = new Konva.Group({ visible: false });
 
-    // Simple road at the bottom
-    const roadHeight = 250; // Road height
-    const roadWidth = STAGE_WIDTH;
-    const roadStartY = STAGE_HEIGHT - roadHeight;
-    const road1 = new Konva.Rect({
-      x: 0,
-      y: roadStartY,
-      width: roadWidth,
-      height: roadHeight,
-      fill: "#333333", // Dark gray road
-    });
-    this.group.add(road1);
+    // Create roads with lane dividers
+    const roadHeight = 250;
+    const { road1CenterY, road2CenterY } = Road.createRoads(
+      roadHeight,
+      this.group
+    );
 
-    const road2 = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: roadWidth,
-      height: roadHeight,
-      fill: "#333333", // Dark gray road
-    });
-    this.group.add(road2);
-
-    // Lane divider - dashed yellow line in the middle of each road
-    const road1CenterY = roadStartY + roadHeight / 2; // Center of bottom road
-    const road2CenterY = roadHeight / 2; // Center of top road (starts at y=0)
-    // Create dashed line effect using small rectangles
-    for (let i = 0; i < roadWidth; i += 40) {
-      // Lane divider for road1 (bottom road)
-      const dash1 = new Konva.Rect({
-        x: i,
-        y: road1CenterY - 2,
-        width: 30,
-        height: 4,
-        fill: "#FFD700", // Yellow
-      });
-      this.group.add(dash1);
-
-      // Lane divider for road2 (top road)
-      const dash2 = new Konva.Rect({
-        x: i,
-        y: road2CenterY - 2,
-        width: 30,
-        height: 4,
-        fill: "#FFD700", // Yellow
-      });
-      this.group.add(dash2);
-    }
-
-    // Create a taxi group combining the rectangle and text
-    const taxiGroup = new Konva.Group({
-      x: 0,
-      y: road1CenterY - 50,
-    });
-
-    const taxi = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-      fill: "#FFD700", // Yellow
-    });
-    taxiGroup.add(taxi);
-
-    // Add text to the taxi
+    // Create taxis
     const taxiTexts = ["Fact1", "Fact2", "Fact3", "Fact4", "Fact5"];
-    const taxiText = new Konva.Text({
-      x: 0,
-      y: 0,
-      width: 100,
-      text: taxiTexts[1],
-      fontSize: 24,
-      fontFamily: "Arial",
-      fill: "black",
-      align: "center", // Center the text horizontally
-      verticalAlign: "middle", // Center the text vertically
-    });
-    taxiGroup.add(taxiText);
 
-    this.group.add(taxiGroup);
+    // Taxi 1 on bottom road
+    const taxi1 = Taxi.createTaxi(0, road1CenterY - 50, taxiTexts[1]);
+    this.group.add(taxi1);
+
+    // Taxi 2 on top road (example)
+    const taxi2 = Taxi.createTaxi(
+      STAGE_WIDTH - 100,
+      road2CenterY - 50,
+      taxiTexts[0]
+    );
+    this.group.add(taxi2);
   }
 
   /**
