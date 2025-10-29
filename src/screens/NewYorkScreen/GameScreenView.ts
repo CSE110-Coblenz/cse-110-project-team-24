@@ -13,29 +13,51 @@ export class GameScreenView implements View {
     this.group = new Konva.Group({ visible: false });
 
     // Simple road at the bottom
-    const roadHeight = 150; // Road height
+    const roadHeight = 250; // Road height
+    const roadWidth = STAGE_WIDTH;
     const roadStartY = STAGE_HEIGHT - roadHeight;
-    const road = new Konva.Rect({
+    const road1 = new Konva.Rect({
       x: 0,
       y: roadStartY,
-      width: STAGE_WIDTH,
+      width: roadWidth,
       height: roadHeight,
       fill: "#333333", // Dark gray road
     });
-    this.group.add(road);
+    this.group.add(road1);
 
-    // Lane divider - dashed yellow line in the middle
-    const roadCenterY = roadStartY + roadHeight / 2;
+    const road2 = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: roadWidth,
+      height: roadHeight,
+      fill: "#333333", // Dark gray road
+    });
+    this.group.add(road2);
+
+    // Lane divider - dashed yellow line in the middle of each road
+    const road1CenterY = roadStartY + roadHeight / 2; // Center of bottom road
+    const road2CenterY = roadHeight / 2; // Center of top road (starts at y=0)
     // Create dashed line effect using small rectangles
-    for (let i = 0; i < STAGE_WIDTH; i += 40) {
-      const dash = new Konva.Rect({
+    for (let i = 0; i < roadWidth; i += 40) {
+      // Lane divider for road1 (bottom road)
+      const dash1 = new Konva.Rect({
         x: i,
-        y: roadCenterY - 2,
+        y: road1CenterY - 2,
         width: 30,
         height: 4,
         fill: "#FFD700", // Yellow
       });
-      this.group.add(dash);
+      this.group.add(dash1);
+
+      // Lane divider for road2 (top road)
+      const dash2 = new Konva.Rect({
+        x: i,
+        y: road2CenterY - 2,
+        width: 30,
+        height: 4,
+        fill: "#FFD700", // Yellow
+      });
+      this.group.add(dash2);
     }
   }
 
