@@ -33,9 +33,7 @@ export class GameScreenController extends ScreenController {
     // Reset model state
     this.model.reset();
 
-    // Update view
-    this.view.updateScore(this.model.getScore());
-    this.view.updateTimer(GAME_DURATION);
+    // Show the view
     this.view.show();
 
     // Timer disabled for viewing the background only
@@ -50,7 +48,7 @@ export class GameScreenController extends ScreenController {
     // TODO: Task 3 - Implement countdown timer using setInterval
     this.gameTimer = setInterval(() => {
       timeRemaining--;
-      this.view.updateTimer(timeRemaining);
+      // Timer display removed for now
       if (timeRemaining <= 0) {
         this.endGame();
       }
@@ -74,10 +72,6 @@ export class GameScreenController extends ScreenController {
   private handleLemonClick(): void {
     // Update model
     this.model.incrementScore();
-
-    // Update view
-    this.view.updateScore(this.model.getScore());
-    this.view.randomizeLemonPosition();
 
     // TODO: Task 4 - Play the squeeze sound
     this.squeezeSound.play();

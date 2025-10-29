@@ -7,9 +7,6 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
  */
 export class GameScreenView implements View {
   private group: Konva.Group;
-  private lemonImage: Konva.Image | Konva.Circle | null = null;
-  private scoreText: Konva.Text;
-  private timerText: Konva.Text;
 
   constructor(onLemonClick: () => void) {
     // Note: onLemonClick parameter kept for compatibility with Controller
@@ -40,69 +37,6 @@ export class GameScreenView implements View {
       });
       this.group.add(dash);
     }
-
-    // Score display (hidden for now - will add back for taxi game)
-    this.scoreText = new Konva.Text({
-      x: 20,
-      y: 20,
-      text: "Score: 0",
-      fontSize: 32,
-      fontFamily: "Arial",
-      fill: "black",
-      visible: false, // Hidden
-    });
-    this.group.add(this.scoreText);
-
-    // Timer display (hidden for now - will add back for taxi game)
-    this.timerText = new Konva.Text({
-      x: STAGE_WIDTH - 150,
-      y: 20,
-      text: "Time: 60",
-      fontSize: 32,
-      fontFamily: "Arial",
-      fill: "red",
-      visible: false, // Hidden
-    });
-    this.group.add(this.timerText);
-  }
-
-  /**
-   * Update score display
-   */
-  updateScore(score: number): void {
-    this.scoreText.text(`Score: ${score}`);
-    this.group.getLayer()?.draw();
-  }
-
-  /**
-   * Randomize lemon position
-   */
-  randomizeLemonPosition(): void {
-    if (!this.lemonImage) return;
-
-    // Define safe boundaries (avoid edges)
-    const padding = 100;
-    const minX = padding;
-    const maxX = STAGE_WIDTH - padding;
-    const minY = padding;
-    const maxY = STAGE_HEIGHT - padding;
-
-    // Generate random position
-    const randomX = Math.random() * (maxX - minX) + minX;
-    const randomY = Math.random() * (maxY - minY) + minY;
-
-    // Update lemon position
-    this.lemonImage.x(randomX);
-    this.lemonImage.y(randomY);
-    this.group.getLayer()?.draw();
-  }
-
-  /**
-   * Update timer display
-   */
-  updateTimer(timeRemaining: number): void {
-    this.timerText.text(`Time: ${timeRemaining}`);
-    this.group.getLayer()?.draw();
   }
 
   /**
