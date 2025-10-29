@@ -59,6 +59,38 @@ export class GameScreenView implements View {
       });
       this.group.add(dash2);
     }
+
+    // Create a taxi group combining the rectangle and text
+    const taxiGroup = new Konva.Group({
+      x: 0,
+      y: road1CenterY - 50,
+    });
+
+    const taxi = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      fill: "#FFD700", // Yellow
+    });
+    taxiGroup.add(taxi);
+
+    // Add text to the taxi
+    const taxiTexts = ["Fact1", "Fact2", "Fact3", "Fact4", "Fact5"];
+    const taxiText = new Konva.Text({
+      x: 0,
+      y: 0,
+      width: 100,
+      text: taxiTexts[1],
+      fontSize: 24,
+      fontFamily: "Arial",
+      fill: "black",
+      align: "center", // Center the text horizontally
+      verticalAlign: "middle", // Center the text vertically
+    });
+    taxiGroup.add(taxiText);
+
+    this.group.add(taxiGroup);
   }
 
   /**
