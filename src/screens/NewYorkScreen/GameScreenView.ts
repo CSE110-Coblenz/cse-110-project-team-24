@@ -23,16 +23,26 @@ export class GameScreenView implements View {
 
     // Create taxis
     const taxiTexts = ["Fact1", "Fact2", "Fact3", "Fact4", "Fact5"];
+    const taxiWidth = 100;
+    const taxiHeight = 100;
 
     // Taxi 1 on bottom road
-    const taxi1 = Taxi.createTaxi(0, road1CenterY - 50, taxiTexts[1]);
+    const taxi1 = Taxi.createTaxi(
+      0,
+      road1CenterY - 50,
+      taxiTexts[1],
+      taxiWidth,
+      taxiHeight
+    );
     this.group.add(taxi1);
 
     // Taxi 2 on top road (example)
     const taxi2 = Taxi.createTaxi(
-      STAGE_WIDTH - 100,
+      STAGE_WIDTH - taxiWidth,
       road2CenterY - 50,
-      taxiTexts[0]
+      taxiTexts[0],
+      taxiWidth,
+      taxiHeight
     );
     this.group.add(taxi2);
   }

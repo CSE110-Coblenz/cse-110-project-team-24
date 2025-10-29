@@ -9,14 +9,20 @@ export class Taxi {
    * @param x - X position of the taxi
    * @param y - Y position of the taxi
    * @param text - Text to display on the taxi
+   * @param width - Width of the taxi
+   * @param height - Height of the taxi
    * @returns A Konva.Group containing the taxi rectangle and text
    */
-  static createTaxi(x: number, y: number, text: string): Konva.Group {
+  static createTaxi(
+    x: number,
+    y: number,
+    text: string,
+    width: number = 100,
+    height: number = 100
+  ): Konva.Group {
     const taxiGroup = new Konva.Group({
       x: x,
       y: y,
-      width: width,
-      height: height,
     });
 
     const taxi = new Konva.Rect({
@@ -31,7 +37,7 @@ export class Taxi {
     const taxiText = new Konva.Text({
       x: 0,
       y: 0,
-      width: 100,
+      width: width,
       text: text,
       fontSize: 24,
       fontFamily: "Arial",
