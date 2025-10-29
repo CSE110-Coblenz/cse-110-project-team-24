@@ -38,7 +38,8 @@ export class GameScreenController extends ScreenController {
     this.view.updateTimer(GAME_DURATION);
     this.view.show();
 
-    this.startTimer();
+    // Timer disabled for viewing the background only
+    // this.startTimer();
   }
 
   /**

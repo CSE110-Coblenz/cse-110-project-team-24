@@ -12,19 +12,36 @@ export class GameScreenView implements View {
   private timerText: Konva.Text;
 
   constructor(onLemonClick: () => void) {
+    // Note: onLemonClick parameter kept for compatibility with Controller
     this.group = new Konva.Group({ visible: false });
 
-    // Background
-    const bg = new Konva.Rect({
+    // Simple road at the bottom
+    const roadHeight = 150; // Road height
+    const roadStartY = STAGE_HEIGHT - roadHeight;
+    const road = new Konva.Rect({
       x: 0,
-      y: 0,
+      y: roadStartY,
       width: STAGE_WIDTH,
-      height: STAGE_HEIGHT,
-      fill: "#87CEEB", // Sky blue
+      height: roadHeight,
+      fill: "#333333", // Dark gray road
     });
-    this.group.add(bg);
+    this.group.add(road);
 
-    // Score display (top-left)
+    // Lane divider - dashed yellow line in the middle
+    const roadCenterY = roadStartY + roadHeight / 2;
+    // Create dashed line effect using small rectangles
+    for (let i = 0; i < STAGE_WIDTH; i += 40) {
+      const dash = new Konva.Rect({
+        x: i,
+        y: roadCenterY - 2,
+        width: 30,
+        height: 4,
+        fill: "#FFD700", // Yellow
+      });
+      this.group.add(dash);
+    }
+
+    // Score display (hidden for now - will add back for taxi game)
     this.scoreText = new Konva.Text({
       x: 20,
       y: 20,
@@ -32,10 +49,11 @@ export class GameScreenView implements View {
       fontSize: 32,
       fontFamily: "Arial",
       fill: "black",
+      visible: false, // Hidden
     });
     this.group.add(this.scoreText);
 
-    // Timer display (top-right)
+    // Timer display (hidden for now - will add back for taxi game)
     this.timerText = new Konva.Text({
       x: STAGE_WIDTH - 150,
       y: 20,
@@ -43,36 +61,9 @@ export class GameScreenView implements View {
       fontSize: 32,
       fontFamily: "Arial",
       fill: "red",
+      visible: false, // Hidden
     });
     this.group.add(this.timerText);
-
-    // TODO: Task 2 - Load and display lemon image using Konva.Image.fromURL()
-    // Placeholder circle (remove this when implementing the image)
-    Konva.Image.fromURL("/lemon.png", (img) => {
-      img.width(100);
-      img.height(100);
-      img.x(STAGE_WIDTH / 2 - img.width() / 2);
-      img.y(STAGE_HEIGHT / 2 - img.height() / 2);
-      img.on("click", onLemonClick);
-      this.lemonImage = img;
-      this.group.add(this.lemonImage);
-    });
-
-    /*
-	new Konva.Circle({
-      x: STAGE_WIDTH / 2,
-      y: STAGE_HEIGHT / 2,
-      radius: 50,
-      fill: "yellow",
-      stroke: "orange",
-      strokeWidth: 3,
-    })
-      .width(100)
-      .height(100);
-    placeholder.on("click", onLemonClick);
-    this.lemonImage = placeholder;
-    this.group.add(this.lemonImage);
-	*/
   }
 
   /**
