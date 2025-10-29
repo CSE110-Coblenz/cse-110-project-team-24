@@ -22,12 +22,12 @@ export class GameScreenView implements View {
   private currentFactIndex: number = 0;
   private taxi1Text!: Konva.Text;
   private taxi2Text!: Konva.Text;
+  private scoreText!: Konva.Text;
 
   // Taxi speed in pixels per frame (increase this number to make taxis faster)
-  private readonly taxiSpeed: number = 6;
+  private readonly taxiSpeed: number = 3;
 
-  constructor(onLemonClick: () => void) {
-    // Note: onLemonClick parameter kept for compatibility with Controller
+  constructor(onTaxi1Click: () => void, onTaxi2Click: () => void) {
     this.group = new Konva.Group({ visible: false });
 
     // Create roads with lane dividers
@@ -55,6 +55,9 @@ export class GameScreenView implements View {
     this.group.add(this.taxi1);
     // Store reference to taxi1 text for updates
     this.taxi1Text = this.taxi1.children[1] as Konva.Text;
+    // Make taxi1 clickable
+    this.taxi1.on("click", onTaxi1Click);
+    this.taxi1.listening(true);
 
     // Taxi 2 on top road (displays fact2, moves right to left)
     this.taxi2 = Taxi.createTaxi(
@@ -67,6 +70,20 @@ export class GameScreenView implements View {
     this.group.add(this.taxi2);
     // Store reference to taxi2 text for updates
     this.taxi2Text = this.taxi2.children[1] as Konva.Text;
+    // Make taxi2 clickable
+    this.taxi2.on("click", onTaxi2Click);
+    this.taxi2.listening(true);
+
+    // Score display
+    this.scoreText = new Konva.Text({
+      x: 20,
+      y: 20,
+      text: "Score: 0",
+      fontSize: 32,
+      fontFamily: "Arial",
+      fill: "black",
+    });
+    this.group.add(this.scoreText);
 
     // Store taxi width for animation initialization
     this.taxiWidth = taxiWidth;
@@ -140,6 +157,21 @@ export class GameScreenView implements View {
     // Stop animations when screen is hidden
     this.taxi1Animation?.stop();
     this.taxi2Animation?.stop();
+  }
+
+  /**
+   * Update score display
+   */
+  updateScore(score: number): void {
+    this.scoreText.text(`Score: ${score}`);
+    this.group.getLayer()?.draw();
+  }
+
+  /**
+   * Get current fact index (for checking which taxi is correct)
+   */
+  getCurrentFactIndex(): number {
+    return this.currentFactIndex;
   }
 
   getGroup(): Konva.Group {

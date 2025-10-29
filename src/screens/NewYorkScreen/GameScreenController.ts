@@ -3,6 +3,7 @@ import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
 import { GAME_DURATION } from "../../constants.ts";
+import { getFactPairByIndex, getCorrectFactIndex } from "./NewYorkFacts.ts";
 
 /**
  * GameScreenController - Coordinates game logic between Model and View
@@ -20,7 +21,10 @@ export class GameScreenController extends ScreenController {
     this.screenSwitcher = screenSwitcher;
 
     this.model = new GameScreenModel();
-    this.view = new GameScreenView(() => this.handleLemonClick());
+    this.view = new GameScreenView(
+      () => this.handleTaxiClick(1),
+      () => this.handleTaxiClick(2)
+    );
 
     // TODO: Task 4 - Initialize squeeze sound audio
     this.squeezeSound = new Audio("/squeeze.mp3"); // Placeholder
@@ -32,6 +36,9 @@ export class GameScreenController extends ScreenController {
   startGame(): void {
     // Reset model state
     this.model.reset();
+
+    // Update score display
+    this.view.updateScore(this.model.getScore());
 
     // Show the view
     this.view.show();
@@ -67,15 +74,28 @@ export class GameScreenController extends ScreenController {
   }
 
   /**
-   * Handle lemon click event
+   * Handle taxi click event
+   * @param taxiNumber - 1 for taxi1 (fact1), 2 for taxi2 (fact2)
    */
-  private handleLemonClick(): void {
-    // Update model
-    this.model.incrementScore();
+  private handleTaxiClick(taxiNumber: 1 | 2): void {
+    // Get current fact pair
+    const currentFactIndex = this.view.getCurrentFactIndex();
+    const factPair = getFactPairByIndex(currentFactIndex);
 
-    // TODO: Task 4 - Play the squeeze sound
-    this.squeezeSound.play();
-    this.squeezeSound.currentTime = 0;
+    // Check which taxi has the correct answer
+    const correctTaxi = getCorrectFactIndex(factPair);
+
+    // If clicked taxi is correct, increment score
+    if (taxiNumber === correctTaxi) {
+      this.model.incrementScore();
+      this.view.updateScore(this.model.getScore());
+      // TODO: Play success sound
+      // this.successSound.play();
+    } else {
+      // Wrong answer - no points
+      // TODO: Play wrong answer sound
+      // this.wrongSound.play();
+    }
   }
 
   /**
