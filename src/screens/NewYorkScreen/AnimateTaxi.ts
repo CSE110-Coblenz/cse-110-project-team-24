@@ -21,12 +21,14 @@ export interface TaxiAnimation {
  * @param taxi - The taxi group to animate
  * @param layer - The Konva layer the animation runs on
  * @param taxiWidth - Width of the taxi (for reset positioning)
+ * @param onReset - Optional callback called when taxi resets position
  * @returns TaxiAnimation interface for controlling the animation
  */
 export function createLeftToRightAnimation(
   taxi: Konva.Group,
   layer: Konva.Layer,
-  taxiWidth: number
+  taxiWidth: number,
+  onReset?: () => void
 ): TaxiAnimation {
   const animation = new Konva.Animation((frame) => {
     if (!frame) return;
@@ -37,6 +39,8 @@ export function createLeftToRightAnimation(
     // Reset position when it goes off-screen right
     if (taxi.x() > STAGE_WIDTH) {
       taxi.x(-taxiWidth);
+      // Call callback to update fact if provided
+      onReset?.();
     }
   }, layer);
 
@@ -51,12 +55,14 @@ export function createLeftToRightAnimation(
  * @param taxi - The taxi group to animate
  * @param layer - The Konva layer the animation runs on
  * @param taxiWidth - Width of the taxi (for reset positioning)
+ * @param onReset - Optional callback called when taxi resets position
  * @returns TaxiAnimation interface for controlling the animation
  */
 export function createRightToLeftAnimation(
   taxi: Konva.Group,
   layer: Konva.Layer,
-  taxiWidth: number
+  taxiWidth: number,
+  onReset?: () => void
 ): TaxiAnimation {
   const animation = new Konva.Animation((frame) => {
     if (!frame) return;
@@ -67,6 +73,8 @@ export function createRightToLeftAnimation(
     // Reset position when it goes off-screen left
     if (taxi.x() < -taxiWidth) {
       taxi.x(STAGE_WIDTH);
+      // Call callback to update fact if provided
+      onReset?.();
     }
   }, layer);
 
