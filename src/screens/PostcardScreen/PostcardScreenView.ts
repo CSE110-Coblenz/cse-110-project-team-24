@@ -23,9 +23,29 @@ export class PostcardScreenView implements View {
     this.group.add(bg);
 
 
+    Konva.Image.fromURL("/public/Postcards/BostonPostcard.jpg", (img) => {
+      img.width(200);
+      img.height(100);
+      img.x(300);
+      img.y(400);
+      this.group.add(img);
+    });
 
+    Konva.Image.fromURL("/public/Postcards/BostonPostcard.jpg", (img) => {
+      img.width(200);
+      img.height(100);
+      img.x(500);
+      img.y(100);
+      this.group.add(img);
+    });
 
-
+    Konva.Image.fromURL("/public/Postcards/BostonPostcard.jpg", (img2) => {
+      img2.width(200);
+      img2.height(100);
+      img2.x(15);
+      img2.y(200);
+      this.group.add(img2);
+    });
 
 
   }
