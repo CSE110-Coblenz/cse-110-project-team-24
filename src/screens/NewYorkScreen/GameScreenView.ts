@@ -25,7 +25,7 @@ export class GameScreenView implements View {
   private scoreText!: Konva.Text;
 
   // Taxi speed in pixels per frame (increase this number to make taxis faster)
-  private readonly taxiSpeed: number = 3;
+  private readonly taxiSpeed: number = 4;
 
   constructor(onTaxi1Click: () => void, onTaxi2Click: () => void) {
     this.group = new Konva.Group({ visible: false });
