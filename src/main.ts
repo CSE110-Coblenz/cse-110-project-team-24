@@ -1,7 +1,7 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types.ts";
-import { MenuScreenController } from "./screens/StartScreen/MenuScreenController.ts";
-import { GameScreenController } from "./screens/NewYorkScreen/GameScreenController.ts";
+import { MenuScreenController } from "./screens/MenuScreen/MenuScreenController.ts";
+import { GameScreenController } from "./screens/GameScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 
@@ -50,9 +50,8 @@ class App implements ScreenSwitcher {
     // Draw the layer (render everything to the canvas)
     this.layer.draw();
 
-    // Hide menu screen and show game screen
-    this.menuController.hide();
-    this.gameController.startGame();
+    // Start with menu screen visible
+    this.menuController.getView().show();
   }
 
   /**
