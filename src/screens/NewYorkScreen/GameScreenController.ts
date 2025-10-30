@@ -100,8 +100,17 @@ export class GameScreenController extends ScreenController {
       this.lastFactIndex = currentFactIndex;
     }
 
-    // Check which taxi has the correct answer
-    const correctTaxi = getCorrectFactIndex(factPair);
+    // Determine which taxi has the correct answer based on current assignment
+    const correctFactIndex = getCorrectFactIndex(factPair); // 1 if fact1 is true, 2 if fact2 is true
+    const isFact1OnTaxi1 = this.view.isFact1OnTaxi1();
+    const correctTaxi: 1 | 2 =
+      correctFactIndex === 1
+        ? isFact1OnTaxi1
+          ? 1
+          : 2
+        : isFact1OnTaxi1
+        ? 2
+        : 1;
 
     // If clicked taxi is correct
     if (taxiNumber === correctTaxi) {

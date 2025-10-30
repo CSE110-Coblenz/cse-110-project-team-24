@@ -23,6 +23,7 @@ export class GameScreenView implements View {
   private taxi1Text!: Konva.Text;
   private taxi2Text!: Konva.Text;
   private scoreText!: Konva.Text;
+  private isFact1OnTaxi1Flag: boolean = true; // Randomized assignment per round
 
   // Taxi speed in pixels per frame (increase this number to make taxis faster)
   private readonly taxiSpeed: number = 4;
@@ -47,12 +48,14 @@ export class GameScreenView implements View {
 
     // Get fact pair in order (starting with index 0)
     const factPair = getFactPairByIndex(this.currentFactIndex);
+    // Randomize which taxi shows fact1/fact2 for this round
+    this.isFact1OnTaxi1Flag = Math.random() < 0.5;
 
     // Taxi 1 on bottom road (displays fact1, moves left to right)
     this.taxi1 = Taxi.createTaxi(
       -taxiWidth, // Start off-screen left
       road1CenterY - 50,
-      factPair.fact1,
+      this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2,
       taxiWidth,
       taxiHeight
     );
@@ -68,7 +71,7 @@ export class GameScreenView implements View {
     this.taxi2 = Taxi.createTaxi(
       STAGE_WIDTH, // Start off-screen right
       road2CenterY - 50,
-      factPair.fact2,
+      this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1,
       taxiWidth,
       taxiHeight,
       true // Flip horizontally
@@ -106,9 +109,16 @@ export class GameScreenView implements View {
       (this.currentFactIndex + 1) % NEW_YORK_FACT_PAIRS.length;
     const factPair = getFactPairByIndex(this.currentFactIndex);
 
-    // Update taxi texts with new facts
-    this.taxi1Text.text(factPair.fact1);
-    this.taxi2Text.text(factPair.fact2);
+    // Randomize assignment each round
+    this.isFact1OnTaxi1Flag = Math.random() < 0.5;
+
+    // Update taxi texts with new facts based on assignment
+    this.taxi1Text.text(
+      this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2
+    );
+    this.taxi2Text.text(
+      this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1
+    );
   }
 
   /**
@@ -178,6 +188,13 @@ export class GameScreenView implements View {
    */
   getCurrentFactIndex(): number {
     return this.currentFactIndex;
+  }
+
+  /**
+   * Expose current assignment: true if taxi1 displays fact1, false if taxi1 displays fact2
+   */
+  isFact1OnTaxi1(): boolean {
+    return this.isFact1OnTaxi1Flag;
   }
 
   getGroup(): Konva.Group {
