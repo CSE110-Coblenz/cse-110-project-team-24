@@ -16,6 +16,7 @@ export interface View {
  */
 export type Screen =
 	| { type: "menu" }
+	| { type: "about" }
 	| { type: "game" }
 	| { type: "result"; score: number };
 

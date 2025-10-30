@@ -12,15 +12,24 @@ export class MenuScreenController extends ScreenController {
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
     this.screenSwitcher = screenSwitcher;
-    this.view = new MenuScreenView(() => this.handleStartClick());
+    this.view = new MenuScreenView(
+      () => this.handleStartClick(),
+      () => this.handleAboutClick()
+    );
   }
 
   /**
    * Handle start button click
    */
   private handleStartClick(): void {
-    // TODO: Task 1 - Implement screen transition from menu to game
     this.screenSwitcher.switchToScreen({ type: "game" });
+  }
+
+  /**
+   * Handle about button click
+   */
+  private handleAboutClick(): void {
+    this.screenSwitcher.switchToScreen({ type: "about" });
   }
 
   /**

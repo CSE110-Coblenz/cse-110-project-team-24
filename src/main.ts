@@ -1,7 +1,8 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types.ts";
-import { MenuScreenController } from "./screens/MenuScreen/MenuScreenController.ts";
-import { GameScreenController } from "./screens/GameScreen/GameScreenController.ts";
+import { MenuScreenController } from "./screens/StartScreen/MenuScreenController.ts";
+import { AboutScreenController } from "./screens/AboutScreen/AboutScreenController.ts";
+import { GameScreenController } from "./screens/HomeScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 
@@ -20,6 +21,7 @@ class App implements ScreenSwitcher {
 	private layer: Konva.Layer;
 
 	private menuController: MenuScreenController;
+	private aboutController: AboutScreenController;
 	private gameController: GameScreenController;
 	private resultsController: ResultsScreenController;
 
@@ -38,6 +40,7 @@ class App implements ScreenSwitcher {
 		// Initialize all screen controllers
 		// Each controller manages a Model, View, and handles user interactions
 		this.menuController = new MenuScreenController(this);
+		this.aboutController = new AboutScreenController(this);
 		this.gameController = new GameScreenController(this);
 		this.resultsController = new ResultsScreenController(this);
 
@@ -45,10 +48,19 @@ class App implements ScreenSwitcher {
 		// All screens exist simultaneously but only one is visible at a time
 		this.layer.add(this.menuController.getView().getGroup());
 		this.layer.add(this.gameController.getView().getGroup());
+		this.layer.add(this.aboutController.getView().getGroup());
 		this.layer.add(this.resultsController.getView().getGroup());
 
 		// Draw the layer (render everything to the canvas)
 		this.layer.draw();
+
+		// Handle resize to keep full-screen stage
+		window.addEventListener("resize", () => {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+			this.stage.size({ width, height });
+			this.layer.draw();
+		});
 
 		// Start with menu screen visible
 		this.menuController.getView().show();
@@ -67,12 +79,17 @@ class App implements ScreenSwitcher {
 		// Hide all screens first by setting their Groups to invisible
 		this.menuController.hide();
 		this.gameController.hide();
+		this.aboutController.hide();
 		this.resultsController.hide();
 
 		// Show the requested screen based on the screen type
 		switch (screen.type) {
 			case "menu":
 				this.menuController.show();
+				break;
+
+			case "about":
+				this.aboutController.show();
 				break;
 
 			case "game":
