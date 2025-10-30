@@ -38,8 +38,12 @@ export class GameScreenView implements View {
     );
 
     // Create taxis with fact pairs
-    const taxiWidth = 100;
-    const taxiHeight = 100;
+    // Base ratio: 500:150 (10:3) - adjust scale to change size
+    const taxiScale = 0.8; // Play with this value to scale the taxi (e.g., 0.5, 0.8, 1.0, 1.2, etc.)
+    const baseWidth = 500;
+    const baseHeight = 150;
+    const taxiWidth = baseWidth * taxiScale; // Maintains 500:150 ratio
+    const taxiHeight = baseHeight * taxiScale; // Maintains 500:150 ratio
 
     // Get fact pair in order (starting with index 0)
     const factPair = getFactPairByIndex(this.currentFactIndex);
@@ -60,12 +64,14 @@ export class GameScreenView implements View {
     this.taxi1.listening(true);
 
     // Taxi 2 on top road (displays fact2, moves right to left)
+    // flipHorizontal = true to reverse the image direction
     this.taxi2 = Taxi.createTaxi(
       STAGE_WIDTH, // Start off-screen right
       road2CenterY - 50,
       factPair.fact2,
       taxiWidth,
-      taxiHeight
+      taxiHeight,
+      true // Flip horizontally
     );
     this.group.add(this.taxi2);
     // Store reference to taxi2 text for updates

@@ -11,6 +11,7 @@ export class Taxi {
    * @param text - Text to display on the taxi
    * @param width - Width of the taxi
    * @param height - Height of the taxi
+   * @param flipHorizontal - Flip the image horizontally (default: false)
    * @returns A Konva.Group containing the taxi rectangle and text
    */
   static createTaxi(
@@ -18,21 +19,63 @@ export class Taxi {
     y: number,
     text: string,
     width: number = 100,
-    height: number = 100
+    height: number = 100,
+    flipHorizontal: boolean = false
   ): Konva.Group {
     const taxiGroup = new Konva.Group({
       x: x,
       y: y,
     });
 
-    const taxi = new Konva.Rect({
+    // Load taxi image (or fallback to yellow rectangle if image fails)
+    // Replace "/taxi.png" with your actual taxi image path
+    Konva.Image.fromURL(
+      "/taxi.png",
+      (img) => {
+        img.width(width);
+        img.height(height);
+        img.x(0);
+        img.y(0);
+        // Flip image horizontally if requested
+        if (flipHorizontal) {
+          img.scaleX(-1);
+          img.x(width); // Adjust x position when flipped
+        }
+        // Remove any existing rectangle placeholder
+        const existingRect = taxiGroup.children.find(
+          (child) => child instanceof Konva.Rect
+        );
+        if (existingRect) {
+          existingRect.destroy();
+        }
+        // Insert image at index 0 (before text)
+        taxiGroup.add(img);
+        img.moveToBottom(); // Put image behind text
+        taxiGroup.getLayer()?.draw();
+      },
+      (_error) => {
+        // Fallback: use yellow rectangle if image fails to load
+        const taxi = new Konva.Rect({
+          x: 0,
+          y: 0,
+          width: width,
+          height: height,
+          fill: "#FFD700", // Yellow
+        });
+        taxiGroup.add(taxi);
+        taxi.moveToBottom();
+      }
+    );
+
+    // Add temporary rectangle as placeholder while image loads
+    const placeholder = new Konva.Rect({
       x: 0,
       y: 0,
       width: width,
       height: height,
       fill: "#FFD700", // Yellow
     });
-    taxiGroup.add(taxi);
+    taxiGroup.add(placeholder);
 
     const taxiText = new Konva.Text({
       x: 0,
