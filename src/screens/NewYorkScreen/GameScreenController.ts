@@ -16,6 +16,11 @@ export class GameScreenController extends ScreenController {
 
   private squeezeSound: HTMLAudioElement;
 
+  // Track round state for scoring rules
+  private currentRoundLocked: boolean = false; // true if wrong taxi clicked before correct one
+  private correctTaxiClickedThisRound: boolean = false; // true if correct taxi has been clicked
+  private lastFactIndex: number = -1; // track when facts change to reset round state
+
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
     this.screenSwitcher = screenSwitcher;
@@ -36,6 +41,11 @@ export class GameScreenController extends ScreenController {
   startGame(): void {
     // Reset model state
     this.model.reset();
+
+    // Reset round state tracking
+    this.currentRoundLocked = false;
+    this.correctTaxiClickedThisRound = false;
+    this.lastFactIndex = -1;
 
     // Update score display
     this.view.updateScore(this.model.getScore());
@@ -82,17 +92,40 @@ export class GameScreenController extends ScreenController {
     const currentFactIndex = this.view.getCurrentFactIndex();
     const factPair = getFactPairByIndex(currentFactIndex);
 
+    // Check if we've moved to a new round (fact index changed)
+    if (currentFactIndex !== this.lastFactIndex) {
+      // Reset round state for new question
+      this.currentRoundLocked = false;
+      this.correctTaxiClickedThisRound = false;
+      this.lastFactIndex = currentFactIndex;
+    }
+
     // Check which taxi has the correct answer
     const correctTaxi = getCorrectFactIndex(factPair);
 
-    // If clicked taxi is correct, increment score
+    // If clicked taxi is correct
     if (taxiNumber === correctTaxi) {
+      // If round is locked (wrong taxi clicked first), don't give points
+      if (this.currentRoundLocked) {
+        // No points, but we can still track that correct taxi was clicked
+        this.correctTaxiClickedThisRound = true;
+        // TODO: Play success sound
+        // this.successSound.play();
+        return;
+      }
+
+      // Correct taxi clicked - mark it and give points
+      this.correctTaxiClickedThisRound = true;
       this.model.incrementScore();
       this.view.updateScore(this.model.getScore());
       // TODO: Play success sound
       // this.successSound.play();
     } else {
-      // Wrong answer - no points
+      // Wrong taxi clicked
+      if (!this.correctTaxiClickedThisRound) {
+        // Wrong taxi clicked before correct one - lock this round
+        this.currentRoundLocked = true;
+      }
       // TODO: Play wrong answer sound
       // this.wrongSound.play();
     }
