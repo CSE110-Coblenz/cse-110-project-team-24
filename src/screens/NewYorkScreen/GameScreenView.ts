@@ -9,6 +9,12 @@ import {
   createRightToLeftAnimation,
   type TaxiAnimation,
 } from "./AnimateTaxi.ts";
+import {
+  TAXI_SPEED,
+  TAXI_WIDTH,
+  TAXI_HEIGHT,
+  ROAD_HEIGHT,
+} from "./constants.ts";
 
 /**
  * GameScreenView - Renders the game UI using Konva
@@ -25,26 +31,16 @@ export class GameScreenView implements View {
   private scoreText!: Konva.Text;
   private isFact1OnTaxi1Flag: boolean = true; // Randomized assignment per round
 
-  // Taxi speed in pixels per frame (increase this number to make taxis faster)
-  private readonly taxiSpeed: number = 4;
-
   constructor(onTaxi1Click: () => void, onTaxi2Click: () => void) {
     this.group = new Konva.Group({ visible: false });
 
     // Create roads with lane dividers
-    const roadHeight = 250;
     const { road1CenterY, road2CenterY } = Road.createRoads(
-      roadHeight,
+      ROAD_HEIGHT,
       this.group
     );
 
     // Create taxis with fact pairs
-    // Base ratio: 500:150 (10:3) - adjust scale to change size
-    const taxiScale = 0.8; // Play with this value to scale the taxi (e.g., 0.5, 0.8, 1.0, 1.2, etc.)
-    const baseWidth = 500;
-    const baseHeight = 150;
-    const taxiWidth = baseWidth * taxiScale; // Maintains 500:150 ratio
-    const taxiHeight = baseHeight * taxiScale; // Maintains 500:150 ratio
 
     // Get fact pair in order (starting with index 0)
     const factPair = getFactPairByIndex(this.currentFactIndex);
@@ -53,11 +49,11 @@ export class GameScreenView implements View {
 
     // Taxi 1 on bottom road (displays fact1, moves left to right)
     this.taxi1 = Taxi.createTaxi(
-      -taxiWidth, // Start off-screen left
+      -TAXI_WIDTH, // Start off-screen left
       road1CenterY - 50,
       this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2,
-      taxiWidth,
-      taxiHeight
+      TAXI_WIDTH,
+      TAXI_HEIGHT
     );
     this.group.add(this.taxi1);
     // Store reference to taxi1 text for updates (text bubble group is at index 1, text is at index 1 within that group)
@@ -73,8 +69,8 @@ export class GameScreenView implements View {
       STAGE_WIDTH, // Start off-screen right
       road2CenterY - 50,
       this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1,
-      taxiWidth,
-      taxiHeight,
+      TAXI_WIDTH,
+      TAXI_HEIGHT,
       true // Flip horizontally
     );
     this.group.add(this.taxi2);
@@ -95,12 +91,7 @@ export class GameScreenView implements View {
       fill: "black",
     });
     this.group.add(this.scoreText);
-
-    // Store taxi width for animation initialization
-    this.taxiWidth = taxiWidth;
   }
-
-  private taxiWidth!: number;
 
   /**
    * Update taxis with the next fact pair
@@ -137,8 +128,8 @@ export class GameScreenView implements View {
     this.taxi1Animation = createLeftToRightAnimation(
       this.taxi1,
       layer,
-      this.taxiWidth,
-      this.taxiSpeed,
+      TAXI_WIDTH,
+      TAXI_SPEED,
       () => this.updateToNextFact()
     );
 
@@ -147,8 +138,8 @@ export class GameScreenView implements View {
     this.taxi2Animation = createRightToLeftAnimation(
       this.taxi2,
       layer,
-      this.taxiWidth,
-      this.taxiSpeed,
+      TAXI_WIDTH,
+      TAXI_SPEED,
       () => this.updateToNextFact()
     );
   }

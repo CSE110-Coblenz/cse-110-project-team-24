@@ -1,5 +1,11 @@
 import Konva from "konva";
 import { Text } from "./Text.ts";
+import {
+  TEXT_BUBBLE_X_OFFSET,
+  TEXT_BUBBLE_Y_OFFSET,
+  TAXI_WIDTH,
+  TAXI_HEIGHT,
+} from "./constants.ts";
 
 /**
  * Taxi utilities for creating taxi groups
@@ -80,9 +86,12 @@ export class Taxi {
 
     // Create text bubble centered on the taxi image
     const textBubble = Text.createTextBubble(text, width, height);
-    // Position bubble slightly up and to the left relative to center
-    textBubble.x(-width * 0.3);
-    textBubble.y(-height * 0.95);
+    // Position bubble using constants
+    // Scale offsets based on actual width/height vs default TAXI dimensions
+    const scaleX = width / TAXI_WIDTH;
+    const scaleY = height / TAXI_HEIGHT;
+    textBubble.x(TEXT_BUBBLE_X_OFFSET * scaleX);
+    textBubble.y(TEXT_BUBBLE_Y_OFFSET * scaleY);
     taxiGroup.add(textBubble);
 
     return taxiGroup;
