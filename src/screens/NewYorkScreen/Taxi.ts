@@ -1,4 +1,5 @@
 import Konva from "konva";
+import { Text } from "./Text.ts";
 
 /**
  * Taxi utilities for creating taxi groups
@@ -77,18 +78,12 @@ export class Taxi {
     });
     taxiGroup.add(placeholder);
 
-    const taxiText = new Konva.Text({
-      x: 0,
-      y: 0,
-      width: width,
-      text: text,
-      fontSize: 24,
-      fontFamily: "Arial",
-      fill: "black",
-      align: "center",
-      verticalAlign: "middle",
-    });
-    taxiGroup.add(taxiText);
+    // Create text bubble centered on the taxi image
+    const textBubble = Text.createTextBubble(text, width, height);
+    // Position bubble slightly up and to the left relative to center
+    textBubble.x(-width * 0.3);
+    textBubble.y(-height * 0.95);
+    taxiGroup.add(textBubble);
 
     return taxiGroup;
   }

@@ -60,8 +60,9 @@ export class GameScreenView implements View {
       taxiHeight
     );
     this.group.add(this.taxi1);
-    // Store reference to taxi1 text for updates
-    this.taxi1Text = this.taxi1.children[1] as Konva.Text;
+    // Store reference to taxi1 text for updates (text bubble group is at index 1, text is at index 1 within that group)
+    const taxi1TextBubbleGroup = this.taxi1.children[1] as Konva.Group;
+    this.taxi1Text = taxi1TextBubbleGroup.children[1] as Konva.Text;
     // Make taxi1 clickable
     this.taxi1.on("click", onTaxi1Click);
     this.taxi1.listening(true);
@@ -77,8 +78,9 @@ export class GameScreenView implements View {
       true // Flip horizontally
     );
     this.group.add(this.taxi2);
-    // Store reference to taxi2 text for updates
-    this.taxi2Text = this.taxi2.children[1] as Konva.Text;
+    // Store reference to taxi2 text for updates (text bubble group is at index 1, text is at index 1 within that group)
+    const taxi2TextBubbleGroup = this.taxi2.children[1] as Konva.Group;
+    this.taxi2Text = taxi2TextBubbleGroup.children[1] as Konva.Text;
     // Make taxi2 clickable
     this.taxi2.on("click", onTaxi2Click);
     this.taxi2.listening(true);
