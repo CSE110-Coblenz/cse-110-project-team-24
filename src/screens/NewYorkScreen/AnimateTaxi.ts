@@ -23,8 +23,6 @@ export interface TaxiAnimation {
  * @param taxiWidth - Width of the taxi (for reset positioning)
  * @param speed - Movement speed in pixels per frame (default: 2)
  * @param onReset - Optional callback called when taxi resets position
- * @param roadLeft - Optional left boundary of the road (for reset positioning)
- * @param roadRight - Optional right boundary of the road (for off-screen detection)
  * @returns TaxiAnimation interface for controlling the animation
  */
 export function createLeftToRightAnimation(
@@ -32,9 +30,7 @@ export function createLeftToRightAnimation(
   layer: Konva.Layer,
   taxiWidth: number,
   speed: number = 2,
-  onReset?: () => void,
-  roadLeft?: number,
-  roadRight?: number
+  onReset?: () => void
 ): TaxiAnimation {
   const animation = new Konva.Animation((frame) => {
     if (!frame) return;
@@ -43,12 +39,8 @@ export function createLeftToRightAnimation(
     taxi.x(taxi.x() + speed);
 
     // Reset position when it goes off-screen right
-    const rightBoundary = roadRight !== undefined ? roadRight : STAGE_WIDTH;
-    const leftResetPos =
-      roadLeft !== undefined ? roadLeft - taxiWidth : -taxiWidth;
-
-    if (taxi.x() > rightBoundary) {
-      taxi.x(leftResetPos);
+    if (taxi.x() > STAGE_WIDTH) {
+      taxi.x(-taxiWidth);
       // Call callback to update fact if provided
       onReset?.();
     }
@@ -67,8 +59,6 @@ export function createLeftToRightAnimation(
  * @param taxiWidth - Width of the taxi (for reset positioning)
  * @param speed - Movement speed in pixels per frame (default: 2)
  * @param onReset - Optional callback called when taxi resets position
- * @param roadLeft - Optional left boundary of the road (for off-screen detection)
- * @param roadRight - Optional right boundary of the road (for reset positioning)
  * @returns TaxiAnimation interface for controlling the animation
  */
 export function createRightToLeftAnimation(
@@ -76,9 +66,7 @@ export function createRightToLeftAnimation(
   layer: Konva.Layer,
   taxiWidth: number,
   speed: number = 2,
-  onReset?: () => void,
-  roadLeft?: number,
-  roadRight?: number
+  onReset?: () => void
 ): TaxiAnimation {
   const animation = new Konva.Animation((frame) => {
     if (!frame) return;
@@ -87,12 +75,8 @@ export function createRightToLeftAnimation(
     taxi.x(taxi.x() - speed);
 
     // Reset position when it goes off-screen left
-    const leftBoundary =
-      roadLeft !== undefined ? roadLeft - taxiWidth : -taxiWidth;
-    const rightResetPos = roadRight !== undefined ? roadRight : STAGE_WIDTH;
-
-    if (taxi.x() < leftBoundary) {
-      taxi.x(rightResetPos);
+    if (taxi.x() < -taxiWidth) {
+      taxi.x(STAGE_WIDTH);
       // Call callback to update fact if provided
       onReset?.();
     }
