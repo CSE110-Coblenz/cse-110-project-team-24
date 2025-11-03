@@ -2,7 +2,6 @@ import Konva from "konva";
 import type { View } from "../../types.ts";
 import { Road } from "./Road.ts";
 import { Taxi } from "./Taxi.ts";
-import { STAGE_WIDTH } from "../../constants.ts";
 import { getFactPairByIndex, NEW_YORK_FACT_PAIRS } from "./NewYorkFacts.ts";
 import {
   createLeftToRightAnimation,
@@ -14,6 +13,7 @@ import {
   TAXI_WIDTH,
   TAXI_HEIGHT,
   ROAD_HEIGHT,
+  ROAD_WIDTH,
 } from "./constants.ts";
 
 /**
@@ -30,15 +30,21 @@ export class GameScreenView implements View {
   private taxi2Text!: Konva.Text;
   private scoreText!: Konva.Text;
   private isFact1OnTaxi1Flag: boolean = true; // Randomized assignment per round
+  private roadX!: number; // X position of the road
+  private roadWidth!: number; // Width of the road
 
   constructor(onTaxi1Click: () => void, onTaxi2Click: () => void) {
     this.group = new Konva.Group({ visible: false });
 
     // Create roads with lane dividers
-    const { road1CenterY, road2CenterY } = Road.createRoads(
+    const { road1CenterY, road2CenterY, roadX, roadWidth } = Road.createRoads(
       ROAD_HEIGHT,
       this.group
     );
+
+    // Store road position and width for animations
+    this.roadX = roadX;
+    this.roadWidth = roadWidth;
 
     // Create taxis with fact pairs
 
@@ -49,7 +55,7 @@ export class GameScreenView implements View {
 
     // Taxi 1 on bottom road (displays fact1, moves left to right)
     this.taxi1 = Taxi.createTaxi(
-      -TAXI_WIDTH, // Start off-screen left
+      roadX - TAXI_WIDTH, // Start off-screen left of the road
       road1CenterY - 50,
       this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2,
       TAXI_WIDTH,
@@ -66,7 +72,7 @@ export class GameScreenView implements View {
     // Taxi 2 on top road (displays fact2, moves right to left)
     // flipHorizontal = true to reverse the image direction
     this.taxi2 = Taxi.createTaxi(
-      STAGE_WIDTH, // Start off-screen right
+      roadX + ROAD_WIDTH, // Start off-screen right of the road
       road2CenterY - 50,
       this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1,
       TAXI_WIDTH,
@@ -130,7 +136,9 @@ export class GameScreenView implements View {
       layer,
       TAXI_WIDTH,
       TAXI_SPEED,
-      () => this.updateToNextFact()
+      () => this.updateToNextFact(),
+      this.roadX, // roadLeft
+      this.roadX + this.roadWidth // roadRight
     );
 
     // Animation for taxi2: moves right to left
@@ -140,7 +148,9 @@ export class GameScreenView implements View {
       layer,
       TAXI_WIDTH,
       TAXI_SPEED,
-      () => this.updateToNextFact()
+      () => this.updateToNextFact(),
+      this.roadX, // roadLeft
+      this.roadX + this.roadWidth // roadRight
     );
   }
 
