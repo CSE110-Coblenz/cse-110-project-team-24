@@ -4,6 +4,7 @@ import { MenuScreenController } from "./screens/StartScreen/StartScreenControlle
 import { AboutScreenController } from "./screens/AboutScreen/AboutScreenController.ts";
 import { GameScreenController } from "./screens/HomeScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
+import { BlankScreenController } from "./screens/BlankScreen/BlankScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 
 /**
@@ -24,6 +25,7 @@ class App implements ScreenSwitcher {
 	private aboutController: AboutScreenController;
 	private gameController: GameScreenController;
 	private resultsController: ResultsScreenController;
+	private blankController: BlankScreenController;
 
 	/**
 	 * Constructor - Initializes the application and sets up all screens
@@ -56,14 +58,16 @@ class App implements ScreenSwitcher {
 		this.aboutController = new AboutScreenController(this);
 		this.gameController = new GameScreenController(this);
 		this.resultsController = new ResultsScreenController(this);
+		this.blankController = new BlankScreenController();
 
 		// Add all screen groups to the layer
 		// All screens exist simultaneously but only one is visible at a time
 		// This allows for smooth transitions between screens without re-rendering
 		this.layer.add(this.menuController.getView().getGroup());
-		this.layer.add(this.gameController.getView().getGroup());
 		this.layer.add(this.aboutController.getView().getGroup());
+		this.layer.add(this.gameController.getView().getGroup());
 		this.layer.add(this.resultsController.getView().getGroup());
+		this.layer.add(this.blankController.getView().getGroup());
 
 		// Draw the layer (render everything to the canvas)
 		// This initial render makes all screens available, though only one will be visible
@@ -100,9 +104,10 @@ class App implements ScreenSwitcher {
 		// Hide all screens first by setting their Groups to invisible
 		// This ensures no screen overlap or visual artifacts
 		this.menuController.hide();
-		this.gameController.hide();
 		this.aboutController.hide();
+		this.gameController.hide();
 		this.resultsController.hide();
+		this.blankController.hide();
 
 		// Show the requested screen based on the screen type
 		// Each screen type has its own initialization logic
@@ -126,13 +131,18 @@ class App implements ScreenSwitcher {
 			case "game":
 				// Start the game (which also shows the game screen)
 				// This triggers game initialization and displays the game screen
-				this.gameController.startGame();
+				this.gameController.start();
 				break;
 
 			case "result":
 				// Show results screen with the final score
 				// This displays the player's performance after completing the game
 				this.resultsController.showResults(screen.score);
+				break;
+
+			case "blank":
+				// Show blank screen placeholder
+				this.blankController.show();
 				break;
 		}
 	}

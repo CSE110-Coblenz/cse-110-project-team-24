@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>CSE110 Project Team 24 - GEOQUEST</title>
     <style>
       * {
@@ -13,11 +13,14 @@
 
       html, body {
         height: 100%;
+        overflow: hidden; /* prevent page scroll */
+        overscroll-behavior: none; /* disable scroll chaining/bounce */
       }
 
       body {
         margin: 0;
-        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
       }
 
       #container {
@@ -25,6 +28,7 @@
         height: 100vh;
         display: block;
         background: #ffffff;
+        overflow: hidden;
       }
     </style>
   </head>
