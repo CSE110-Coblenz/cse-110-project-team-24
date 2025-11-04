@@ -8,6 +8,13 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
 export class PostcardScreenView implements View {
   private group: Konva.Group;
 
+  //Values for consistency
+  private centerValueX: number = STAGE_WIDTH / 2;
+  private centerValueY: number = STAGE_HEIGHT / 2;
+  private PostcardWidth: number = STAGE_WIDTH / 6;
+  private PostcardHeight: number = STAGE_HEIGHT / 6;
+
+
 
   constructor() {
     this.group = new Konva.Group({ visible: false });
@@ -18,45 +25,75 @@ export class PostcardScreenView implements View {
       y: 0,
       width: STAGE_WIDTH,
       height: STAGE_HEIGHT,
-      fill: "#87CEEB", // Sky blue
+      fill: "#F5F5DC", // Beige color
     });
     this.group.add(bg);
 
 
-    Konva.Image.fromURL("/public/Postcards/BostonPostcard.jpg", (img) => {
-      img.width(200);
-      img.height(100);
-      img.x(300);
-      img.y(400);
-      this.group.add(img);
-    });
-
-    Konva.Image.fromURL("/public/Postcards/BostonPostcard.jpg", (img) => {
-      img.width(200);
-      img.height(100);
-      img.x(500);
-      img.y(100);
-      this.group.add(img);
-    });
-
-    Konva.Image.fromURL("/public/Postcards/BostonPostcard.jpg", (img2) => {
-      img2.width(200);
-      img2.height(100);
-      img2.x(15);
-      img2.y(200);
-      this.group.add(img2);
-    });
 
 
   }
 
+  addPostcard(imageSrc: string, xPos: number, yPos: number): void {
+    const groupPostcard = new Konva.Group({ visible: false });
+    let image1: Konva.Image | null = null;
 
+    // Load the main postcard image
+    Konva.Image.fromURL(imageSrc, (img) => {
+      img.width(this.PostcardWidth);
+      img.height(this.PostcardHeight);
+      img.offsetX(img.width() / 2);
+      img.offsetY(img.height() / 2);
+      image1 = img;
+      groupPostcard.add(img);
+
+      // Load the tape images after the main image is loaded
+      Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
+        tapeImg.width(image1 ? image1.width() / 2 : 0);
+        tapeImg.height(image1 ? image1.height() / 2 : 0);
+        groupPostcard.add(tapeImg);
+      });
+
+      Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
+        tapeImg.width(image1 ? image1.width() / 2 : 0);
+        tapeImg.height(image1 ? image1.height() / 2 : 0);
+        groupPostcard.add(tapeImg);
+      });
+
+      // Load the pin image after the main image is loaded
+      Konva.Image.fromURL("/public/Postcards/PinImage.png", (pinImg) => {
+        pinImg.width(image1 ? image1.width() / 2 : 0);
+        pinImg.height(image1 ? image1.height() / 2 : 0);
+        pinImg.offsetX(pinImg.width() / 2);
+        pinImg.offsetY(pinImg.height() / 2);
+        pinImg.x(-(image1 ? image1.width() / 2 : 0) + pinImg.width() / 2 + -30);
+        pinImg.y(-(image1 ? image1.height() / 2 : 0) + pinImg.height() / 2 + -20);
+        groupPostcard.add(pinImg);
+      });
+
+      // Position the group after all images are added
+      groupPostcard.offsetX(groupPostcard.width() / 2);
+      groupPostcard.offsetY(groupPostcard.height() / 2);
+      groupPostcard.x(this.centerValueX + xPos);
+      groupPostcard.y(this.centerValueY - yPos);
+
+      // Add the group to the main group
+      this.group.add(groupPostcard);
+
+      // Make the group visible
+      groupPostcard.visible(true);
+    });
+  }
 
 
   /**
    * Show the screen
    */
   show(): void {
+
+    //Turns on all the postcard visibilities
+    this.group.children?.forEach((child) => { child.visible(true); });
+
     this.group.visible(true);
     this.group.getLayer()?.draw();
   }

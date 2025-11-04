@@ -19,7 +19,8 @@ export class PostcardScreenController extends ScreenController {
     this.model = new PostcardScreenModel();
     this.view = new PostcardScreenView();
 
-
+    this.view.addPostcard("/public/Postcards/BostonPostcard.jpg", 700, -500);
+    this.view.addPostcard("/public/Postcards/SanDiegoPostcard.jpg", 0, 0);
   }
 
 
