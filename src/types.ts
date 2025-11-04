@@ -10,14 +10,19 @@ export interface View {
  * Screen types for navigation
  *
  * - "menu": Main menu screen
+ * - "home": Home screen (map/city selection)
  * - "game": Gameplay screen
+ * - "about": About screen with game information
  * - "result": Results screen with final score
  *   - score: Final score to display on results screen
  */
 export type Screen =
 	| { type: "menu" }
+	| { type: "about" }
+	| { type: "home" }
 	| { type: "game" }
-	| { type: "result"; score: number };
+	| { type: "result"; score: number }
+	| { type: "blank" };
 
 export abstract class ScreenController {
 	abstract getView(): View;
