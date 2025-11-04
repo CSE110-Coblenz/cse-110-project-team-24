@@ -19,9 +19,14 @@ export class GameScreenController extends ScreenController {
 
     this.model = new GameScreenModel();
     this.view = new GameScreenView(() => {});
-    // When a city is clicked, navigate to a placeholder blank screen
-    this.view.setCityClickHandler(() => {
-      this.screenSwitcher.switchToScreen({ type: "blank" });
+    // When a city is clicked, navigate to the appropriate screen
+    this.view.setCityClickHandler((city: City) => {
+      if (city === "New York") {
+        this.screenSwitcher.switchToScreen({ type: "newyork" });
+      } else {
+        // For other cities, show blank screen for now
+        this.screenSwitcher.switchToScreen({ type: "blank" });
+      }
     });
   }
 
