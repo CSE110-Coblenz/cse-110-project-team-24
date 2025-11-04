@@ -1,5 +1,5 @@
 /**
- * HomeScreenModel - Manages map state and travel rules
+ * GameScreenModel - Manages map state and travel rules
  */
 export type City =
 	| "Boston"
@@ -14,7 +14,7 @@ export interface MapGraph {
 	adjacency: Record<City, City[]>;
 }
 
-export class HomeScreenModel {
+export class GameScreenModel {
 	private graph: MapGraph;
 	private currentCity: City;
 

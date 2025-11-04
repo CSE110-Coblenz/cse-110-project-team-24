@@ -2,7 +2,7 @@ import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types.ts";
 import { MenuScreenController } from "./screens/StartScreen/StartScreenController.ts";
 import { AboutScreenController } from "./screens/AboutScreen/AboutScreenController.ts";
-import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController.ts";
+import { GameScreenController } from "./screens/HomeScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
 import { BlankScreenController } from "./screens/BlankScreen/BlankScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
@@ -23,7 +23,7 @@ class App implements ScreenSwitcher {
 
 	private menuController: MenuScreenController;
 	private aboutController: AboutScreenController;
-	private gameController: HomeScreenController;
+	private gameController: GameScreenController;
 	private resultsController: ResultsScreenController;
 	private blankController: BlankScreenController;
 
@@ -56,7 +56,7 @@ class App implements ScreenSwitcher {
 		// Pass 'this' (the App instance) as the screenSwitcher so controllers can navigate
 		this.menuController = new MenuScreenController(this);
 		this.aboutController = new AboutScreenController(this);
-		this.gameController = new HomeScreenController(this);
+		this.gameController = new GameScreenController(this);
 		this.resultsController = new ResultsScreenController(this);
 		this.blankController = new BlankScreenController();
 
