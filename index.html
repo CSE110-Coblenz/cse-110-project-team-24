@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>Lemon Clicker - CSE 110 Lab 3</title>
     <style>
       * {
@@ -11,18 +11,20 @@
         box-sizing: border-box;
       }
 
+      html, body {
+        height: 100%;
+        overflow: hidden; /* prevent page scroll */
+        overscroll-behavior: none; /* disable scroll chaining/bounce */
+      }
+
       body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
+        height: 100vh;
+        width: 100vw;
       }
 
       #container {
-        background: white;
-        border: 1px solid #ddd;
+        width: 100vw;
+        height: 100vh;
         overflow: hidden;
       }
     </style>
