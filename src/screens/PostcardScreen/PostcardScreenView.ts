@@ -7,17 +7,19 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
  */
 export class PostcardScreenView implements View {
   private group: Konva.Group;
+  private lineGroup: Konva.Group;
 
   //Values for consistency
   private centerValueX: number = STAGE_WIDTH / 2;
   private centerValueY: number = STAGE_HEIGHT / 2;
-  private PostcardWidth: number = STAGE_WIDTH / 6;
-  private PostcardHeight: number = STAGE_HEIGHT / 6;
+  private PostcardWidth: number = STAGE_WIDTH / 4.3;
+  private PostcardHeight: number = STAGE_HEIGHT / 4.3;
 
 
 
   constructor() {
     this.group = new Konva.Group({ visible: false });
+    this.lineGroup = new Konva.Group({ visible: false });
 
     // Background
     const bg = new Konva.Rect({
@@ -47,6 +49,17 @@ export class PostcardScreenView implements View {
       image1 = img;
       groupPostcard.add(img);
 
+      // For hovering effect
+      img.on('mouseover', () => {
+        img.scale({ x: 1.1, y: 1.1 }); // Slightly enlarge the image
+        img.getLayer()?.draw();
+        });
+  
+        img.on('mouseout', () => {
+        img.scale({ x: 1, y: 1 }); // Reset the image size
+        img.getLayer()?.draw();
+        });
+
       // Load the tape images after the main image is loaded
       Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
         tapeImg.width(image1 ? image1.width() / 2 : 0);
@@ -62,8 +75,8 @@ export class PostcardScreenView implements View {
 
       // Load the pin image after the main image is loaded
       Konva.Image.fromURL("/public/Postcards/PinImage.png", (pinImg) => {
-        pinImg.width(image1 ? image1.width() / 2 : 0);
-        pinImg.height(image1 ? image1.height() / 2 : 0);
+        pinImg.width(image1 ? image1.width() / 3 : 0);
+        pinImg.height(image1 ? image1.height() / 3 : 0);
         pinImg.offsetX(pinImg.width() / 2);
         pinImg.offsetY(pinImg.height() / 2);
         pinImg.x(-(image1 ? image1.width() / 2 : 0) + pinImg.width() / 2 + -30);
@@ -85,6 +98,21 @@ export class PostcardScreenView implements View {
     });
   }
 
+  addLine(x1: number, y1: number, x2: number, y2: number): void {
+
+    // dashed line
+    const redLine = new Konva.Line({
+      points: [this.centerValueX + x1 - 300,this.centerValueX - y1 + -1000, this.centerValueX + x2 - 300, this.centerValueX - y2 + -1000],
+      stroke: 'red',
+      strokeWidth: 15,
+      lineJoin: 'round',
+      dash: [33, 10]
+    });
+    
+    this.lineGroup.add(redLine);
+    
+    
+  }
 
   /**
    * Show the screen
@@ -93,8 +121,10 @@ export class PostcardScreenView implements View {
 
     //Turns on all the postcard visibilities
     this.group.children?.forEach((child) => { child.visible(true); });
-
     this.group.visible(true);
+    this.group.add(this.lineGroup);
+    this.lineGroup.visible(true);
+    this.lineGroup.moveToTop();
     this.group.getLayer()?.draw();
   }
 
