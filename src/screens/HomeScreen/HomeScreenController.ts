@@ -1,15 +1,15 @@
 import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
-import { HomeScreenModel } from "./HomeScreenModel.ts";
-import type { City, MapGraph } from "./HomeScreenModel.ts";
-import { HomeScreenView } from "./HomeScreenView.ts";
+import { GameScreenModel } from "./GameScreenModel.ts";
+import type { City, MapGraph } from "./GameScreenModel.ts";
+import { GameScreenView } from "./GameScreenView.ts";
 
 /**
- * HomeScreenController - Coordinates game logic between Model and View
+ * GameScreenController - Coordinates game logic between Model and View
  */
-export class HomeScreenController extends ScreenController {
-  private model: HomeScreenModel;
-  private view: HomeScreenView;
+export class GameScreenController extends ScreenController {
+  private model: GameScreenModel;
+  private view: GameScreenView;
   private onLocationChangeListeners: Array<(city: City) => void> = [];
   private screenSwitcher: ScreenSwitcher;
 
@@ -17,8 +17,8 @@ export class HomeScreenController extends ScreenController {
     super();
     this.screenSwitcher = screenSwitcher;
 
-    this.model = new HomeScreenModel();
-    this.view = new HomeScreenView(() => {});
+    this.model = new GameScreenModel();
+    this.view = new GameScreenView(() => {});
     // When a city is clicked, navigate to a placeholder blank screen
     this.view.setCityClickHandler(() => {
       this.screenSwitcher.switchToScreen({ type: "blank" });
@@ -80,7 +80,7 @@ export class HomeScreenController extends ScreenController {
   /**
    * Get the view group
    */
-  getView(): HomeScreenView {
+  getView(): GameScreenView {
     return this.view;
   }
 }

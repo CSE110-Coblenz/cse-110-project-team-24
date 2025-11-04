@@ -1,12 +1,12 @@
 import Konva from "konva";
 import type { View } from "../../types.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
-import type { City } from "./HomeScreenModel.ts";
+import type { City } from "./GameScreenModel.ts";
 
 /**
- * HomeScreenView - Renders the US map and interactive city nodes
+ * GameScreenView - Renders the US map and interactive city nodes
  */
-export class HomeScreenView implements View {
+export class GameScreenView implements View {
   private group: Konva.Group;
   private mapLayer: Konva.Group;
   private nodesLayer: Konva.Group;
