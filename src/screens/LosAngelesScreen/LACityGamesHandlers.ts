@@ -6,7 +6,7 @@ import { startUSGame } from "./UnionStationGame";
 import { startLBGame } from "./LongBeachGame.ts";
 import { startMPGame } from "./MontereyParkGame.ts";
 import { startSFSGame } from "./SantaFeSpringsGame.ts";
-import { startIGGame } from "./InglewoordGame.ts";
+import { startIGGame } from "./InglewoodGame.ts";
 import { startHWGame } from "./HollywoodGame.ts";
 import { startPDGame } from "./PasadenaGame.ts";
 import { startBBGame } from "./BurbankGame.ts";
