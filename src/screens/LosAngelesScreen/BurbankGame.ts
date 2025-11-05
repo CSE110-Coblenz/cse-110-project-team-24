@@ -2,9 +2,16 @@ import Konva from "konva";
 
 let score = 0; 
 
-export function startLAXGame(layer: Konva.Layer) {
-  score = 0;
+
+
+
+export function startBBGame(layer: Konva.Layer) {
+    score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
+  layer.find("Circle").forEach((city) =>{
+    city.listening(false);
+    console.log("disable");
+  });
 
   const popup = new Konva.Group({
     name: "popup",
@@ -24,7 +31,7 @@ export function startLAXGame(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "Which state is Los Angeles in？",
+    text: "What company has its headquarter at Burbank?",
     x: 30,
     y: 30,
     fontSize: 22,
@@ -36,10 +43,10 @@ export function startLAXGame(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. Texas", correct: false },
-    { text: "B. California", correct: true },
-    { text: "C. Arizona", correct: false },
-    { text: "D. Nevada", correct: false },
+    { text: "A. Walt Disney", correct: true },
+    { text: "B. Google", correct: false },
+    { text: "C. Exxon Mobil", correct: false },
+    { text: "D. Coca Cola", correct: false },
   ];
 
   options.forEach((opt, i) => {
@@ -119,7 +126,7 @@ function handleAnswer(correct: boolean, layer: Konva.Layer, popup: Konva.Group) 
     if (correct) {
       nextQuestion(layer);
     } else {
-      startLAXGame(layer); 
+      startBBGame(layer); 
     }
     layer.draw();
   }, 2000);
@@ -144,7 +151,7 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "What is the short term of Los Angeles International Airport?",
+    text: "Which talk show used to be filmed in Burbank's NBC studio?",
     x: 30,
     y: 30,
     fontSize: 22,
@@ -156,10 +163,10 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. LAX", correct: true },
-    { text: "B. LGA", correct: false },
-    { text: "C. LSA", correct: false },
-    { text: "D. LAS", correct: false },
+    { text: "A. The Tonight Show", correct: true },
+    { text: "B. Ellen", correct: false },
+    { text: "C. Oprah", correct: false },
+    { text: "D. Jimmy Kimmel Live", correct: false },
   ];
 
   options.forEach((opt, i) => {
@@ -189,7 +196,7 @@ function nextQuestion(layer: Konva.Layer) {
       popup.destroy();
           const rect = new Konva.Rect({
     width: 700,
-    height: 700,
+    height: 800,
     fill: "white",
     stroke: "black",
     cornerRadius: 12,
@@ -205,7 +212,7 @@ function nextQuestion(layer: Konva.Layer) {
       });
 
       layer.add(msg);
-          if (correct) {
+    if (correct) {
       score++;
     } 
 
@@ -219,22 +226,19 @@ function nextQuestion(layer: Konva.Layer) {
       layer.add(rect);
       layer.add(scoreText);
       layer.draw();
-          const laxDot = layer.findOne("#LAX") as Konva.Circle;
-        console.log("🔍 laxDot found?", !!laxDot);
-        if (laxDot) {
-            laxDot.fill("green");
-            layer.draw();
-            console.log("✅ new fill color:", laxDot.fill());
-        }
+
 
       setTimeout(() => {
         msg.destroy();
         scoreText.destroy();
         rect.destroy();
         layer.draw();
-        if (!correct) { 
-      nextQuestion(layer); 
-    }
+        if (!correct){
+            nextQuestion(layer);
+        }
+        layer.find("Circle").forEach((city) =>{
+            city.listening(true);
+        });
       }, 3000);
     });
 

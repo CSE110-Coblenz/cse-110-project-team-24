@@ -1,5 +1,5 @@
 import Konva from "konva";
-import { handleCityClick } from "./LACityGamesHandlers";
+import { handleCityClick, isCityCompleted } from "./LACityGamesHandlers";
 export class createLAMap {
   private stage: Konva.Stage;
   private layer: Konva.Layer;
@@ -19,6 +19,8 @@ export class createLAMap {
     this.drawCities();
     this.drawDirection();
     this.drawRegions();
+    this.writeStatus();
+    this.drawFinishBtn();
 
   }
 
@@ -84,8 +86,13 @@ export class createLAMap {
     this.drawHighway([400, 50, 700, 700], "I-5", "#555");
     this.drawHighway([600, 300, 500, 620], "I-710", "#333");
     this.drawHighway([700, 300, 600, 650], "I-605", "#333");
+    this.drawHighway([700, 300, 680, 190], "I-605", "#333");
     this.drawHighway([250, 300, 900, 300], "I-10", "#444");
     this.drawHighway([300, 300, 700, 700], "I-405", "#444");
+    this.drawHighway([300, 300, 420, 100], "I-405", "#444");
+    this.drawHighway([500, 190, 700, 190], "I-210", "#444");
+    this.drawHighway([500, 190, 400, 50], "I-210", "#444");
+    this.drawHighway([700, 190, 850, 300], "I-210", "#444");
   }
 
   private drawHighway(points: number[], label: string, color: string): void {
@@ -114,13 +121,15 @@ export class createLAMap {
   private drawCities(): void {
     const cities = [
       { name: "Santa Monica", id: "#SM", x: 250, y: 320 },
-      { name: "Inglewood", id: "#IW", x: 330, y: 310 },
+      { name: "Inglewood", id: "#IG", x: 330, y: 310 },
       { name: "Hollywood", id: "#HW", x: 450, y: 210 },
       { name: "Union Station", id: "#US", x: 510, y: 290 },
       { name: "Monterey Park", id: "#MP", x: 610, y: 320 },
       { name: "Santa Fe Springs", id: "#SFS", x: 640, y: 560 },
       { name: "Long Beach", id: "#LB", x: 500, y: 620 },
       { name: "LAX Airport", id: "#LAX", x: 300, y: 360 },
+      { name: "Pasadena", id: "#PD", x: 620, y: 200 },
+      { name: "Burbank", id: "#PD", x: 420, y: 130 },
     ];
 
     for (const city of cities) {
@@ -141,6 +150,9 @@ export class createLAMap {
         circle.moveToTop();
         circle.on("click", () => {
     handleCityClick(city.name, this.layer);
+    if (isCityCompleted(city.name)){
+      this.writeStatus();
+    }
         });
       this.layer.add(circle);
       this.layer.add(text);
@@ -166,11 +178,12 @@ export class createLAMap {
     sceneFunc: (ctx, shape) => {
       ctx.beginPath();
       ctx.moveTo(250, 150);
-      ctx.lineTo(500, 150);
-      ctx.lineTo(500, 250);
+      ctx.lineTo(250, 150);
+      ctx.lineTo(400, 150);
+      ctx.lineTo(400, 250);
       ctx.lineTo(300, 250);
-      ctx.lineTo(300, 500);
-      ctx.lineTo(250, 500);
+      ctx.lineTo(300, 400);
+      ctx.lineTo(250, 400);
       ctx.closePath();
       ctx.fillStrokeShape(shape);
     },
@@ -181,13 +194,15 @@ export class createLAMap {
 
   const south = new Konva.Shape({
     sceneFunc: (ctx, shape) => {
-      ctx.beginPath();
+    ctx.beginPath();
     ctx.moveTo(300, 250);  
     ctx.lineTo(400, 250);  
-    ctx.lineTo(400, 500);
-    ctx.lineTo(300, 500);
-      ctx.closePath();
-      ctx.fillStrokeShape(shape);
+    ctx.lineTo(400, 620);
+    ctx.lineTo(250, 620);
+    ctx.lineTo(250, 400);
+    ctx.lineTo(300, 400);
+    ctx.closePath();
+    ctx.fillStrokeShape(shape);
     },
     fill: "rgba(42, 221, 39, 0.15)",
   });
@@ -197,10 +212,10 @@ export class createLAMap {
   const central = new Konva.Shape({
     sceneFunc: (ctx, shape) => {
       ctx.beginPath();
-      ctx.moveTo(400, 250);
-      ctx.lineTo(600, 250);
-      ctx.lineTo(600, 500);
-      ctx.lineTo(400, 500);
+      ctx.moveTo(400, 150);
+      ctx.lineTo(600, 150);
+      ctx.lineTo(600, 400);
+      ctx.lineTo(400, 400);
       ctx.closePath();
       ctx.fillStrokeShape(shape);
     },
@@ -212,10 +227,10 @@ export class createLAMap {
   const east = new Konva.Shape({
     sceneFunc: (ctx, shape) => {
       ctx.beginPath();
-      ctx.moveTo(600, 250);
-      ctx.lineTo(900, 250);
-      ctx.lineTo(900, 500);
-      ctx.lineTo(600, 500);
+      ctx.moveTo(600, 100);
+      ctx.lineTo(900, 100);
+      ctx.lineTo(900, 400);
+      ctx.lineTo(600, 400);
       ctx.closePath();
       ctx.fillStrokeShape(shape);
     },
@@ -228,11 +243,10 @@ export class createLAMap {
   const port = new Konva.Shape({
     sceneFunc: (ctx, shape) => {
       ctx.beginPath();
-      ctx.moveTo(250, 500);
-      ctx.lineTo(700, 500);
-      ctx.lineTo(700, 700);
-      ctx.lineTo(300, 700);
-      ctx.lineTo(250, 700);
+      ctx.moveTo(400, 400);
+      ctx.lineTo(700, 400);
+      ctx.lineTo(700, 620);
+      ctx.lineTo(400, 620);
       ctx.closePath();
       ctx.fillStrokeShape(shape);
     },
@@ -241,14 +255,31 @@ export class createLAMap {
   port.listening(false);
   this.layer.add(port);
 
+  const north = new Konva.Shape({
+    sceneFunc: (ctx, shape) => {
+      ctx.beginPath();
+      ctx.moveTo(250, 20);
+      ctx.lineTo(500, 20);
+      ctx.lineTo(500, 150);
+      ctx.lineTo(250, 150);
+
+      ctx.closePath();
+      ctx.fillStrokeShape(shape);
+    },
+    fill: "rgba(95, 69, 20, 0.19)", 
+  });
+  north.listening(false);
+  this.layer.add(north);
+
 
 
   const labels = [
     { text: "Westside", x: 280, y: 200 },
-    { text: "Downtown LA", x: 450, y: 400 },
+    { text: "Downtown LA", x: 433, y: 350 },
     { text: "San Gabriel Valley", x: 700, y: 350 },
-    { text: "Port Of LA", x: 420, y: 580 },
-    { text: "South Central", x: 300, y: 410 },
+    { text: "Gateway", x: 420, y: 580 },
+    { text: "South Bay", x: 300, y: 410 },
+    { text: "San Fernado Valley", x: 300, y: 50 },
   ];
 
   labels.forEach((r) => {
@@ -265,5 +296,117 @@ export class createLAMap {
   });
 }
 
+ private writeStatus(): void {
+   const cities = [
+    { text: "Burbank", x: 0, y: 40 },
+    { text: "Hollywood", x: 0, y: 80 },
+    { text: "Inglewood", x: 0, y: 120 },
+    {text: "LAX Airport", x: 0, y: 160 },
+    { text: "Long Beach", x: 0, y: 200 },
+    {text: "Monterey Park", x: 0, y: 240 },
+    {text: "Pasadena", x: 0, y: 280 },
+    {text: "Santa Fe Springs", x: 0, y: 320 },
+    {text: "Santa Monica", x: 0, y: 360 },
+    {text: "Union Station", x: 0, y: 400 }
+  ];
+  this.layer.add(new Konva.Rect({
+      x: 0,
+      y: 260,
+      width: 200,
+      height: 440,
+      fill: "#ffffffff",
+  }));
+  let offset = 260;
+  let shift = 175;
+  this.layer.add(new Konva.Text({
+    x: 0,
+      y: 0 + offset,
+      text: "Cities",
+      fontSize: 16,
+      fill: "#444",
+      fontStyle: "bold",
+  }));
+  this.layer.add(new Konva.Text({
+    x: 0 + shift - 50,
+      y: 0 + offset,
+      text: "Explored",
+      fontSize: 16,
+      fill: "#444",
+      fontStyle: "bold",
+  }));
+  cities.forEach((r) => {
+    const status = isCityCompleted(r.text);
+    let result = "❌";
+    if (status){
+      result = "✅";
+    }
+    const text1 = new Konva.Text({
+      x: r.x,
+      y: r.y + offset,
+      text: r.text,
+      fontSize: 16,
+      fill: "#444",
+      fontStyle: "bold",
+    })
+    const text2 = new Konva.Text({
+      x: r.x + shift,
+      y: r.y + offset,
+      text: result,
+      fontSize: 16,
+      fill: "#444",
+      fontStyle: "bold",
+    })
+    this.layer.add(text1);
+    this.layer.add(text2);
+  });
+
+
+ }
+
+ private drawFinishBtn(): void{
+    const btn = new Konva.Rect({
+      x: 300,
+      y: 630,
+      width: 100,
+      height:50,
+      fill: "#36ef0cff",
+      
+        cornerRadius: 8,
+        shadowBlur: 4
+    });
+    const labels = [
+    "Burbank", "Inglewood","LAX Airport",
+    "Hollywood","Long Beach","Monterey Park",
+    "Pasadena","Santa Fe Springs","Santa Monica","Union Station"
+  ];
+  btn.moveToTop();
+    btn.on("click", ()=>{
+      let status = false;
+      labels.forEach((city) =>{
+        if (!isCityCompleted(city)){
+          status = true;
+        }
+      });
+      if (status) alert("Please explore all cities before finish!");
+      else {
+        if (typeof window === "undefined") return;
+        alert("Next step: back to the US map");
+      }
+    });
+    this.layer.add(btn);
+    this.layer.add(new Konva.Text({
+      x: 320,
+      y: 640,
+      text: "Finish",
+      fontSize: 16,
+      fill: "#444",
+      fontStyle: "bold"
+    }));
+ }
+
 
 }
+
+
+
+

@@ -2,7 +2,7 @@ import Konva from "konva";
 
 let score = 0; 
 
-export function startLAXGame(layer: Konva.Layer) {
+export function startSFSGame(layer: Konva.Layer) {
   score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
 
@@ -24,7 +24,7 @@ export function startLAXGame(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "Which state is Los Angeles in？",
+    text: "What is one landmark of Santa Fe Springs?",
     x: 30,
     y: 30,
     fontSize: 22,
@@ -36,10 +36,10 @@ export function startLAXGame(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. Texas", correct: false },
-    { text: "B. California", correct: true },
-    { text: "C. Arizona", correct: false },
-    { text: "D. Nevada", correct: false },
+    { text: "A. Swap Market", correct: true },
+    { text: "B. Super Bowl Stadium", correct: false },
+    { text: "C. Texas Roadhouse", correct: false },
+    { text: "D. Big Bear Lake", correct: false },
   ];
 
   options.forEach((opt, i) => {
@@ -119,7 +119,7 @@ function handleAnswer(correct: boolean, layer: Konva.Layer, popup: Konva.Group) 
     if (correct) {
       nextQuestion(layer);
     } else {
-      startLAXGame(layer); 
+      startSFSGame(layer); 
     }
     layer.draw();
   }, 2000);
@@ -144,7 +144,7 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "What is the short term of Los Angeles International Airport?",
+    text: "What is one of the main industries in Santa Fe Springs?",
     x: 30,
     y: 30,
     fontSize: 22,
@@ -156,10 +156,10 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. LAX", correct: true },
-    { text: "B. LGA", correct: false },
-    { text: "C. LSA", correct: false },
-    { text: "D. LAS", correct: false },
+    { text: "A. Information Technology", correct: false },
+    { text: "B. Creation and Cultural Service", correct: false },
+    { text: "C. Military", correct: false },
+    { text: "D. Transportation Service", correct: true },
   ];
 
   options.forEach((opt, i) => {
@@ -205,9 +205,7 @@ function nextQuestion(layer: Konva.Layer) {
       });
 
       layer.add(msg);
-          if (correct) {
-      score++;
-    } 
+      if (correct) score++;
 
       const scoreText = new Konva.Text({
         x: 260,
@@ -219,20 +217,14 @@ function nextQuestion(layer: Konva.Layer) {
       layer.add(rect);
       layer.add(scoreText);
       layer.draw();
-          const laxDot = layer.findOne("#LAX") as Konva.Circle;
-        console.log("🔍 laxDot found?", !!laxDot);
-        if (laxDot) {
-            laxDot.fill("green");
-            layer.draw();
-            console.log("✅ new fill color:", laxDot.fill());
-        }
+
 
       setTimeout(() => {
         msg.destroy();
         scoreText.destroy();
         rect.destroy();
         layer.draw();
-        if (!correct) { 
+      if (!correct) { 
       nextQuestion(layer); 
     }
       }, 3000);

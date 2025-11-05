@@ -2,8 +2,8 @@ import Konva from "konva";
 
 let score = 0; 
 
-export function startLAXGame(layer: Konva.Layer) {
-  score = 0;
+export function startIGGame(layer: Konva.Layer) {
+    score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
 
   const popup = new Konva.Group({
@@ -24,7 +24,7 @@ export function startLAXGame(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "Which state is Los Angeles in？",
+    text: "What is the genre of music in Inglewood",
     x: 30,
     y: 30,
     fontSize: 22,
@@ -36,10 +36,10 @@ export function startLAXGame(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. Texas", correct: false },
-    { text: "B. California", correct: true },
-    { text: "C. Arizona", correct: false },
-    { text: "D. Nevada", correct: false },
+    { text: "A. Country Music", correct: false },
+    { text: "B. Jazz Music", correct: false },
+    { text: "C. Hip Hop Music", correct: true },
+    { text: "D. Classic Music", correct: false },
   ];
 
   options.forEach((opt, i) => {
@@ -119,7 +119,7 @@ function handleAnswer(correct: boolean, layer: Konva.Layer, popup: Konva.Group) 
     if (correct) {
       nextQuestion(layer);
     } else {
-      startLAXGame(layer); 
+      startIGGame(layer); 
     }
     layer.draw();
   }, 2000);
@@ -144,7 +144,7 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "What is the short term of Los Angeles International Airport?",
+    text: "What event could take place in Inglewood?",
     x: 30,
     y: 30,
     fontSize: 22,
@@ -156,10 +156,10 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. LAX", correct: true },
-    { text: "B. LGA", correct: false },
-    { text: "C. LSA", correct: false },
-    { text: "D. LAS", correct: false },
+    { text: "A. Super Bowl", correct: true },
+    { text: "B. US Open", correct: false },
+    { text: "C. Winter Olymipic", correct: false },
+    { text: "D. Cross-Country Game", correct: true },
   ];
 
   options.forEach((opt, i) => {
@@ -219,20 +219,13 @@ function nextQuestion(layer: Konva.Layer) {
       layer.add(rect);
       layer.add(scoreText);
       layer.draw();
-          const laxDot = layer.findOne("#LAX") as Konva.Circle;
-        console.log("🔍 laxDot found?", !!laxDot);
-        if (laxDot) {
-            laxDot.fill("green");
-            layer.draw();
-            console.log("✅ new fill color:", laxDot.fill());
-        }
 
       setTimeout(() => {
         msg.destroy();
         scoreText.destroy();
         rect.destroy();
         layer.draw();
-        if (!correct) { 
+                if (!correct) { 
       nextQuestion(layer); 
     }
       }, 3000);

@@ -3,18 +3,18 @@ import Konva from "konva";
 let score = 0; 
 
 export function startUSGame(layer: Konva.Layer) {
-
+    score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
 
   const popup = new Konva.Group({
     name: "popup",
-    x: 250,
-    y: 200,
+    x: 200,
+    y: 100,
   });
 
   const rect = new Konva.Rect({
     width: 700,
-    height: 480,
+    height: 700,
     fill: "white",
     stroke: "black",
     cornerRadius: 12,
@@ -81,7 +81,7 @@ function handleAnswer(correct: boolean, layer: Konva.Layer, popup: Konva.Group) 
   popup.destroy();
       const rect = new Konva.Rect({
     width: 700,
-    height: 480,
+    height: 700,
     fill: "white",
     stroke: "black",
     cornerRadius: 12,
@@ -99,7 +99,7 @@ function handleAnswer(correct: boolean, layer: Konva.Layer, popup: Konva.Group) 
   layer.add(message);
 
 
-  if (correct) score++;
+      if (correct)  score++;
 
 
   const scoreText = new Konva.Text({
@@ -128,13 +128,13 @@ function handleAnswer(correct: boolean, layer: Konva.Layer, popup: Konva.Group) 
 function nextQuestion(layer: Konva.Layer) {
   const popup = new Konva.Group({
     name: "popup",
-    x: 250,
-    y: 200,
+    x: 150,
+    y: 100,
   });
 
   const rect = new Konva.Rect({
     width: 700,
-    height: 600,
+    height: 700,
     fill: "white",
     stroke: "black",
     cornerRadius: 12,
@@ -189,7 +189,7 @@ function nextQuestion(layer: Konva.Layer) {
       popup.destroy();
           const rect = new Konva.Rect({
     width: 700,
-    height: 600,
+    height: 700,
     fill: "white",
     stroke: "black",
     cornerRadius: 12,
@@ -205,7 +205,9 @@ function nextQuestion(layer: Konva.Layer) {
       });
 
       layer.add(msg);
+
       if (correct) score++;
+
 
       const scoreText = new Konva.Text({
         x: 260,
@@ -217,17 +219,15 @@ function nextQuestion(layer: Konva.Layer) {
       layer.add(rect);
       layer.add(scoreText);
       layer.draw();
-          const laxDot = layer.findOne("#LAX") as Konva.Circle;
-        if (laxDot) {
-            laxDot.fill("green");
-            layer.draw();
-        }
 
       setTimeout(() => {
         msg.destroy();
         scoreText.destroy();
         rect.destroy();
         layer.draw();
+                if (!correct) { 
+      nextQuestion(layer); 
+    }
       }, 3000);
     });
 
