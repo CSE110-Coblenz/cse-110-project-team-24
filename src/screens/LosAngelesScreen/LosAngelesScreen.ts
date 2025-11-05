@@ -1,5 +1,9 @@
 import Konva from "konva";
 import { handleCityClick, isCityCompleted } from "./LACityGamesHandlers";
+
+document.title = "Los Angeles Game";
+
+
 export class createLAMap {
   private stage: Konva.Stage;
   private layer: Konva.Layer;
