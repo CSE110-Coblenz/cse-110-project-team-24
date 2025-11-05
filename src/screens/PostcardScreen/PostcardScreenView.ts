@@ -8,6 +8,7 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
 export class PostcardScreenView implements View {
   private group: Konva.Group;
   private lineGroup: Konva.Group;
+  private zoomedInGroup: Konva.Group | null = null;
 
   //Values for consistency
   private centerValueX: number = STAGE_WIDTH / 2;
@@ -17,7 +18,7 @@ export class PostcardScreenView implements View {
 
 
 
-  constructor() {
+  constructor(returnToHome: () => void) {
     this.group = new Konva.Group({ visible: false });
     this.lineGroup = new Konva.Group({ visible: false });
 
@@ -31,12 +32,31 @@ export class PostcardScreenView implements View {
     });
     this.group.add(bg);
 
+    //Button to return home
+    Konva.Image.fromURL("/public/Postcards/PinImage.png", (img) => {
+      img.width(100);
+      img.height(100);
+      img.x(STAGE_WIDTH - img.width() - 20);
+      img.y(20);
+      img.on("click", () => {
+        returnToHome();
+      });
+      img.on("mouseover", () => {
+        img.scale({ x: 1.1, y: 1.1 }); // Slightly enlarge the image
+        img.getLayer()?.draw();
+        });
+      img.on("mouseout", () => {
+        img.scale({ x: 1, y: 1 }); // Reset the image size
+        img.getLayer()?.draw();
+        });
+      this.group.add(img);
+    });
 
 
 
   }
 
-  addPostcard(imageSrc: string, xPos: number, yPos: number): void {
+  addPostcard(imageSrc: string, xPos: number, yPos: number, postcardPressed: (postcardName: string) => void): void {
     const groupPostcard = new Konva.Group({ visible: false });
     let image1: Konva.Image | null = null;
 
@@ -53,12 +73,19 @@ export class PostcardScreenView implements View {
       img.on('mouseover', () => {
         img.scale({ x: 1.1, y: 1.1 }); // Slightly enlarge the image
         img.getLayer()?.draw();
+        console.log("Postcard hovered: " + imageSrc);
         });
   
-        img.on('mouseout', () => {
+      img.on('mouseout', () => {
         img.scale({ x: 1, y: 1 }); // Reset the image size
         img.getLayer()?.draw();
         });
+
+      // On click, trigger the postcardPressed callback
+      img.on('click', () => {
+        postcardPressed(imageSrc);
+        console.log("Postcard clicked: " + imageSrc);
+      });
 
       // Load the tape images after the main image is loaded
       Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
@@ -120,6 +147,87 @@ export class PostcardScreenView implements View {
     this.lineGroup.add(redLine);
     
     
+  }
+
+  //Zoom in on a postcard
+  zoomInOnPostcard(postcardImg: string, cityName: string, exitZoom: () => void = () => {}): void {
+
+    this.zoomedInGroup = new Konva.Group();
+
+
+    //Background overlay
+    const overlay = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: STAGE_WIDTH,
+      height: STAGE_HEIGHT,
+      fill: 'black',
+      opacity: 0.7,
+    });
+    overlay.on("click", () => {
+      exitZoom();
+    });
+
+    this.zoomedInGroup.add(overlay);
+
+    //Load the postcard image
+    Konva.Image.fromURL(postcardImg, (img) => {
+      img.width(this.PostcardWidth * 2);
+      img.height(this.PostcardHeight * 2);
+      img.offsetX(img.width() / 2);
+      img.offsetY(img.height() / 2);
+      img.x(this.centerValueX);
+      img.y(this.centerValueY - 50);
+      this.zoomedInGroup?.add(img);
+      this.group.getLayer()?.draw();
+    });
+
+    //City name text
+    const cityText = new Konva.Text({
+      x: this.centerValueX,
+      y: this.centerValueY + 640,
+      text: cityName,
+      fontSize: 120,
+      fontFamily: 'Arial',
+      fill: 'white',
+      align: 'center',
+    });
+    cityText.offsetX(cityText.width() / 2); // Center horizontally
+    this.zoomedInGroup.add(cityText);
+
+    //Exit zoom button
+    Konva.Image.fromURL("/public/Postcards/PinImage.png", (img) => {
+      img.width(150);
+      img.height(150);
+      img.x(STAGE_WIDTH - img.width() - 30);
+      img.y(30);
+      img.on("click", () => {
+        exitZoom();
+
+      });
+      img.on("mouseover", () => {
+        img.scale({ x: 1.1, y: 1.1 }); // Slightly enlarge the image
+        img.getLayer()?.draw();
+      });
+      img.on("mouseout", () => {
+        img.scale({ x: 1, y: 1 }); // Reset the image size
+        img.getLayer()?.draw();
+      });
+      this.zoomedInGroup?.add(img);
+      this.group.getLayer()?.draw();
+    });
+
+    this.group.add(this.zoomedInGroup);
+    this.group.getLayer()?.draw();
+
+  }
+
+  //Zoom out of postcard
+  zoomOutOfPostcard(): void {
+    if(this.zoomedInGroup){
+      this.zoomedInGroup.destroy();
+      this.group.getLayer()?.draw();
+    }
   }
 
   /**

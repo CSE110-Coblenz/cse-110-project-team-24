@@ -17,12 +17,10 @@ export class PostcardScreenController extends ScreenController {
     this.screenSwitcher = screenSwitcher;
 
     this.model = new PostcardScreenModel();
-    this.view = new PostcardScreenView();
+    this.view = new PostcardScreenView(() => this.exitToHome());
 
-    //this.view.addPostcard("/public/Postcards/BostonPostcard.jpg", 700, -500);
-    //this.view.addPostcard("/public/Postcards/SanDiegoPostcard.jpg", 0, 0);
+
     this.updatePostcards();
-    //this.view.addLine(0, 0, 800, 600);
   }
 
   //Update the postcards in the view
@@ -35,6 +33,7 @@ export class PostcardScreenController extends ScreenController {
         postcard.postcardImageSrc,
         postcard.xPos,
         postcard.yPos,
+        (postcardSrc: string) => this.zoomInOnPostcard(postcardSrc),
       );
 
       //Add line between postcards
@@ -51,10 +50,41 @@ export class PostcardScreenController extends ScreenController {
     });
   }
 
+  //Exit to home screen
+  exitToHome(): void {
+    //TODO: Implement screen switcher to go back to home screen
+    //this.screenSwitcher.switchToScreen({ type: "menu" });
+  }
+
+
+
 //Add lines between each postcard
   addLineBetweenPostcards(x1: number = 0, y1: number = 0, x2: number = 0, y2: number = 0): void {
     this.view.addLine(x1, y1, x2, y2);
   }
+
+  //Zoom in on a postcard
+  zoomInOnPostcard(postcardSrc: string): void {
+    const postcard = this.model.getActivePostcards().find(p => p.postcardImageSrc === postcardSrc);
+    if (!postcard) {
+      console.error("Postcard not found: " + postcardSrc);
+      return;
+    }
+
+    //console.log("Zooming in on postcard: " + postcard.title);
+    if(!this.model.getIsZoomedIn()){
+      this.model.setIsZoomedIn(true);
+      this.view.zoomInOnPostcard(postcardSrc, postcard.title, () => this.zoomOutOfPostcard());
+    }
+  }
+
+  //Zoom out of postcard
+  zoomOutOfPostcard(): void {
+    //console.log("Zooming out of postcard");
+    this.model.setIsZoomedIn(false);
+    this.view.zoomOutOfPostcard();
+  }
+
 
   /**
    * Get the view group
