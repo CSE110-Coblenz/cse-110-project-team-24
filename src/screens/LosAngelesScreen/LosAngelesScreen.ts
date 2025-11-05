@@ -156,6 +156,7 @@ export class createLAMap {
     handleCityClick(city.name, this.layer);
     if (isCityCompleted(city.name)){
       this.writeStatus();
+      circle.fill("green");
     }
         });
       this.layer.add(circle);
