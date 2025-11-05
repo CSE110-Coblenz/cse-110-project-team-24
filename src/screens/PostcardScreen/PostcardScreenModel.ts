@@ -22,23 +22,23 @@ export class PostcardScreenModel {
     constructor() {
         // Initialize postcards
         this.postcards = [
-            {
-                title: "San Diego",
-                postcardImageSrc: "/public/Postcards/SanDiegoPostcard.jpg",
-                xPos: -1300,
-                yPos: 700,
-            },
-            {
+                        {
                 title: "Boston",
                 postcardImageSrc: "/public/Postcards/BostonPostcard.jpg",
                 xPos: 700,
-                yPos: -500,
+                yPos: -900,
             },
             {
-                title: "Los Angeles",
-                postcardImageSrc: "/public/Postcards/LAPostcard.jpg",
-                xPos: 900,
-                yPos: 600,
+                title: "New York",
+                postcardImageSrc: "/public/Postcards/NewYorkPostcard.jpg",
+                xPos: 1500,
+                yPos: 0,
+            },
+            {
+                title: "Washington DC",
+                postcardImageSrc: "/public/Postcards/DCPostcard.jpg",
+                xPos: -1600,
+                yPos: 0,
             },
             {
                 title: "San Francisco",
@@ -46,6 +46,23 @@ export class PostcardScreenModel {
                 xPos: -700,
                 yPos: -900,
             },
+            {
+                title: "Los Angeles",
+                postcardImageSrc: "/public/Postcards/LAPostcard.jpg",
+                xPos: 500,
+                yPos: 600,
+            },
+            {
+                title: "San Diego",
+                postcardImageSrc: "/public/Postcards/SanDiegoPostcard.jpg",
+                xPos: -1300,
+                yPos: 950,
+            },
+
+
+
+
+
         ];
     }
 
