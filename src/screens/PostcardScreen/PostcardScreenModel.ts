@@ -21,17 +21,31 @@ export class PostcardScreenModel {
         this.postcards = [
             {
                 title: "San Diego",
-                description: "A beautiful postcard from San Diego.",
+                description: "Sunny San Diego!",
                 postcardImageSrc: "/public/Postcards/SanDiegoPostcard.jpg",
                 xPos: -1300,
                 yPos: 700,
             },
             {
                 title: "Boston",
-                description: "A charming postcard from Boston.",
+                description: "Boston!",
                 postcardImageSrc: "/public/Postcards/BostonPostcard.jpg",
                 xPos: 700,
                 yPos: -500,
+            },
+            {
+                title: "Los Angeles",
+                description: "Home of the LA Angels!",
+                postcardImageSrc: "/public/Postcards/LAPostcard.jpg",
+                xPos: 900,
+                yPos: 600,
+            },
+            {
+                title: "San Francisco",
+                description: "Trolleys!",
+                postcardImageSrc: "/public/Postcards/SFPostcard.jpg",
+                xPos: -700,
+                yPos: -900,
             },
         ];
     }

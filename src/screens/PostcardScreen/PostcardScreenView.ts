@@ -64,25 +64,33 @@ export class PostcardScreenView implements View {
       Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
         tapeImg.width(image1 ? image1.width() / 2 : 0);
         tapeImg.height(image1 ? image1.height() / 2 : 0);
+        tapeImg.offsetX(tapeImg.width() / 2);
+        tapeImg.offsetY(tapeImg.height() / 2);
+        tapeImg.x(-(image1 ? image1.width() / 2 : 0) + tapeImg.width() / 2 + 650);
+        tapeImg.y(-(image1 ? image1.height() / 2 : 0) + tapeImg.height() / 2 + -80);
         groupPostcard.add(tapeImg);
       });
 
       Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
         tapeImg.width(image1 ? image1.width() / 2 : 0);
         tapeImg.height(image1 ? image1.height() / 2 : 0);
+        tapeImg.offsetX(tapeImg.width() / 2);
+        tapeImg.offsetY(tapeImg.height() / 2);
+        tapeImg.x(-(image1 ? image1.width() / 2 : 0) + tapeImg.width() / 2 + -190);
+        tapeImg.y(-(image1 ? image1.height() / 2 : 0) + tapeImg.height() / 2 + 420);
         groupPostcard.add(tapeImg);
       });
 
-      // Load the pin image after the main image is loaded
-      Konva.Image.fromURL("/public/Postcards/PinImage.png", (pinImg) => {
-        pinImg.width(image1 ? image1.width() / 3 : 0);
-        pinImg.height(image1 ? image1.height() / 3 : 0);
-        pinImg.offsetX(pinImg.width() / 2);
-        pinImg.offsetY(pinImg.height() / 2);
-        pinImg.x(-(image1 ? image1.width() / 2 : 0) + pinImg.width() / 2 + -30);
-        pinImg.y(-(image1 ? image1.height() / 2 : 0) + pinImg.height() / 2 + -20);
-        groupPostcard.add(pinImg);
-      });
+      // // Load the pin image after the main image is loaded
+      // Konva.Image.fromURL("/public/Postcards/PinImage.png", (pinImg) => {
+      //   pinImg.width(image1 ? image1.width() / 3 : 0);
+      //   pinImg.height(image1 ? image1.height() / 3 : 0);
+      //   pinImg.offsetX(pinImg.width() / 2);
+      //   pinImg.offsetY(pinImg.height() / 2);
+      //   pinImg.x(-(image1 ? image1.width() / 2 : 0) + pinImg.width() / 2 + -30);
+      //   pinImg.y(-(image1 ? image1.height() / 2 : 0) + pinImg.height() / 2 + -20);
+      //   groupPostcard.add(pinImg);
+      // });
 
       // Position the group after all images are added
       groupPostcard.offsetX(groupPostcard.width() / 2);
@@ -102,7 +110,7 @@ export class PostcardScreenView implements View {
 
     // dashed line
     const redLine = new Konva.Line({
-      points: [this.centerValueX + x1 - 300,this.centerValueX - y1 + -1000, this.centerValueX + x2 - 300, this.centerValueX - y2 + -1000],
+      points: [this.centerValueX + x1 - 300,this.centerValueX - y1 + -1000, this.centerValueX + x2 - 450, this.centerValueX - y2 + -1000],
       stroke: 'red',
       strokeWidth: 15,
       lineJoin: 'round',
