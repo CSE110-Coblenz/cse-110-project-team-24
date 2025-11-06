@@ -47,21 +47,24 @@ export class createLAMap {
       height: 800,
       fill: "#78BFEA",
     });
+    sea2.moveUp();
+    sea2.moveUp();
     this.layer.add(sea2);
 
 
     const land = new Konva.Rect({
       x: 250,
       y: 0,
-      width: 650,
+      width: 1400,
       height: 620,
       fill: "#E8D4A2",
     });
+    land.moveToBottom();
     this.layer.add(land);
     const land2 = new Konva.Rect({
       x: 600,
       y: 600,
-      width: 650,
+      width: 700,
       height: 620,
       fill: "#E8D4A2",
     });
@@ -76,7 +79,9 @@ export class createLAMap {
         context.lineTo(400, 150);
         context.lineTo(600, 80);
         context.lineTo(900, 120);
-        context.lineTo(900, 0);
+        context.lineTo(1200, 80);
+        context.lineTo(1500, 120);
+        context.lineTo(1500, 0);
         context.lineTo(0, 0);
         context.closePath();
         context.fillStrokeShape(shape);
