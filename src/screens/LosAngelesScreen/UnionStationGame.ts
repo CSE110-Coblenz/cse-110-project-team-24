@@ -144,7 +144,7 @@ function nextQuestion(layer: Konva.Layer) {
   popup.add(rect);
 
   const question = new Konva.Text({
-    text: "Which railway Company is using Union Station mostly?",
+    text: "Which railway company is using Union Station mostly?",
     x: 30,
     y: 30,
     fontSize: 22,

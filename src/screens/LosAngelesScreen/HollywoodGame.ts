@@ -36,7 +36,7 @@ export function startHWGame(layer: Konva.Layer) {
   popup.add(question);
 
   const options = [
-    { text: "A. Walk Of Frame", correct: false },
+    { text: "A. Walk Of Fame", correct: false },
     { text: "B. Union Station", correct: false },
     { text: "C. Griffith Observatory", correct: true },
     { text: "D. UCLA", correct: false },
