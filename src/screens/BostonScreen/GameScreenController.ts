@@ -68,7 +68,7 @@ export class GameScreenController extends ScreenController {
             score,
             total,
             () => this.startGame(),
-            () => this.screenSwitcher.switchToScreen({ type: "menu" }),
+            () => this.screenSwitcher.switchToScreen({ type: "home" }),
             isPerfect
         );
     }
