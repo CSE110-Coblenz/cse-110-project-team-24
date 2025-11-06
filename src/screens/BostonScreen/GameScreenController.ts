@@ -2,111 +2,78 @@ import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
-import { GAME_DURATION } from "../../constants.ts";
 
-/**
- * GameScreenController - Coordinates game logic between Model and View
- */
 export class GameScreenController extends ScreenController {
-  private model: GameScreenModel;
-  private view: GameScreenView;
-  private screenSwitcher: ScreenSwitcher;
-  private gameTimer: number | null = null;
+    private model: GameScreenModel;
+    private view: GameScreenView;
+    private screenSwitcher: ScreenSwitcher;
 
-  private squeezeSound: HTMLAudioElement;
+    constructor(screenSwitcher: ScreenSwitcher) {
+        super();
+        this.screenSwitcher = screenSwitcher;
 
-  constructor(screenSwitcher: ScreenSwitcher) {
-    super();
-    this.screenSwitcher = screenSwitcher;
-
-    this.model = new GameScreenModel();
-    this.view = new GameScreenView(() => this.handleLemonClick());
-
-    // TODO: Task 4 - Initialize squeeze sound audio
-    this.squeezeSound = new Audio("/squeeze.mp3"); // Placeholder
-  }
-
-  /**
-   * Start the game
-   */
-  startGame(): void {
-    // Reset model state
-    this.model.reset();
-
-    // Update view
-    this.view.updateScore(this.model.getScore());
-    this.view.updateTimer(GAME_DURATION);
-    this.view.show();
-
-    this.startTimer();
-  }
-
-  /**
-   * Start the countdown timer
-   */
-  private startTimer(): void {
-    let timeRemaining = GAME_DURATION;
-    // TODO: Task 3 - Implement countdown timer using setInterval
-    this.gameTimer = setInterval(() => {
-      timeRemaining--;
-      this.view.updateTimer(timeRemaining);
-      if (timeRemaining <= 0) {
-        this.endGame();
-      }
-    }, 1000);
-  }
-
-  /**
-   * Stop the timer
-   */
-  private stopTimer(): void {
-    // TODO: Task 3 - Stop the timer using clearInterval
-    if (this.gameTimer !== null) {
-      clearInterval(this.gameTimer);
-      this.gameTimer = null;
+        this.model = new GameScreenModel();
+        this.view = new GameScreenView(
+            (choiceIndex) => this.handleChoice(choiceIndex),
+            () => this.handleNext()
+        );
     }
-  }
 
-  /**
-   * Handle lemon click event
-   */
-  private handleLemonClick(): void {
-    // Update model
-    this.model.incrementScore();
+    startGame(): void {
+        this.model.reset();
+        this.view.setScore(this.model.getScore());
+        const q = this.model.getCurrentQuestion();
+        this.view.setQuestion(
+            q.prompt,
+            q.choices,
+            this.model.getQuestionIndex() + 1,
+            this.model.getTotalQuestions()
+        );
+        this.view.show();
+    }
 
-    // Update view
-    this.view.updateScore(this.model.getScore());
-    this.view.randomizeLemonPosition();
+    private handleChoice(choiceIndex: number): void {
+        const question = this.model.getCurrentQuestion();
+        const isCorrect = choiceIndex === question.correctIndex;
+        if (isCorrect) {
+            this.model.incrementScore();
+            this.view.setScore(this.model.getScore());
+        }
+        const correctAnswerText = question.choices[question.correctIndex];
+        this.view.highlightChoices(choiceIndex, question.correctIndex);
+        this.view.showFeedback(isCorrect, correctAnswerText);
+        this.view.showNextButton();
+    }
 
-    // TODO: Task 4 - Play the squeeze sound
-    this.squeezeSound.play();
-    this.squeezeSound.currentTime = 0;
-  }
+    private handleNext(): void {
+        if (this.model.hasNextQuestion()) {
+            this.model.goToNextQuestion();
+            const q = this.model.getCurrentQuestion();
+            this.view.setQuestion(
+                q.prompt,
+                q.choices,
+                this.model.getQuestionIndex() + 1,
+                this.model.getTotalQuestions()
+            );
+        } else {
+            this.endGame();
+        }
+    }
 
-  /**
-   * End the game
-   */
-  private endGame(): void {
-    this.stopTimer();
+    private endGame(): void {
+        const score = this.model.getScore();
+        const total = this.model.getTotalQuestions();
+        const isPerfect = score === total;
+        this.view.showResults(
+            score,
+            total,
+            () => this.startGame(),
+            () => this.screenSwitcher.switchToScreen({ type: "home" }),
+            isPerfect
+        );
+    }
 
-    // Switch to results screen with final score
-    this.screenSwitcher.switchToScreen({
-      type: "result",
-      score: this.model.getScore(),
-    });
-  }
-
-  /**
-   * Get final score
-   */
-  getFinalScore(): number {
-    return this.model.getScore();
-  }
-
-  /**
-   * Get the view group
-   */
-  getView(): GameScreenView {
-    return this.view;
-  }
+    getView(): GameScreenView {
+        return this.view;
+    }
 }

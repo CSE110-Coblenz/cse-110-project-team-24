@@ -23,6 +23,8 @@ export class GameScreenController extends ScreenController {
     this.view.setCityClickHandler((city: City) => {
       if (city === "New York") {
         this.screenSwitcher.switchToScreen({ type: "newyork" });
+      } else if (city === "Boston") {
+        this.screenSwitcher.switchToScreen({ type: "boston" });
       } else {
         // For other cities, show blank screen for now
         this.screenSwitcher.switchToScreen({ type: "blank" });
