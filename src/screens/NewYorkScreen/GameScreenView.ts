@@ -9,12 +9,7 @@ import {
   createRightToLeftAnimation,
   type TaxiAnimation,
 } from "./AnimateTaxi.ts";
-import {
-  TAXI_SPEED,
-  TAXI_WIDTH,
-  TAXI_HEIGHT,
-  ROAD_HEIGHT,
-} from "./constants.ts";
+import { TAXI_SPEED, TAXI_WIDTH, TAXI_HEIGHT } from "./constants.ts";
 
 /**
  * GameScreenView - Renders the game UI using Konva
@@ -35,10 +30,8 @@ export class GameScreenView implements View {
     this.group = new Konva.Group({ visible: false });
 
     // Create roads with lane dividers
-    const { road1CenterY, road2CenterY } = Road.createRoads(
-      ROAD_HEIGHT,
-      this.group
-    );
+    // Note: roadHeight parameter is ignored, calculated internally from percentages
+    const { road1CenterY, road2CenterY } = Road.createRoads(0, this.group);
 
     // Create taxis with fact pairs
 

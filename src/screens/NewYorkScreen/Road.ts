@@ -1,6 +1,10 @@
 import Konva from "konva";
 import { STAGE_HEIGHT } from "../../constants.ts";
-import { ROAD_WIDTH } from "./constants.ts";
+import {
+  ROAD_WIDTH,
+  ROAD_HEIGHT_PERCENT,
+  ROAD_SPACING_PERCENT,
+} from "./constants.ts";
 
 /**
  * Road utilities for creating roads and lane dividers
@@ -54,24 +58,32 @@ export class Road {
 
   /**
    * Create both roads (top and bottom) with lane dividers
-   * @param roadHeight - Height of each road
+   * @param _roadHeight - Unused parameter (kept for compatibility)
    * @param group - The Konva.Group to add the roads to
    * @returns Object with road centers and positions
    */
-  static createRoads(roadHeight: number, group: Konva.Group) {
-    const roadStartY = STAGE_HEIGHT - roadHeight;
+  static createRoads(_roadHeight: number, group: Konva.Group) {
+    // Calculate road height and spacing based on stage height percentages
+    const roadHeight = STAGE_HEIGHT * ROAD_HEIGHT_PERCENT;
+    const roadSpacing = STAGE_HEIGHT * ROAD_SPACING_PERCENT;
 
-    // Bottom road
-    const road1 = Road.createRoad(0, roadStartY, ROAD_WIDTH, roadHeight);
-    group.add(road1);
+    // Top road starts at the top
+    const topRoadY = 0;
+
+    // Bottom road starts after top road + spacing
+    const bottomRoadY = roadHeight + roadSpacing;
 
     // Top road
-    const road2 = Road.createRoad(0, 0, ROAD_WIDTH, roadHeight);
+    const road2 = Road.createRoad(0, topRoadY, ROAD_WIDTH, roadHeight);
     group.add(road2);
 
+    // Bottom road
+    const road1 = Road.createRoad(0, bottomRoadY, ROAD_WIDTH, roadHeight);
+    group.add(road1);
+
     // Calculate road centers
-    const road1CenterY = roadStartY + roadHeight / 2;
-    const road2CenterY = roadHeight / 2;
+    const road1CenterY = bottomRoadY + roadHeight / 2;
+    const road2CenterY = topRoadY + roadHeight / 2;
 
     // Add lane dividers
     Road.createLaneDividers(road1CenterY, ROAD_WIDTH, group);
