@@ -7,3 +7,4 @@ export const STAGE_HEIGHT =
 
 // Game settings
 export const GAME_DURATION = 10; // seconds
+

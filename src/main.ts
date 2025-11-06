@@ -3,6 +3,7 @@ import type { ScreenSwitcher, Screen } from "./types.ts";
 import { MenuScreenController } from "./screens/StartScreen/StartScreenController.ts";
 import { AboutScreenController } from "./screens/AboutScreen/AboutScreenController.ts";
 import { GameScreenController } from "./screens/HomeScreen/GameScreenController.ts";
+import { GameScreenController as BostonScreenController } from "./screens/BostonScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
 import { BlankScreenController } from "./screens/BlankScreen/BlankScreenController.ts";
 import { GameScreenController as NewYorkScreenController } from "./screens/NewYorkScreen/GameScreenController.ts";
@@ -25,6 +26,7 @@ class App implements ScreenSwitcher {
   private menuController: MenuScreenController;
   private aboutController: AboutScreenController;
   private gameController: GameScreenController;
+  private bostonController: BostonScreenController;
   private resultsController: ResultsScreenController;
   private blankController: BlankScreenController;
   private newYorkController: NewYorkScreenController;
@@ -59,6 +61,7 @@ class App implements ScreenSwitcher {
     this.menuController = new MenuScreenController(this);
     this.aboutController = new AboutScreenController(this);
     this.gameController = new GameScreenController(this);
+    this.bostonController = new BostonScreenController(this);
     this.resultsController = new ResultsScreenController(this);
     this.blankController = new BlankScreenController();
     this.newYorkController = new NewYorkScreenController(this);
@@ -69,6 +72,7 @@ class App implements ScreenSwitcher {
     this.layer.add(this.menuController.getView().getGroup());
     this.layer.add(this.aboutController.getView().getGroup());
     this.layer.add(this.gameController.getView().getGroup());
+    this.layer.add(this.bostonController.getView().getGroup());
     this.layer.add(this.resultsController.getView().getGroup());
     this.layer.add(this.blankController.getView().getGroup());
     this.layer.add(this.newYorkController.getView().getGroup());
@@ -110,6 +114,7 @@ class App implements ScreenSwitcher {
     this.menuController.hide();
     this.aboutController.hide();
     this.gameController.hide();
+    this.bostonController.hide();
     this.resultsController.hide();
     this.blankController.hide();
     this.newYorkController.hide();
@@ -153,6 +158,11 @@ class App implements ScreenSwitcher {
       case "newyork":
         // Show New York mini-game
         this.newYorkController.startGame();
+        break;
+
+      case "boston":
+        // Show Boston trivia mini-game
+        this.bostonController.startGame();
         break;
     }
   }
