@@ -1,30 +1,80 @@
 import Konva from "konva";
 import type { View } from "../../types.ts";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
+import { Road } from "./Road.ts";
+import { Taxi } from "./Taxi.ts";
+import { STAGE_WIDTH } from "../../constants.ts";
+import { getFactPairByIndex, NEW_YORK_FACT_PAIRS } from "./NewYorkFacts.ts";
+import {
+  createLeftToRightAnimation,
+  createRightToLeftAnimation,
+  type TaxiAnimation,
+} from "./AnimateTaxi.ts";
+import { TAXI_SPEED, TAXI_WIDTH, TAXI_HEIGHT } from "./constants.ts";
 
 /**
  * GameScreenView - Renders the game UI using Konva
  */
 export class GameScreenView implements View {
   private group: Konva.Group;
-  private lemonImage: Konva.Image | Konva.Circle | null = null;
-  private scoreText: Konva.Text;
-  private timerText: Konva.Text;
+  private taxi1: Konva.Group;
+  private taxi2: Konva.Group;
+  private taxi1Animation!: TaxiAnimation; // Initialized in startAnimations()
+  private taxi2Animation!: TaxiAnimation; // Initialized in startAnimations()
+  private currentFactIndex: number = 0;
+  private taxi1Text!: Konva.Text;
+  private taxi2Text!: Konva.Text;
+  private scoreText!: Konva.Text;
+  private isFact1OnTaxi1Flag: boolean = true; // Randomized assignment per round
 
-  constructor(onLemonClick: () => void) {
+  constructor(onTaxi1Click: () => void, onTaxi2Click: () => void) {
     this.group = new Konva.Group({ visible: false });
 
-    // Background
-    const bg = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: STAGE_WIDTH,
-      height: STAGE_HEIGHT,
-      fill: "#87CEEB", // Sky blue
-    });
-    this.group.add(bg);
+    // Create roads with lane dividers
+    // Note: roadHeight parameter is ignored, calculated internally from percentages
+    const { road1CenterY, road2CenterY } = Road.createRoads(0, this.group);
 
-    // Score display (top-left)
+    // Create taxis with fact pairs
+
+    // Get fact pair in order (starting with index 0)
+    const factPair = getFactPairByIndex(this.currentFactIndex);
+    // Randomize which taxi shows fact1/fact2 for this round
+    this.isFact1OnTaxi1Flag = Math.random() < 0.5;
+
+    // Taxi 1 on bottom road (displays fact1, moves left to right)
+    this.taxi1 = Taxi.createTaxi(
+      -TAXI_WIDTH, // Start off-screen left
+      road1CenterY - 50,
+      this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2,
+      TAXI_WIDTH,
+      TAXI_HEIGHT
+    );
+    this.group.add(this.taxi1);
+    // Store reference to taxi1 text for updates (text bubble group is at index 1, text is at index 1 within that group)
+    const taxi1TextBubbleGroup = this.taxi1.children[1] as Konva.Group;
+    this.taxi1Text = taxi1TextBubbleGroup.children[1] as Konva.Text;
+    // Make taxi1 clickable
+    this.taxi1.on("click", onTaxi1Click);
+    this.taxi1.listening(true);
+
+    // Taxi 2 on top road (displays fact2, moves right to left)
+    // flipHorizontal = true to reverse the image direction
+    this.taxi2 = Taxi.createTaxi(
+      STAGE_WIDTH, // Start off-screen right
+      road2CenterY - 50,
+      this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1,
+      TAXI_WIDTH,
+      TAXI_HEIGHT,
+      true // Flip horizontally
+    );
+    this.group.add(this.taxi2);
+    // Store reference to taxi2 text for updates (text bubble group is at index 1, text is at index 1 within that group)
+    const taxi2TextBubbleGroup = this.taxi2.children[1] as Konva.Group;
+    this.taxi2Text = taxi2TextBubbleGroup.children[1] as Konva.Text;
+    // Make taxi2 clickable
+    this.taxi2.on("click", onTaxi2Click);
+    this.taxi2.listening(true);
+
+    // Score display
     this.scoreText = new Konva.Text({
       x: 20,
       y: 20,
@@ -34,45 +84,81 @@ export class GameScreenView implements View {
       fill: "black",
     });
     this.group.add(this.scoreText);
+  }
 
-    // Timer display (top-right)
-    this.timerText = new Konva.Text({
-      x: STAGE_WIDTH - 150,
-      y: 20,
-      text: "Time: 60",
-      fontSize: 32,
-      fontFamily: "Arial",
-      fill: "red",
-    });
-    this.group.add(this.timerText);
+  /**
+   * Update taxis with the next fact pair
+   */
+  private updateToNextFact(): void {
+    // Increment index and wrap around if needed
+    this.currentFactIndex =
+      (this.currentFactIndex + 1) % NEW_YORK_FACT_PAIRS.length;
+    const factPair = getFactPairByIndex(this.currentFactIndex);
 
-    // TODO: Task 2 - Load and display lemon image using Konva.Image.fromURL()
-    // Placeholder circle (remove this when implementing the image)
-    Konva.Image.fromURL("/lemon.png", (img) => {
-      img.width(100);
-      img.height(100);
-      img.x(STAGE_WIDTH / 2 - img.width() / 2);
-      img.y(STAGE_HEIGHT / 2 - img.height() / 2);
-      img.on("click", onLemonClick);
-      this.lemonImage = img;
-      this.group.add(this.lemonImage);
-    });
+    // Randomize assignment each round
+    this.isFact1OnTaxi1Flag = Math.random() < 0.5;
 
-    /*
-	new Konva.Circle({
-      x: STAGE_WIDTH / 2,
-      y: STAGE_HEIGHT / 2,
-      radius: 50,
-      fill: "yellow",
-      stroke: "orange",
-      strokeWidth: 3,
-    })
-      .width(100)
-      .height(100);
-    placeholder.on("click", onLemonClick);
-    this.lemonImage = placeholder;
-    this.group.add(this.lemonImage);
-	*/
+    // Update taxi texts with new facts based on assignment
+    this.taxi1Text.text(
+      this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2
+    );
+    this.taxi2Text.text(
+      this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1
+    );
+  }
+
+  /**
+   * Initialize animations (called when layer is available)
+   */
+  private initializeAnimations(): void {
+    const layer = this.group.getLayer();
+    if (!layer || this.taxi1Animation || this.taxi2Animation) {
+      return; // Already initialized or layer not available
+    }
+
+    // Animation for taxi1: moves left to right
+    // Update facts when taxi1 resets (goes off-screen right)
+    this.taxi1Animation = createLeftToRightAnimation(
+      this.taxi1,
+      layer,
+      TAXI_WIDTH,
+      TAXI_SPEED,
+      () => this.updateToNextFact()
+    );
+
+    // Animation for taxi2: moves right to left
+    // Also update facts when taxi2 resets (goes off-screen left)
+    this.taxi2Animation = createRightToLeftAnimation(
+      this.taxi2,
+      layer,
+      TAXI_WIDTH,
+      TAXI_SPEED,
+      () => this.updateToNextFact()
+    );
+  }
+
+  /**
+   * Show the screen
+   */
+  show(): void {
+    this.group.visible(true);
+    this.group.getLayer()?.draw();
+    // Initialize animations if not already done (layer now available)
+    this.initializeAnimations();
+    // Start animations when screen is shown
+    this.taxi1Animation?.start();
+    this.taxi2Animation?.start();
+  }
+
+  /**
+   * Hide the screen
+   */
+  hide(): void {
+    this.group.visible(false);
+    this.group.getLayer()?.draw();
+    // Stop animations when screen is hidden
+    this.taxi1Animation?.stop();
+    this.taxi2Animation?.stop();
   }
 
   /**
@@ -84,50 +170,17 @@ export class GameScreenView implements View {
   }
 
   /**
-   * Randomize lemon position
+   * Get current fact index (for checking which taxi is correct)
    */
-  randomizeLemonPosition(): void {
-    if (!this.lemonImage) return;
-
-    // Define safe boundaries (avoid edges)
-    const padding = 100;
-    const minX = padding;
-    const maxX = STAGE_WIDTH - padding;
-    const minY = padding;
-    const maxY = STAGE_HEIGHT - padding;
-
-    // Generate random position
-    const randomX = Math.random() * (maxX - minX) + minX;
-    const randomY = Math.random() * (maxY - minY) + minY;
-
-    // Update lemon position
-    this.lemonImage.x(randomX);
-    this.lemonImage.y(randomY);
-    this.group.getLayer()?.draw();
+  getCurrentFactIndex(): number {
+    return this.currentFactIndex;
   }
 
   /**
-   * Update timer display
+   * Expose current assignment: true if taxi1 displays fact1, false if taxi1 displays fact2
    */
-  updateTimer(timeRemaining: number): void {
-    this.timerText.text(`Time: ${timeRemaining}`);
-    this.group.getLayer()?.draw();
-  }
-
-  /**
-   * Show the screen
-   */
-  show(): void {
-    this.group.visible(true);
-    this.group.getLayer()?.draw();
-  }
-
-  /**
-   * Hide the screen
-   */
-  hide(): void {
-    this.group.visible(false);
-    this.group.getLayer()?.draw();
+  isFact1OnTaxi1(): boolean {
+    return this.isFact1OnTaxi1Flag;
   }
 
   getGroup(): Konva.Group {
