@@ -25,6 +25,8 @@ export class GameScreenController extends ScreenController {
         this.screenSwitcher.switchToScreen({ type: "newyork" });
       } else if (city === "Boston") {
         this.screenSwitcher.switchToScreen({ type: "boston" });
+      } else if (city === "San Diego") {
+        this.screenSwitcher.switchToScreen({ type: "sandiego" });
       } else {
         // For other cities, show blank screen for now
         this.screenSwitcher.switchToScreen({ type: "blank" });
