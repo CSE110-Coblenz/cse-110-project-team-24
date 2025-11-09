@@ -30,9 +30,9 @@ export class GameScreenController extends ScreenController {
         this.screenSwitcher.switchToScreen({ type: "blank" });
       }
     });
-    // Set up postcard button to navigate to blank screen for validation
+    // Set up postcard button to navigate to postcard screen
     this.view.setPostcardButtonHandler(() => {
-      this.screenSwitcher.switchToScreen({ type: "blank" });
+      this.screenSwitcher.switchToScreen({ type: "postcard" });
     });
   }
 
