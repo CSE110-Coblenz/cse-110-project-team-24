@@ -10,17 +10,7 @@ export class InfoPanel {
   private readonly textNode: Konva.Text;
 
   constructor(width: number, centerX: number, yPosition: number) {
-    this.textNode = new Konva.Text({
-      x: centerX - width / 2,
-      y: yPosition,
-      width,
-      align: "center",
-      text: PROMPT_TEXT,
-      fontSize: INFO_TEXT_FONT_SIZE,
-      fontFamily: "Arial",
-      fill: INFO_TEXT_COLOR,
-      lineHeight: INFO_TEXT_LINE_HEIGHT,
-    });
+    this.textNode = this.createTextNode(width, centerX, yPosition);
   }
 
   getNode(): Konva.Text {
@@ -33,5 +23,29 @@ export class InfoPanel {
 
   showPrompt(): void {
     this.textNode.text(PROMPT_TEXT);
+  }
+
+  updateLayout(width: number, centerX: number, yPosition: number): void {
+    this.textNode.width(width);
+    this.textNode.x(centerX - width / 2);
+    this.textNode.y(yPosition);
+  }
+
+  private createTextNode(
+    width: number,
+    centerX: number,
+    yPosition: number
+  ): Konva.Text {
+    return new Konva.Text({
+      x: centerX - width / 2,
+      y: yPosition,
+      width,
+      align: "center",
+      text: PROMPT_TEXT,
+      fontSize: INFO_TEXT_FONT_SIZE,
+      fontFamily: "Arial",
+      fill: INFO_TEXT_COLOR,
+      lineHeight: INFO_TEXT_LINE_HEIGHT,
+    });
   }
 }

@@ -80,6 +80,13 @@ export class MuseumNode {
     this.circle.stroke(MUSEUM_MATCH_STROKE_COLOR);
   }
 
+  setPosition(position: { x: number; y: number }): void {
+    this.group.position({
+      x: position.x,
+      y: position.y,
+    });
+  }
+
   private loadImage(): void {
     Konva.Image.fromURL(
       this.museum.imageUrl,

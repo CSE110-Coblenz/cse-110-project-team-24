@@ -1,6 +1,6 @@
 import Konva from "konva";
 import type { View } from "../../types.ts";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
+import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants.ts";
 import type { Museum, MuseumFact } from "./Museum.ts";
 import { MuseumNode } from "./MuseumNode.ts";
 import { FactCard } from "./FactCard.ts";
@@ -19,12 +19,13 @@ type FactDropHandler = (museumId: string) => void;
  * GameScreenView - Renders the museum matching UI using Konva
  */
 export class GameScreenView implements View {
-  private group: Konva.Group;
-  private museumNodes: Map<string, MuseumNode> = new Map();
-  private factCard: FactCard;
-  private infoPanel: InfoPanel;
-  private onFactDrop: FactDropHandler;
-  private readonly center = { x: STAGE_WIDTH / 2, y: STAGE_HEIGHT / 2 };
+  private readonly group: Konva.Group;
+  private readonly museumNodes: Map<string, MuseumNode> = new Map();
+  private museums: Museum[] = [];
+  private readonly factCard: FactCard;
+  private readonly infoPanel: InfoPanel;
+  private readonly onFactDrop: FactDropHandler;
+  private readonly resizeHandler: () => void;
 
   constructor(onFactDrop: FactDropHandler) {
     this.onFactDrop = onFactDrop;
@@ -52,39 +53,28 @@ export class GameScreenView implements View {
     this.group.add(title);
 
     this.factCard = new FactCard(() => this.handleCardDrop());
-    this.factCard.resetPosition(this.center);
     this.group.add(this.factCard.getGroup());
 
     this.infoPanel = new InfoPanel(
       STAGE_WIDTH * 0.8,
-      this.center.x,
-      this.center.y + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN
+      STAGE_WIDTH / 2,
+      STAGE_HEIGHT / 2 + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN
     );
     this.group.add(this.infoPanel.getNode());
+
+    this.resizeHandler = () => this.updateLayout();
+    window.addEventListener("resize", this.resizeHandler);
+
+    this.updateLayout();
   }
 
   /**
    * Set which museums to render around the circle
    */
   setMuseums(museums: Museum[]): void {
-    // Clear previous nodes
-    for (const node of this.museumNodes.values()) {
-      node.getGroup().destroy();
-    }
-    this.museumNodes.clear();
-
-    museums.forEach((museum, index) => {
-      const angle = (index / museums.length) * Math.PI * 2 - Math.PI / 2;
-      const radius = Math.min(STAGE_WIDTH, STAGE_HEIGHT) * 0.32;
-      const x = this.center.x + radius * Math.cos(angle);
-      const y = this.center.y + radius * Math.sin(angle);
-
-      const node = new MuseumNode(museum, { x, y });
-
-      this.group.add(node.getGroup());
-      this.museumNodes.set(museum.id, node);
-    });
-
+    this.museums = [...museums];
+    this.syncMuseumNodes();
+    this.updateLayout();
     this.group.getLayer()?.draw();
   }
 
@@ -92,17 +82,21 @@ export class GameScreenView implements View {
    * Update the fact shown in the center card
    */
   setFact(fact: MuseumFact | null): void {
+    const center = this.getCenter();
+
     if (!fact) {
       this.factCard.setText("All facts matched! Nice work.");
-      this.factCard.resetPosition(this.center);
+      this.factCard.resetPosition(center);
       this.factCard.setDraggable(false);
+      this.updateLayout();
       this.group.getLayer()?.draw();
       return;
     }
 
-    this.factCard.resetPosition(this.center);
+    this.factCard.resetPosition(center);
     this.factCard.setDraggable(true);
     this.factCard.setText(fact.fact);
+    this.updateLayout();
     this.group.getLayer()?.draw();
   }
 
@@ -138,6 +132,7 @@ export class GameScreenView implements View {
    */
   show(): void {
     this.group.visible(true);
+    this.updateLayout();
     this.group.getLayer()?.draw();
   }
 
@@ -158,11 +153,12 @@ export class GameScreenView implements View {
 
   private handleCardDrop(): void {
     const cardCenter = this.factCard.getCenter();
+    const center = this.getCenter();
 
     for (const [museumId, node] of this.museumNodes.entries()) {
       if (node.isHit(cardCenter)) {
         this.onFactDrop(museumId);
-        this.factCard.resetPosition(this.center);
+        this.factCard.resetPosition(center);
         this.group.getLayer()?.draw();
         return;
       }
@@ -170,11 +166,85 @@ export class GameScreenView implements View {
 
     // No museum hit: gently return card to center
     this.factCard.getGroup().to({
-      x: this.center.x - this.factCard.getWidth() / 2,
-      y: this.center.y - this.factCard.getHeight() / 2,
+      x: center.x - this.factCard.getWidth() / 2,
+      y: center.y - this.factCard.getHeight() / 2,
       duration: 0.15,
       easing: Konva.Easings.EaseOut,
       onFinish: () => this.group.getLayer()?.draw(),
     });
+  }
+
+  private syncMuseumNodes(): void {
+    const desiredIds = new Set(this.museums.map((museum) => museum.id));
+
+    for (const [id, node] of this.museumNodes.entries()) {
+      if (!desiredIds.has(id)) {
+        node.getGroup().destroy();
+        this.museumNodes.delete(id);
+      }
+    }
+
+    for (const museum of this.museums) {
+      if (!this.museumNodes.has(museum.id)) {
+        const node = new MuseumNode(museum, this.getCenter());
+        this.group.add(node.getGroup());
+        this.museumNodes.set(museum.id, node);
+      }
+    }
+  }
+
+  private layoutMuseums(): void {
+    if (this.museums.length === 0) return;
+
+    const center = this.getCenter();
+    const { width, height } = this.getStageSize();
+    const radius = Math.min(width, height) * 0.32;
+
+    this.museums.forEach((museum, index) => {
+      const angle = (index / this.museums.length) * Math.PI * 2 - Math.PI / 2;
+      const position = {
+        x: center.x + radius * Math.cos(angle),
+        y: center.y + radius * Math.sin(angle),
+      };
+      const node = this.museumNodes.get(museum.id);
+      node?.setPosition(position);
+    });
+  }
+
+  private updateLayout(): void {
+    const center = this.getCenter();
+    const { width } = this.getStageSize();
+    const infoWidth = width * 0.8;
+
+    this.layoutMuseums();
+
+    if (!this.factCard.getGroup().isDragging()) {
+      this.factCard.resetPosition(center);
+    }
+
+    this.infoPanel.updateLayout(
+      infoWidth,
+      center.x,
+      center.y + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN
+    );
+  }
+
+  private getCenter(): { x: number; y: number } {
+    const { width, height } = this.getStageSize();
+    return {
+      x: width / 2,
+      y: height / 2,
+    };
+  }
+
+  private getStageSize(): { width: number; height: number } {
+    const stage = this.group.getStage();
+    if (stage) {
+      return {
+        width: stage.width(),
+        height: stage.height(),
+      };
+    }
+    return { width: STAGE_WIDTH, height: STAGE_HEIGHT };
   }
 }
