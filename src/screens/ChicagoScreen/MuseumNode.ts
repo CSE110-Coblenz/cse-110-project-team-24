@@ -1,19 +1,15 @@
 import Konva from "konva";
 import type { Museum } from "./Museum.ts";
-
-export interface MuseumNodeOptions {
-  radius?: number;
-  labelWidth?: number;
-  labelOffsetY?: number;
-  hitRadius?: number;
-}
-
-const DEFAULT_OPTIONS: Required<MuseumNodeOptions> = {
-  radius: 60,
-  labelWidth: 120,
-  labelOffsetY: 80,
-  hitRadius: 70,
-};
+import {
+  MUSEUM_FILL_COLOR,
+  MUSEUM_HIT_RADIUS,
+  MUSEUM_LABEL_OFFSET_Y,
+  MUSEUM_LABEL_WIDTH,
+  MUSEUM_MATCH_FILL_COLOR,
+  MUSEUM_MATCH_STROKE_COLOR,
+  MUSEUM_RADIUS,
+  MUSEUM_STROKE_COLOR,
+} from "./constants.ts";
 
 export class MuseumNode {
   private readonly museum: Museum;
@@ -23,38 +19,29 @@ export class MuseumNode {
   private image?: Konva.Image;
   private readonly hitRadius: number;
 
-  constructor(
-    museum: Museum,
-    position: { x: number; y: number },
-    options: MuseumNodeOptions = {}
-  ) {
-    const { radius, labelWidth, labelOffsetY, hitRadius } = {
-      ...DEFAULT_OPTIONS,
-      ...options,
-    };
-
+  constructor(museum: Museum, position: { x: number; y: number }) {
     this.museum = museum;
-    this.hitRadius = hitRadius;
+    this.hitRadius = MUSEUM_HIT_RADIUS;
 
     this.group = new Konva.Group({
       x: position.x,
       y: position.y,
-      offsetX: radius,
-      offsetY: radius,
+      offsetX: MUSEUM_RADIUS,
+      offsetY: MUSEUM_RADIUS,
     });
 
     this.circle = new Konva.Circle({
-      radius,
-      fill: "#e1ecf7",
-      stroke: "#1f4d7a",
+      radius: MUSEUM_RADIUS,
+      fill: MUSEUM_FILL_COLOR,
+      stroke: MUSEUM_STROKE_COLOR,
       strokeWidth: 2,
     });
     this.group.add(this.circle);
 
     this.label = new Konva.Text({
-      x: -labelWidth / 2,
-      y: labelOffsetY,
-      width: labelWidth,
+      x: -MUSEUM_LABEL_WIDTH / 2,
+      y: MUSEUM_LABEL_OFFSET_Y,
+      width: MUSEUM_LABEL_WIDTH,
       align: "center",
       text: museum.name,
       fontSize: 16,
@@ -89,8 +76,8 @@ export class MuseumNode {
       duration: 0.2,
     });
 
-    this.circle.fill("#cbe5c8");
-    this.circle.stroke("#3a6b49");
+    this.circle.fill(MUSEUM_MATCH_FILL_COLOR);
+    this.circle.stroke(MUSEUM_MATCH_STROKE_COLOR);
   }
 
   private loadImage(): void {
@@ -110,11 +97,10 @@ export class MuseumNode {
           // eslint-disable-next-line no-console
           console.warn(
             `Image failed to load for museum ${this.museum.name}`,
-            err,
+            err
           );
         }
-      },
+      }
     );
   }
 }
-
