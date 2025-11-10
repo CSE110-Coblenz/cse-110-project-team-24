@@ -2,9 +2,9 @@ import Konva from "konva";
 import type { View } from "../../types.ts";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants.ts";
 import type { Museum, MuseumFact } from "./Museum.ts";
-import { MuseumNode } from "./MuseumNode.ts";
 import { FactCard } from "./FactCard.ts";
 import { InfoPanel } from "./InfoPanel.ts";
+import { MuseumCollection } from "./MuseumCollection.ts";
 import {
   BACKGROUND_COLOR,
   FACT_CARD_HEIGHT,
@@ -20,8 +20,8 @@ type FactDropHandler = (museumId: string) => void;
  */
 export class GameScreenView implements View {
   private readonly group: Konva.Group;
-  private readonly museumNodes: Map<string, MuseumNode> = new Map();
-  private museums: Museum[] = [];
+  private readonly museumLayer: Konva.Group;
+  private readonly museumCollection: MuseumCollection;
   private readonly factCard: FactCard;
   private readonly infoPanel: InfoPanel;
   private readonly onFactDrop: FactDropHandler;
@@ -52,8 +52,13 @@ export class GameScreenView implements View {
     });
     this.group.add(title);
 
+    this.museumLayer = new Konva.Group();
+    this.group.add(this.museumLayer);
+
     this.factCard = new FactCard(() => this.handleCardDrop());
     this.group.add(this.factCard.getGroup());
+
+    this.museumCollection = new MuseumCollection(this.museumLayer);
 
     this.infoPanel = new InfoPanel(
       STAGE_WIDTH * 0.8,
@@ -72,8 +77,7 @@ export class GameScreenView implements View {
    * Set which museums to render around the circle
    */
   setMuseums(museums: Museum[]): void {
-    this.museums = [...museums];
-    this.syncMuseumNodes();
+    this.museumCollection.setMuseums(museums);
     this.updateLayout();
     this.group.getLayer()?.draw();
   }
@@ -104,10 +108,7 @@ export class GameScreenView implements View {
    * Visually mark the museum as matched
    */
   markMuseumMatched(museumId: string): void {
-    const node = this.museumNodes.get(museumId);
-    if (!node) return;
-
-    node.markMatched();
+    this.museumCollection.markMatched(museumId);
     this.group.getLayer()?.draw();
   }
 
@@ -155,13 +156,12 @@ export class GameScreenView implements View {
     const cardCenter = this.factCard.getCenter();
     const center = this.getCenter();
 
-    for (const [museumId, node] of this.museumNodes.entries()) {
-      if (node.isHit(cardCenter)) {
-        this.onFactDrop(museumId);
-        this.factCard.resetPosition(center);
-        this.group.getLayer()?.draw();
-        return;
-      }
+    const hitMuseumId = this.museumCollection.hitTest(cardCenter);
+    if (hitMuseumId) {
+      this.onFactDrop(hitMuseumId);
+      this.factCard.resetPosition(center);
+      this.group.getLayer()?.draw();
+      return;
     }
 
     // No museum hit: gently return card to center
@@ -174,49 +174,13 @@ export class GameScreenView implements View {
     });
   }
 
-  private syncMuseumNodes(): void {
-    const desiredIds = new Set(this.museums.map((museum) => museum.id));
-
-    for (const [id, node] of this.museumNodes.entries()) {
-      if (!desiredIds.has(id)) {
-        node.getGroup().destroy();
-        this.museumNodes.delete(id);
-      }
-    }
-
-    for (const museum of this.museums) {
-      if (!this.museumNodes.has(museum.id)) {
-        const node = new MuseumNode(museum, this.getCenter());
-        this.group.add(node.getGroup());
-        this.museumNodes.set(museum.id, node);
-      }
-    }
-  }
-
-  private layoutMuseums(): void {
-    if (this.museums.length === 0) return;
-
-    const center = this.getCenter();
-    const { width, height } = this.getStageSize();
-    const radius = Math.min(width, height) * 0.32;
-
-    this.museums.forEach((museum, index) => {
-      const angle = (index / this.museums.length) * Math.PI * 2 - Math.PI / 2;
-      const position = {
-        x: center.x + radius * Math.cos(angle),
-        y: center.y + radius * Math.sin(angle),
-      };
-      const node = this.museumNodes.get(museum.id);
-      node?.setPosition(position);
-    });
-  }
-
   private updateLayout(): void {
     const center = this.getCenter();
-    const { width } = this.getStageSize();
+    const { width, height } = this.getStageSize();
     const infoWidth = width * 0.8;
+    const radius = Math.min(width, height) * 0.32;
 
-    this.layoutMuseums();
+    this.museumCollection.layout({ center, radius });
 
     if (!this.factCard.getGroup().isDragging()) {
       this.factCard.resetPosition(center);
