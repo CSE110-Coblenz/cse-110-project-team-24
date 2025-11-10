@@ -6,15 +6,19 @@ import type { Museum, MuseumFact } from "./Museum.ts";
 import { FactCard } from "./FactCard.ts";
 import { InfoPanel } from "./InfoPanel.ts";
 import { MuseumCollection } from "./MuseumCollection.ts";
+import { NextButton } from "./NextButton.ts";
 import {
   BACKGROUND_COLOR,
   FACT_CARD_HEIGHT,
   INFO_PANEL_VERTICAL_MARGIN,
+  NEXT_BUTTON_HEIGHT,
+  NEXT_BUTTON_MARGIN_TOP,
   TITLE_COLOR,
   TITLE_FONT_SIZE,
 } from "./constants.ts";
 
 type FactDropHandler = (museumId: string) => void;
+type NextHandler = () => void;
 
 /**
  * GameScreenView - Renders the museum matching UI using Konva
@@ -26,10 +30,13 @@ export class GameScreenView implements View {
   private readonly factCard: FactCard;
   private readonly infoPanel: InfoPanel;
   private readonly onFactDrop: FactDropHandler;
+  private readonly onNext: NextHandler;
+  private readonly nextButton: NextButton;
   private readonly resizeHandler: () => void;
 
-  constructor(onFactDrop: FactDropHandler) {
+  constructor(onFactDrop: FactDropHandler, onNext: NextHandler) {
     this.onFactDrop = onFactDrop;
+    this.onNext = onNext;
     this.group = new Konva.Group({ visible: false });
 
     const background = new Konva.Rect({
@@ -68,6 +75,9 @@ export class GameScreenView implements View {
     );
     this.group.add(this.infoPanel.getNode());
 
+    this.nextButton = new NextButton(() => this.onNext());
+    this.group.add(this.nextButton.getGroup());
+
     this.resizeHandler = () => this.updateLayout();
     window.addEventListener("resize", this.resizeHandler);
 
@@ -86,7 +96,10 @@ export class GameScreenView implements View {
   /**
    * Update the fact shown in the center card
    */
-  setFact(fact: MuseumFact | null): void {
+  setFact(
+    fact: MuseumFact | null,
+    options: { draggable?: boolean } = { draggable: true }
+  ): void {
     const center = this.getCenter();
 
     if (!fact) {
@@ -99,7 +112,7 @@ export class GameScreenView implements View {
     }
 
     this.factCard.resetPosition(center);
-    this.factCard.setDraggable(true);
+    this.factCard.setDraggable(options.draggable ?? true);
     this.factCard.setText(fact.fact);
     this.updateLayout();
     this.group.getLayer()?.draw();
@@ -111,6 +124,28 @@ export class GameScreenView implements View {
   markMuseumMatched(museumId: string): void {
     this.museumCollection.markMatched(museumId);
     this.group.getLayer()?.draw();
+  }
+
+  lockFactCard(): void {
+    this.factCard.setDraggable(false);
+  }
+
+  unlockFactCard(): void {
+    this.factCard.setDraggable(true);
+  }
+
+  showNextButton(label: string): void {
+    this.nextButton.show(label);
+    this.group.getLayer()?.draw();
+  }
+
+  hideNextButton(): void {
+    this.nextButton.hide();
+    this.group.getLayer()?.draw();
+  }
+
+  isNextButtonVisible(): boolean {
+    return this.nextButton.isVisible();
   }
 
   /**
@@ -159,6 +194,12 @@ export class GameScreenView implements View {
     const cardCenter = this.factCard.getCenter();
     const center = this.getCenter();
 
+    if (this.nextButton.isVisible()) {
+      this.factCard.resetPosition(center);
+      this.group.getLayer()?.draw();
+      return;
+    }
+
     let hitMuseumId: string | null = null;
     if (pointerPosition) {
       hitMuseumId = this.museumCollection.hitTest(pointerPosition);
@@ -201,11 +242,11 @@ export class GameScreenView implements View {
       this.factCard.resetPosition(center);
     }
 
-    this.infoPanel.updateLayout(
-      infoWidth,
-      center.x,
-      center.y + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN
-    );
+    const infoY = center.y + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN;
+    this.infoPanel.updateLayout(infoWidth, center.x, infoY);
+
+    const nextButtonY = infoY + NEXT_BUTTON_MARGIN_TOP + NEXT_BUTTON_HEIGHT / 2;
+    this.nextButton.setPosition({ x: center.x, y: nextButtonY });
   }
 
   private getCenter(): { x: number; y: number } {

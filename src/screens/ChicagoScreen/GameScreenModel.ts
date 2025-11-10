@@ -34,11 +34,19 @@ export class GameScreenModel {
     return this.facts[this.currentIndex] ?? null;
   }
 
-  /**
-   * Mark a museum as correctly matched and advance to next fact
-   */
-  markMatch(museumId: string): MuseumFact | null {
+  hasNextFact(): boolean {
+    return this.currentIndex + 1 < this.facts.length;
+  }
+
+  markCurrentFactMatched(museumId: string): void {
     this.matchedMuseumIds.add(museumId);
+  }
+
+  advanceToNextFact(): MuseumFact | null {
+    if (!this.hasNextFact()) {
+      this.currentIndex = this.facts.length;
+      return null;
+    }
     this.currentIndex++;
     return this.getCurrentFact();
   }

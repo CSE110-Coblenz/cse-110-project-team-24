@@ -26,3 +26,11 @@ export const INFO_PANEL_VERTICAL_MARGIN = 24;
 export const PROMPT_TEXT = "Drag the fact card onto the museum it belongs to.";
 
 export const DETAIL_DISPLAY_DURATION = 5000;
+
+export const NEXT_BUTTON_WIDTH = 180;
+export const NEXT_BUTTON_HEIGHT = 48;
+export const NEXT_BUTTON_CORNER_RADIUS = 12;
+export const NEXT_BUTTON_MARGIN_TOP = 16;
+export const NEXT_BUTTON_FILL = "#1f4d7a";
+export const NEXT_BUTTON_TEXT_COLOR = "#ffffff";
+export const NEXT_BUTTON_FONT_SIZE = 20;
