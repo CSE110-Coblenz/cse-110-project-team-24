@@ -24,3 +24,5 @@ export const INFO_TEXT_LINE_HEIGHT = 1.4;
 export const INFO_PANEL_VERTICAL_MARGIN = 24;
 
 export const PROMPT_TEXT = "Drag the fact card onto the museum it belongs to.";
+
+export const DETAIL_DISPLAY_DURATION = 5000;

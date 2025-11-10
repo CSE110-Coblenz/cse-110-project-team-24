@@ -2,6 +2,7 @@ import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
+import { DETAIL_DISPLAY_DURATION } from "./constants.ts";
 
 /**
  * GameScreenController - Coordinates museum fact matching logic
@@ -53,12 +54,12 @@ export class GameScreenController extends ScreenController {
       if (this.model.isComplete()) {
         this.detailTimeout = window.setTimeout(() => {
           this.endGame();
-        }, 1800);
+        }, DETAIL_DISPLAY_DURATION);
       } else if (nextFact) {
         this.detailTimeout = window.setTimeout(() => {
           this.view.showPrompt();
           this.view.setFact(nextFact);
-        }, 1800);
+        }, DETAIL_DISPLAY_DURATION);
       }
     } else {
       this.view.showDetail("Not quite—try again!");
