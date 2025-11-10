@@ -56,7 +56,7 @@ export class GameScreenController extends ScreenController {
       this.view.lockFactCard();
 
       const hasNext = this.model.hasNextFact();
-      this.view.showNextButton(hasNext ? "Next Fact ▶" : "See Results ▶");
+      this.view.showNextButton(hasNext ? "Next" : "Finish");
     } else {
       this.view.showDetail("Not quite—try again!");
     }

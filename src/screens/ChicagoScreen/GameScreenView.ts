@@ -10,9 +10,10 @@ import { NextButton } from "./NextButton.ts";
 import {
   BACKGROUND_COLOR,
   FACT_CARD_HEIGHT,
+  FACT_CARD_WIDTH,
   INFO_PANEL_VERTICAL_MARGIN,
-  NEXT_BUTTON_HEIGHT,
-  NEXT_BUTTON_MARGIN_TOP,
+  NEXT_ARROW_OFFSET,
+  NEXT_ARROW_RADIUS,
   TITLE_COLOR,
   TITLE_FONT_SIZE,
 } from "./constants.ts";
@@ -245,8 +246,9 @@ export class GameScreenView implements View {
     const infoY = center.y + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN;
     this.infoPanel.updateLayout(infoWidth, center.x, infoY);
 
-    const nextButtonY = infoY + NEXT_BUTTON_MARGIN_TOP + NEXT_BUTTON_HEIGHT / 2;
-    this.nextButton.setPosition({ x: center.x, y: nextButtonY });
+    const nextX =
+      center.x + FACT_CARD_WIDTH / 2 + NEXT_ARROW_OFFSET + NEXT_ARROW_RADIUS;
+    this.nextButton.setPosition({ x: nextX, y: center.y });
   }
 
   private getCenter(): { x: number; y: number } {

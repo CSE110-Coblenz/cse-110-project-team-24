@@ -1,52 +1,62 @@
 import Konva from "konva";
 import {
-  NEXT_BUTTON_CORNER_RADIUS,
-  NEXT_BUTTON_FILL,
-  NEXT_BUTTON_FONT_SIZE,
-  NEXT_BUTTON_HEIGHT,
-  NEXT_BUTTON_TEXT_COLOR,
-  NEXT_BUTTON_WIDTH,
+  NEXT_ARROW_FILL,
+  NEXT_ARROW_ICON_COLOR,
+  NEXT_ARROW_LABEL_COLOR,
+  NEXT_ARROW_LABEL_FONT_SIZE,
+  NEXT_ARROW_LABEL_MARGIN,
+  NEXT_ARROW_RADIUS,
 } from "./constants.ts";
 
 export class NextButton {
   private readonly group: Konva.Group;
-  private readonly background: Konva.Rect;
+  private readonly circle: Konva.Circle;
+  private readonly arrow: Konva.Path;
   private readonly label: Konva.Text;
 
   constructor(onClick: () => void) {
     this.group = new Konva.Group({
       visible: false,
       listening: false,
-      offsetX: NEXT_BUTTON_WIDTH / 2,
-      offsetY: NEXT_BUTTON_HEIGHT / 2,
     });
 
-    this.background = new Konva.Rect({
-      width: NEXT_BUTTON_WIDTH,
-      height: NEXT_BUTTON_HEIGHT,
-      cornerRadius: NEXT_BUTTON_CORNER_RADIUS,
-      fill: NEXT_BUTTON_FILL,
+    this.circle = new Konva.Circle({
+      radius: NEXT_ARROW_RADIUS,
+      fill: NEXT_ARROW_FILL,
       shadowColor: "#000000",
       shadowBlur: 12,
       shadowOpacity: 0.2,
+      shadowOffsetY: 2,
     });
-    this.group.add(this.background);
+    this.group.add(this.circle);
+
+    this.arrow = new Konva.Path({
+      data: "M -8 -12 L 10 0 L -8 12 Z",
+      fill: NEXT_ARROW_ICON_COLOR,
+    });
+    this.group.add(this.arrow);
 
     this.label = new Konva.Text({
-      x: 0,
-      y: 0,
-      width: NEXT_BUTTON_WIDTH,
-      height: NEXT_BUTTON_HEIGHT,
+      x: -60,
+      y: NEXT_ARROW_RADIUS + NEXT_ARROW_LABEL_MARGIN,
+      width: 120,
       align: "center",
-      verticalAlign: "middle",
-      text: "Next ▶",
+      text: "",
       fontFamily: "Arial",
-      fontSize: NEXT_BUTTON_FONT_SIZE,
-      fill: NEXT_BUTTON_TEXT_COLOR,
+      fontSize: NEXT_ARROW_LABEL_FONT_SIZE,
+      fill: NEXT_ARROW_LABEL_COLOR,
     });
     this.group.add(this.label);
 
     this.group.on("click tap", onClick);
+    this.group.on("mouseenter", () => {
+      const stage = this.group.getStage();
+      if (stage) stage.container().style.cursor = "pointer";
+    });
+    this.group.on("mouseleave", () => {
+      const stage = this.group.getStage();
+      if (stage) stage.container().style.cursor = "default";
+    });
   }
 
   getGroup(): Konva.Group {
@@ -67,6 +77,8 @@ export class NextButton {
   hide(): void {
     this.group.visible(false);
     this.group.listening(false);
+    const stage = this.group.getStage();
+    if (stage) stage.container().style.cursor = "default";
     this.group.getLayer()?.batchDraw();
   }
 
