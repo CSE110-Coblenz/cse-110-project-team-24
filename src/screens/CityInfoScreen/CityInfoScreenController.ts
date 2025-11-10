@@ -9,9 +9,11 @@ import { CityInfoView } from "./CityInfoScreenView.ts";
 export class CityInfoController extends ScreenController {
     private model: CityInfoModel;
     private view: CityInfoView;
+    private screenSwitcher: ScreenSwitcher;
 
     constructor(screenSwitcher: ScreenSwitcher) {
         super();
+        this.screenSwitcher = screenSwitcher;
         this.model = new CityInfoModel();
         this.view = new CityInfoView();
     }
@@ -19,5 +21,10 @@ export class CityInfoController extends ScreenController {
     getView(): CityInfoView {
 		return this.view;
 	}
+
+    displayCityInfo(cityName: string): void {
+        console.log(`Displaying info for city: ${cityName}`);
+        this.view.show();
+    }
 
 }
