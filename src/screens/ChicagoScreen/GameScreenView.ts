@@ -5,7 +5,13 @@ import type { Museum, MuseumFact } from "./Museum.ts";
 import { MuseumNode } from "./MuseumNode.ts";
 import { FactCard } from "./FactCard.ts";
 import { InfoPanel } from "./InfoPanel.ts";
-import { BACKGROUND_COLOR, TITLE_COLOR, TITLE_FONT_SIZE } from "./constants.ts";
+import {
+  BACKGROUND_COLOR,
+  FACT_CARD_HEIGHT,
+  INFO_PANEL_VERTICAL_MARGIN,
+  TITLE_COLOR,
+  TITLE_FONT_SIZE,
+} from "./constants.ts";
 
 type FactDropHandler = (museumId: string) => void;
 
@@ -52,7 +58,7 @@ export class GameScreenView implements View {
     this.infoPanel = new InfoPanel(
       STAGE_WIDTH * 0.8,
       this.center.x,
-      STAGE_HEIGHT * 0.75
+      this.center.y + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN
     );
     this.group.add(this.infoPanel.getNode());
   }

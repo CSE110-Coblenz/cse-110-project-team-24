@@ -21,5 +21,6 @@ export const MUSEUM_MATCH_STROKE_COLOR = "#3a6b49";
 export const INFO_TEXT_FONT_SIZE = 20;
 export const INFO_TEXT_COLOR = "#2f3b52";
 export const INFO_TEXT_LINE_HEIGHT = 1.4;
+export const INFO_PANEL_VERTICAL_MARGIN = 24;
 
 export const PROMPT_TEXT = "Drag the fact card onto the museum it belongs to.";
