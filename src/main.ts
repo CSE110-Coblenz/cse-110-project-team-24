@@ -4,6 +4,7 @@ import { MenuScreenController } from "./screens/StartScreen/StartScreenControlle
 import { AboutScreenController } from "./screens/AboutScreen/AboutScreenController.ts";
 import { GameScreenController } from "./screens/HomeScreen/GameScreenController.ts";
 import { GameScreenController as BostonScreenController } from "./screens/BostonScreen/GameScreenController.ts";
+import { GameScreenController as ChicagoScreenController } from "./screens/ChicagoScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
 import { BlankScreenController } from "./screens/BlankScreen/BlankScreenController.ts";
 import { GameScreenController as NewYorkScreenController } from "./screens/NewYorkScreen/GameScreenController.ts";
@@ -30,6 +31,7 @@ class App implements ScreenSwitcher {
   private resultsController: ResultsScreenController;
   private blankController: BlankScreenController;
   private newYorkController: NewYorkScreenController;
+  private chicagoController: ChicagoScreenController;
 
   /**
    * Constructor - Initializes the application and sets up all screens
@@ -65,6 +67,7 @@ class App implements ScreenSwitcher {
     this.resultsController = new ResultsScreenController(this);
     this.blankController = new BlankScreenController();
     this.newYorkController = new NewYorkScreenController(this);
+    this.chicagoController = new ChicagoScreenController(this);
 
     // Add all screen groups to the layer
     // All screens exist simultaneously but only one is visible at a time
@@ -76,6 +79,7 @@ class App implements ScreenSwitcher {
     this.layer.add(this.resultsController.getView().getGroup());
     this.layer.add(this.blankController.getView().getGroup());
     this.layer.add(this.newYorkController.getView().getGroup());
+    this.layer.add(this.chicagoController.getView().getGroup());
 
     // Draw the layer (render everything to the canvas)
     // This initial render makes all screens available, though only one will be visible
@@ -118,6 +122,7 @@ class App implements ScreenSwitcher {
     this.resultsController.hide();
     this.blankController.hide();
     this.newYorkController.hide();
+    this.chicagoController.hide();
 
     // Show the requested screen based on the screen type
     // Each screen type has its own initialization logic
@@ -163,6 +168,11 @@ class App implements ScreenSwitcher {
       case "boston":
         // Show Boston trivia mini-game
         this.bostonController.startGame();
+        break;
+
+      case "chicago":
+        // Show Chicago museum matching mini-game
+        this.chicagoController.startGame();
         break;
     }
   }

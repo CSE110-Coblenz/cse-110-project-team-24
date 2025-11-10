@@ -2,109 +2,86 @@ import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
-import { GAME_DURATION } from "../../constants.ts";
 
 /**
- * GameScreenController - Coordinates game logic between Model and View
+ * GameScreenController - Coordinates museum fact matching logic
  */
 export class GameScreenController extends ScreenController {
-  private model: GameScreenModel;
-  private view: GameScreenView;
-  private screenSwitcher: ScreenSwitcher;
-  private gameTimer: number | null = null;
-
-  private squeezeSound: HTMLAudioElement;
+  private readonly model: GameScreenModel;
+  private readonly view: GameScreenView;
+  private readonly screenSwitcher: ScreenSwitcher;
+  private detailTimeout: number | null = null;
 
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
     this.screenSwitcher = screenSwitcher;
 
     this.model = new GameScreenModel();
-    this.view = new GameScreenView(() => this.handleLemonClick());
-
-    // TODO: Task 4 - Initialize squeeze sound audio
-    this.squeezeSound = new Audio("/squeeze.mp3"); // Placeholder
+    this.view = new GameScreenView((museumId) => this.handleFactDrop(museumId));
   }
 
   /**
-   * Start the game
+   * Start the game session
    */
   startGame(): void {
-    // Reset model state
     this.model.reset();
-
-    // Update view
-    this.view.updateScore(this.model.getScore());
-    this.view.updateTimer(GAME_DURATION);
+    this.view.showPrompt();
+    this.view.setMuseums(this.model.getMuseums());
+    this.view.setFact(this.model.getCurrentFact());
     this.view.show();
-
-    this.startTimer();
   }
 
   /**
-   * Start the countdown timer
+   * Handle the player dropping the fact onto a museum target
    */
-  private startTimer(): void {
-    let timeRemaining = GAME_DURATION;
-    // TODO: Task 3 - Implement countdown timer using setInterval
-    this.gameTimer = setInterval(() => {
-      timeRemaining--;
-      this.view.updateTimer(timeRemaining);
-      if (timeRemaining <= 0) {
-        this.endGame();
+  private handleFactDrop(museumId: string): void {
+    const currentFact = this.model.getCurrentFact();
+    if (!currentFact) {
+      return;
+    }
+
+    if (currentFact.museumId === museumId) {
+      this.view.markMuseumMatched(museumId);
+      this.view.showDetail(currentFact.detail);
+      const nextFact = this.model.markMatch(museumId);
+
+      if (this.detailTimeout !== null) {
+        window.clearTimeout(this.detailTimeout);
+        this.detailTimeout = null;
       }
-    }, 1000);
-  }
 
-  /**
-   * Stop the timer
-   */
-  private stopTimer(): void {
-    // TODO: Task 3 - Stop the timer using clearInterval
-    if (this.gameTimer !== null) {
-      clearInterval(this.gameTimer);
-      this.gameTimer = null;
+      if (this.model.isComplete()) {
+        this.detailTimeout = window.setTimeout(() => {
+          this.endGame();
+        }, 1800);
+      } else if (nextFact) {
+        this.detailTimeout = window.setTimeout(() => {
+          this.view.showPrompt();
+          this.view.setFact(nextFact);
+        }, 1800);
+      }
+    } else {
+      this.view.showDetail("Not quite—try again!");
     }
   }
 
   /**
-   * Handle lemon click event
-   */
-  private handleLemonClick(): void {
-    // Update model
-    this.model.incrementScore();
-
-    // Update view
-    this.view.updateScore(this.model.getScore());
-    this.view.randomizeLemonPosition();
-
-    // TODO: Task 4 - Play the squeeze sound
-    this.squeezeSound.play();
-    this.squeezeSound.currentTime = 0;
-  }
-
-  /**
-   * End the game
+   * End the game and transition to the results screen
    */
   private endGame(): void {
-    this.stopTimer();
+    if (this.detailTimeout !== null) {
+      window.clearTimeout(this.detailTimeout);
+      this.detailTimeout = null;
+    }
 
-    // Switch to results screen with final score
     this.screenSwitcher.switchToScreen({
       type: "result",
-      score: this.model.getScore(),
+      score: this.model.getMatchedCount(),
     });
   }
 
   /**
-   * Get final score
-   */
-  getFinalScore(): number {
-    return this.model.getScore();
-  }
-
-  /**
-   * Get the view group
+   * Get the active view
    */
   getView(): GameScreenView {
     return this.view;

@@ -26,7 +26,8 @@ export type Screen =
   | { type: "result"; score: number }
   | { type: "blank" }
   | { type: "newyork" }
-  | { type: "boston" };
+  | { type: "boston" }
+  | { type: "chicago" };
 
 export abstract class ScreenController {
   abstract getView(): View;
