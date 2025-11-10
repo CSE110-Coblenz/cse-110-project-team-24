@@ -1,4 +1,5 @@
 import Konva from "konva";
+import type { KonvaEventObject } from "konva/lib/Node";
 import {
   FACT_CARD_CORNER_RADIUS,
   FACT_CARD_FONT_FAMILY,
@@ -12,7 +13,7 @@ export class FactCard {
   private readonly group: Konva.Group;
   private readonly text: Konva.Text;
 
-  constructor(onDragEnd: () => void) {
+  constructor(onDragEnd: (event: KonvaEventObject<DragEvent>) => void) {
     this.group = new Konva.Group({ draggable: true });
 
     const background = new Konva.Rect({

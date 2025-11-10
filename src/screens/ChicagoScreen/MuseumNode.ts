@@ -16,7 +16,6 @@ export class MuseumNode {
   private readonly group: Konva.Group;
   private readonly circle: Konva.Circle;
   private readonly label: Konva.Text;
-  private image?: Konva.Image;
   private readonly hitRadius: number;
 
   constructor(museum: Museum, position: { x: number; y: number }) {
@@ -61,12 +60,12 @@ export class MuseumNode {
     return this.group;
   }
 
-  isHit(point: { x: number; y: number }): boolean {
-    const pos = this.group.position();
+  isHit(point: { x: number; y: number }, extraRadius = 0): boolean {
+    const pos = this.getCenter();
     const dx = point.x - pos.x;
     const dy = point.y - pos.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance <= this.hitRadius;
+    return distance <= this.hitRadius + extraRadius;
   }
 
   markMatched(): void {
@@ -87,6 +86,14 @@ export class MuseumNode {
     });
   }
 
+  getCenter(): { x: number; y: number } {
+    return this.group.position();
+  }
+
+  getHitRadius(): number {
+    return this.hitRadius;
+  }
+
   private loadImage(): void {
     Konva.Image.fromURL(
       this.museum.imageUrl,
@@ -95,7 +102,6 @@ export class MuseumNode {
         image.height(100);
         image.x(-50);
         image.y(-50);
-        this.image = image;
         this.group.add(image);
         this.group.getLayer()?.batchDraw();
       },

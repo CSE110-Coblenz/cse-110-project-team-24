@@ -1,4 +1,5 @@
 import Konva from "konva";
+import type { KonvaEventObject } from "konva/lib/Node";
 import type { View } from "../../types.ts";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants.ts";
 import type { Museum, MuseumFact } from "./Museum.ts";
@@ -55,7 +56,7 @@ export class GameScreenView implements View {
     this.museumLayer = new Konva.Group();
     this.group.add(this.museumLayer);
 
-    this.factCard = new FactCard(() => this.handleCardDrop());
+    this.factCard = new FactCard((event) => this.handleCardDrop(event));
     this.group.add(this.factCard.getGroup());
 
     this.museumCollection = new MuseumCollection(this.museumLayer);
@@ -152,11 +153,25 @@ export class GameScreenView implements View {
     return this.group;
   }
 
-  private handleCardDrop(): void {
+  private handleCardDrop(event: KonvaEventObject<DragEvent>): void {
+    const stage = event.target.getStage() ?? this.group.getStage();
+    const pointerPosition = stage?.getPointerPosition();
     const cardCenter = this.factCard.getCenter();
     const center = this.getCenter();
 
-    const hitMuseumId = this.museumCollection.hitTest(cardCenter);
+    let hitMuseumId: string | null = null;
+    if (pointerPosition) {
+      hitMuseumId = this.museumCollection.hitTest(pointerPosition);
+    }
+
+    if (!hitMuseumId) {
+      const halfDiagonal = Math.sqrt(
+        (this.factCard.getWidth() / 2) ** 2 +
+          (this.factCard.getHeight() / 2) ** 2
+      );
+      hitMuseumId = this.museumCollection.hitTest(cardCenter, halfDiagonal);
+    }
+
     if (hitMuseumId) {
       this.onFactDrop(hitMuseumId);
       this.factCard.resetPosition(center);
