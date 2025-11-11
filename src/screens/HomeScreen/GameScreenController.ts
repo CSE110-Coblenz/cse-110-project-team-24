@@ -14,7 +14,6 @@ export class GameScreenController extends ScreenController {
  private onLocationChangeListeners: Array<(city: City) => void> = [];
  private screenSwitcher: ScreenSwitcher;
 
-
  constructor(screenSwitcher: ScreenSwitcher) {
    super();
    this.screenSwitcher = screenSwitcher;
@@ -38,6 +37,15 @@ export class GameScreenController extends ScreenController {
        this.screenSwitcher.switchToScreen({ type: "blank" });
      }
    });
+
+  // Set up postcard button to navigate to postcard screen
+  this.view.setPostcardButtonHandler(() => {
+    this.screenSwitcher.switchToScreen({ type: "postcard" });
+  });
+  // Set up back button to navigate to start/menu screen
+  this.view.setBackButtonHandler(() => {
+    this.screenSwitcher.switchToScreen({ type: "menu" });
+  });
  }
 
 

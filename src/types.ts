@@ -20,6 +20,7 @@ export interface View {
  * - "newyork": New York mini-game screen
  * - "boston": Boston trivia mini-game screen
  * - "dc": Washington DC memory matching mini-game screen
+ * - "postcard": Postcard collection screen
  * - "losangeles": Los Angeles mini-game screen
  * - "sandiego": San Diego Wordle mini-game screen
  */
@@ -33,6 +34,7 @@ export type Screen =
  | { type: "newyork" }
  | { type: "boston" }
  | { type: "dc" }
+ | { type: "postcard" }
  | { type: "losangeles" }
  | { type: "sandiego" };
 
