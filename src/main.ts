@@ -8,6 +8,7 @@ import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenCo
 import { BlankScreenController } from "./screens/BlankScreen/BlankScreenController.ts";
 import { GameScreenController as NewYorkScreenController } from "./screens/NewYorkScreen/GameScreenController.ts";
 import { PostcardScreenController } from "./screens/PostcardScreen/PostcardScreenController.ts";
+import { GameScreenController as SanDiegoScreenController } from "./screens/SanDiegoScreen/GameScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 import { LAMapController } from "./screens/LosAngelesScreen/LosAngelesGameController.ts";
 
@@ -34,6 +35,7 @@ class App implements ScreenSwitcher {
  private blankController: BlankScreenController;
  private newYorkController: NewYorkScreenController;
  private postcardController: PostcardScreenController;
+ private sanDiegoController: SanDiegoScreenController;
  private losAnglesController: LAMapController;
 
 
@@ -73,10 +75,8 @@ class App implements ScreenSwitcher {
    this.blankController = new BlankScreenController();
    this.newYorkController = new NewYorkScreenController(this);
   this.postcardController = new PostcardScreenController(this);
-   this.losAnglesController = new LAMapController(this);
-
-
-
+  this.sanDiegoController = new SanDiegoScreenController(this);
+  this.losAnglesController = new LAMapController(this);
    // Add all screen groups to the layer
    // All screens exist simultaneously but only one is visible at a time
    // This allows for smooth transitions between screens without re-rendering
@@ -88,6 +88,7 @@ class App implements ScreenSwitcher {
    this.layer.add(this.blankController.getView().getGroup());
    this.layer.add(this.newYorkController.getView().getGroup());
   this.layer.add(this.postcardController.getView().getGroup());
+  this.layer.add(this.sanDiegoController.getView().getGroup());
    this.layer.add(this.losAnglesController.getView().getGroup());
 
 
@@ -135,6 +136,7 @@ class App implements ScreenSwitcher {
    this.blankController.hide();
    this.newYorkController.hide();
   this.postcardController.hide();
+  this.sanDiegoController.hide();
    this.losAnglesController.hide();
 
 
@@ -186,7 +188,7 @@ class App implements ScreenSwitcher {
        break;
 
 
-     case "boston":
+    case "boston":
        // Show Boston trivia mini-game
        this.bostonController.startGame();
        break;
@@ -197,9 +199,15 @@ class App implements ScreenSwitcher {
       break;
 
 
-     case "losangeles":
+    case "losangeles":
        // Show Los Angeles game
        this.losAnglesController.startGame();
+       break;
+
+
+    case "sandiego":
+       // Show San Diego Wordle mini-game
+       this.sanDiegoController.startGame();
        break;
    }
  }
