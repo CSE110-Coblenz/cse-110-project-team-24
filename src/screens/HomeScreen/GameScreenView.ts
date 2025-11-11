@@ -22,6 +22,8 @@ export class GameScreenView implements View {
   private hoverTooltipImage: Konva.Image | null = null;
   private hoverTooltipText: Konva.Text | null = null;
   private postcardButton: Konva.Group | null = null;
+  private backButton: Konva.Group | null = null;
+  private onBackButtonClick: (() => void) | null = null;
   
   // City image and description mappings
   private cityImages: Record<City, string> = {
@@ -267,6 +269,9 @@ export class GameScreenView implements View {
 
     // Create postcard button in bottom right corner
     this.createPostcardButton();
+
+    // Create back button in top right corner
+    this.createBackButton();
   }
 
   /**
@@ -339,12 +344,78 @@ export class GameScreenView implements View {
     this.nodesLayer.add(this.postcardButton);
   }
 
+  /**
+   * Create the back button in the top right corner
+   */
+  private createBackButton(): void {
+    const buttonWidth = 100;
+    const buttonHeight = 40;
+    const padding = 16;
+    const buttonX = STAGE_WIDTH - buttonWidth - padding;
+    const buttonY = padding;
+
+    this.backButton = new Konva.Group({
+      x: buttonX,
+      y: buttonY,
+    });
+
+    const rect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: buttonWidth,
+      height: buttonHeight,
+      fill: "#6b7280",
+      stroke: "#374151",
+      strokeWidth: 2,
+      cornerRadius: 8,
+      shadowColor: "#000",
+      shadowBlur: 5,
+      shadowOpacity: 0.25,
+    });
+
+    const label = new Konva.Text({
+      x: buttonWidth / 2,
+      y: buttonHeight / 2,
+      text: "Back",
+      fontSize: 18,
+      fontFamily: "Arial",
+      fill: "#ffffff",
+      align: "center",
+      verticalAlign: "middle",
+    });
+    label.offsetX(label.width() / 2);
+    label.offsetY(label.height() / 2);
+
+    this.backButton.add(rect);
+    this.backButton.add(label);
+
+    this.backButton.on("mouseenter", () => {
+      rect.fill("#4b5563");
+      document.body.style.cursor = "pointer";
+      this.group.getLayer()?.draw();
+    });
+    this.backButton.on("mouseleave", () => {
+      rect.fill("#6b7280");
+      document.body.style.cursor = "default";
+      this.group.getLayer()?.draw();
+    });
+    this.backButton.on("click", () => {
+      this.onBackButtonClick?.();
+    });
+
+    this.nodesLayer.add(this.backButton);
+  }
+
   setCityClickHandler(handler: (city: City) => void): void {
     this.onCityClick = handler;
   }
 
   setPostcardButtonHandler(handler: () => void): void {
     this.onPostcardButtonClick = handler;
+  }
+
+  setBackButtonHandler(handler: () => void): void {
+    this.onBackButtonClick = handler;
   }
 
   show(): void {

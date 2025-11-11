@@ -34,6 +34,10 @@ export class GameScreenController extends ScreenController {
     this.view.setPostcardButtonHandler(() => {
       this.screenSwitcher.switchToScreen({ type: "postcard" });
     });
+    // Set up back button to navigate to start/menu screen
+    this.view.setBackButtonHandler(() => {
+      this.screenSwitcher.switchToScreen({ type: "menu" });
+    });
   }
 
   /**
