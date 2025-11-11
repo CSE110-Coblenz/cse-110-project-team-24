@@ -93,7 +93,7 @@ export class GameScreenView implements View {
       text: "Score: 0",
       fontSize: 32,
       fontFamily: "Arial",
-      fill: "black",
+      fill: "white",
     });
     this.group.add(this.scoreText);
 
