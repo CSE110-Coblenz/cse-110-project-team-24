@@ -19,7 +19,6 @@ export class GameScreenController extends ScreenController {
    super();
    this.screenSwitcher = screenSwitcher;
 
-
    this.model = new GameScreenModel();
    this.view = new GameScreenView(() => {});
    // When a city is clicked, navigate to the appropriate screen
@@ -30,8 +29,9 @@ export class GameScreenController extends ScreenController {
        this.screenSwitcher.switchToScreen({ type: "boston" });
      } else if (city === "Los Angeles"){
        this.screenSwitcher.switchToScreen({type: "losangeles"});
-     }
-     else {
+     } else if (city === "San Diego") {
+       this.screenSwitcher.switchToScreen({ type: "sandiego" });
+     } else {
        // For other cities, show blank screen for now
        this.screenSwitcher.switchToScreen({ type: "blank" });
      }
@@ -111,6 +111,5 @@ export class GameScreenController extends ScreenController {
 
 
  }
-
 
 
