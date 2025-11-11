@@ -246,8 +246,7 @@ export class GameScreenView implements View {
       this.taxi2,
       layer,
       TAXI_WIDTH,
-      TAXI_SPEED,
-      () => this.updateToNextFact()
+      TAXI_SPEED
     );
   }
 

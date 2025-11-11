@@ -27,6 +27,8 @@ export class GameScreenController extends ScreenController {
   private lastFactIndex: number = -1; // track when facts change to reset round state
   private isGameActive: boolean = false;
   private readonly totalRounds = NEW_YORK_FACT_PAIRS.length;
+  private roundsCompleted: number = 0;
+  private hasAttemptedCurrentRound: boolean = false;
 
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
@@ -52,6 +54,8 @@ export class GameScreenController extends ScreenController {
     this.correctTaxiClickedThisRound = false;
     this.lastFactIndex = -1;
     this.isGameActive = true;
+    this.roundsCompleted = 0;
+    this.hasAttemptedCurrentRound = false;
 
     // Update score display
     this.view.updateScore(this.model.getScore());
@@ -113,6 +117,7 @@ export class GameScreenController extends ScreenController {
       this.currentRoundLocked = false;
       this.correctTaxiClickedThisRound = false;
       this.lastFactIndex = currentFactIndex;
+      this.hasAttemptedCurrentRound = false;
     }
 
     // Determine which taxi has the correct answer based on current assignment
@@ -126,6 +131,11 @@ export class GameScreenController extends ScreenController {
         : isFact1OnTaxi1
         ? 2
         : 1;
+
+    if (!this.hasAttemptedCurrentRound) {
+      this.hasAttemptedCurrentRound = true;
+      this.roundsCompleted++;
+    }
 
     // If clicked taxi is correct
     if (taxiNumber === correctTaxi) {
@@ -157,6 +167,10 @@ export class GameScreenController extends ScreenController {
       // TODO: Play wrong answer sound
       // this.wrongSound.play();
     }
+
+    if (this.roundsCompleted >= this.totalRounds) {
+      this.finalizeGame();
+    }
   }
 
   /**
@@ -177,9 +191,41 @@ export class GameScreenController extends ScreenController {
       return;
     }
 
+    if (this.roundsCompleted < this.totalRounds) {
+      return;
+    }
+
+    this.finalizeGame();
+  }
+
+  private handleRetry(): void {
+    this.view.hideRetryOverlay();
+    this.startGame();
+  }
+
+  /**
+   * Get final score
+   */
+  getFinalScore(): number {
+    return this.model.getScore();
+  }
+
+  /**
+   * Get the view group
+   */
+  getView(): GameScreenView {
+    return this.view;
+  }
+
+  private finalizeGame(): void {
+    if (!this.isGameActive) {
+      return;
+    }
+
     this.isGameActive = false;
     this.view.setTaxiInteractivity(false);
     this.view.stopAnimations();
+
     const score = this.model.getScore();
 
     if (score === this.totalRounds) {
@@ -202,24 +248,5 @@ export class GameScreenController extends ScreenController {
         this.screenSwitcher.switchToScreen({ type: "home" });
       }
     );
-  }
-
-  private handleRetry(): void {
-    this.view.hideRetryOverlay();
-    this.startGame();
-  }
-
-  /**
-   * Get final score
-   */
-  getFinalScore(): number {
-    return this.model.getScore();
-  }
-
-  /**
-   * Get the view group
-   */
-  getView(): GameScreenView {
-    return this.view;
   }
 }
