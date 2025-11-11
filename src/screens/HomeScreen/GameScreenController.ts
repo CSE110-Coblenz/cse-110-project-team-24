@@ -26,11 +26,13 @@ export class GameScreenController extends ScreenController {
        this.screenSwitcher.switchToScreen({ type: "newyork" });
      } else if (city === "Boston") {
        this.screenSwitcher.switchToScreen({ type: "boston" });
-    } else if (city === "Los Angeles") {
-      this.screenSwitcher.switchToScreen({ type: "losangeles" });
-    } else if (city === "San Diego") {
-      this.screenSwitcher.switchToScreen({ type: "sandiego" });
-    } else {
+     } else if (city === "Washington, D.C.") {
+       this.screenSwitcher.switchToScreen({ type: "dc" });
+     } else if (city === "Los Angeles") {
+       this.screenSwitcher.switchToScreen({ type: "losangeles" });
+     } else if (city === "San Diego") {
+       this.screenSwitcher.switchToScreen({ type: "sandiego" });
+     } else {
        // For other cities, show blank screen for now
        this.screenSwitcher.switchToScreen({ type: "blank" });
      }
