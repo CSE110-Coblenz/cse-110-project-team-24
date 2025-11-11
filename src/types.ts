@@ -1,10 +1,12 @@
 import type { Group } from "konva/lib/Group";
 
+
 export interface View {
-  getGroup(): Group;
-  show(): void;
-  hide(): void;
+ getGroup(): Group;
+ show(): void;
+ hide(): void;
 }
+
 
 /**
  * Screen types for navigation
@@ -18,30 +20,38 @@ export interface View {
  * - "newyork": New York mini-game screen
  * - "boston": Boston trivia mini-game screen
  * - "dc": Washington DC memory matching mini-game screen
+ * - "losangeles": Los Angeles mini-game screen
  */
 export type Screen =
-  | { type: "menu" }
-  | { type: "about" }
-  | { type: "home" }
-  | { type: "game" }
-  | { type: "result"; score: number }
-  | { type: "blank" }
-  | { type: "newyork" }
-  | { type: "boston" }
-  | { type: "dc" };
+ | { type: "menu" }
+ | { type: "about" }
+ | { type: "home" }
+ | { type: "game" }
+ | { type: "result"; score: number }
+ | { type: "blank" }
+ | { type: "newyork" }
+ | { type: "boston" }
+ | { type: "dc" }
+ | { type: "losangeles" };
 
 export abstract class ScreenController {
-  abstract getView(): View;
+ abstract getView(): View;
 
-  show(): void {
-    this.getView().show();
-  }
 
-  hide(): void {
-    this.getView().hide();
-  }
+ show(): void {
+   this.getView().show();
+ }
+
+
+ hide(): void {
+   this.getView().hide();
+ }
 }
+
 
 export interface ScreenSwitcher {
-  switchToScreen(screen: Screen): void;
+ switchToScreen(screen: Screen): void;
 }
+
+
+
