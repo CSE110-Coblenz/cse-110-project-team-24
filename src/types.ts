@@ -21,6 +21,7 @@ export interface View {
  * - "boston": Boston trivia mini-game screen
  * - "dc": Washington DC memory matching mini-game screen
  * - "losangeles": Los Angeles mini-game screen
+ * - "sandiego": San Diego Wordle mini-game screen
  */
 export type Screen =
  | { type: "menu" }
@@ -32,7 +33,8 @@ export type Screen =
  | { type: "newyork" }
  | { type: "boston" }
  | { type: "dc" }
- | { type: "losangeles" };
+ | { type: "losangeles" }
+ | { type: "sandiego" };
 
 export abstract class ScreenController {
  abstract getView(): View;
