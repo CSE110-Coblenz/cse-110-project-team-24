@@ -1,6 +1,6 @@
 import Konva from "konva";
 import { handleCityClick, isCityCompleted } from "./LACityGamesHandlers";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "./../../constants";
+// import { STAGE_WIDTH, STAGE_HEIGHT } from "./../../constants";
 
 document.title = "Los Angeles Game";
 
@@ -12,8 +12,8 @@ export class createLAMap {
   constructor(containerId: string) {
     this.stage = new Konva.Stage({
       container: containerId,
-      width: STAGE_WIDTH,
-      height: STAGE_HEIGHT,
+      width: window.innerWidth,
+      height: window.innerHeight,
     });
 
     this.layer = new Konva.Layer();
