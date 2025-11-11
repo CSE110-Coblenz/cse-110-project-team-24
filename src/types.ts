@@ -17,6 +17,7 @@ export interface View {
  *   - score: Final score to display on results screen
  * - "newyork": New York mini-game screen
  * - "boston": Boston trivia mini-game screen
+ * - "dc": Washington DC memory matching mini-game screen
  */
 export type Screen =
   | { type: "menu" }
@@ -26,7 +27,8 @@ export type Screen =
   | { type: "result"; score: number }
   | { type: "blank" }
   | { type: "newyork" }
-  | { type: "boston" };
+  | { type: "boston" }
+  | { type: "dc" };
 
 export abstract class ScreenController {
   abstract getView(): View;
