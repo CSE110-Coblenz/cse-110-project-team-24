@@ -15,8 +15,12 @@ export class CityInfoController extends ScreenController {
         super();
         this.screenSwitcher = screenSwitcher;
         this.model = new CityInfoModel();
-        this.view = new CityInfoView();
+        this.view = new CityInfoView(() => this.exitToHome());
     }
+
+    exitToHome(): void {
+        this.screenSwitcher.switchToScreen({ type: "home" });
+      }
 
     getView(): CityInfoView {
 		return this.view;
@@ -24,7 +28,19 @@ export class CityInfoController extends ScreenController {
 
     displayCityInfo(cityName: string): void {
         console.log(`Displaying info for city: ${cityName}`);
+        this.view.displayCityInfo(this.model.getCityInfo(cityName) as CityInformationEntry, (city) => this.startMinigame(city));
         this.view.show();
+    }
+
+    startMinigame(cityName: string): void {
+        console.log(`Starting minigame for city: ${cityName}`);
+        if (cityName === "newyork") {
+            this.screenSwitcher.switchToScreen({ type: "newyork" });
+        } else if (cityName === "boston") {
+            this.screenSwitcher.switchToScreen({ type: "boston" });
+        } else {
+            console.warn(`No minigame available for city: ${cityName}`);
+        }
     }
 
 }
