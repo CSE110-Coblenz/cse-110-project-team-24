@@ -4,27 +4,27 @@ export const CHICAGO_MUSEUMS: Museum[] = [
   {
     id: "field",
     name: "Field Museum",
-    imageUrl: "/chicago/field-museum.png",
+    imageUrl: "/chicago/field-museum.jpg",
   },
   {
     id: "art-institute",
     name: "Art Institute of Chicago",
-    imageUrl: "/chicago/art-institute.png",
+    imageUrl: "/chicago/art-institute.jpg",
   },
   {
     id: "museum-science-industry",
     name: "Museum of Science & Industry",
-    imageUrl: "/chicago/msi.png",
+    imageUrl: "/chicago/msi.jpg",
   },
   {
     id: "du-sable",
     name: "DuSable Black History Museum",
-    imageUrl: "/chicago/dusable.png",
+    imageUrl: "/chicago/dusable.jpg",
   },
   {
     id: "adler",
     name: "Adler Planetarium",
-    imageUrl: "/chicago/adler.png",
+    imageUrl: "/chicago/adler.jpg",
   },
 ];
 

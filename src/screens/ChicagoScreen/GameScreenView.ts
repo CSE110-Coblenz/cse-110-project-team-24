@@ -9,13 +9,20 @@ import { MuseumCollection } from "./MuseumCollection.ts";
 import { NextButton } from "./NextButton.ts";
 import {
   BACKGROUND_COLOR,
+  BACKGROUND_GRADIENT_COLORS,
+  CENTER_GLOW_COLOR,
   FACT_CARD_HEIGHT,
   FACT_CARD_WIDTH,
   INFO_PANEL_VERTICAL_MARGIN,
   NEXT_ARROW_OFFSET,
   NEXT_ARROW_RADIUS,
+  ORBIT_DASH_PATTERN,
+  ORBIT_RADIUS_OFFSET,
+  ORBIT_STROKE_COLOR,
   TITLE_COLOR,
   TITLE_FONT_SIZE,
+  TITLE_SUBTEXT_COLOR,
+  TITLE_SUBTEXT_FONT_SIZE,
 } from "./constants.ts";
 
 type FactDropHandler = (museumId: string) => void;
@@ -34,6 +41,8 @@ export class GameScreenView implements View {
   private readonly onNext: NextHandler;
   private readonly nextButton: NextButton;
   private readonly resizeHandler: () => void;
+  private readonly orbitCircle: Konva.Circle;
+  private readonly centerGlow: Konva.Circle;
 
   constructor(onFactDrop: FactDropHandler, onNext: NextHandler) {
     this.onFactDrop = onFactDrop;
@@ -46,6 +55,14 @@ export class GameScreenView implements View {
       width: STAGE_WIDTH,
       height: STAGE_HEIGHT,
       fill: BACKGROUND_COLOR,
+      fillLinearGradientStartPoint: { x: 0, y: 0 },
+      fillLinearGradientEndPoint: { x: 0, y: STAGE_HEIGHT },
+      fillLinearGradientColorStops: [
+        0,
+        BACKGROUND_GRADIENT_COLORS[0],
+        1,
+        BACKGROUND_GRADIENT_COLORS[1],
+      ],
     });
     this.group.add(background);
 
@@ -56,13 +73,45 @@ export class GameScreenView implements View {
       align: "center",
       text: "Match the fact to the museum",
       fontSize: TITLE_FONT_SIZE,
-      fontFamily: "Arial",
+      fontFamily: "Clash Display, 'Trebuchet MS', Arial, sans-serif",
       fill: TITLE_COLOR,
     });
     this.group.add(title);
 
+    const subtitle = new Konva.Text({
+      x: 0,
+      y: 70,
+      width: STAGE_WIDTH,
+      align: "center",
+      text: "Explore the icons that define Chicago’s culture",
+      fontSize: TITLE_SUBTEXT_FONT_SIZE,
+      fontFamily: "Inter, 'Helvetica Neue', Arial, sans-serif",
+      fill: TITLE_SUBTEXT_COLOR,
+      opacity: 0.85,
+    });
+    this.group.add(subtitle);
+
+    this.centerGlow = new Konva.Circle({
+      x: STAGE_WIDTH / 2,
+      y: STAGE_HEIGHT / 2,
+      radius: 180,
+      fill: CENTER_GLOW_COLOR,
+      opacity: 0.8,
+      listening: false,
+    });
+    this.group.add(this.centerGlow);
+
     this.museumLayer = new Konva.Group();
     this.group.add(this.museumLayer);
+
+    this.orbitCircle = new Konva.Circle({
+      stroke: ORBIT_STROKE_COLOR,
+      strokeWidth: 2,
+      dash: ORBIT_DASH_PATTERN,
+      opacity: 0.6,
+      listening: false,
+    });
+    this.museumLayer.add(this.orbitCircle);
 
     this.factCard = new FactCard((event) => this.handleCardDrop(event));
     this.group.add(this.factCard.getGroup());
@@ -237,7 +286,12 @@ export class GameScreenView implements View {
     const infoWidth = width * 0.8;
     const radius = Math.min(width, height) * 0.32;
 
+    this.centerGlow.position(center);
+    this.centerGlow.radius(Math.max(FACT_CARD_WIDTH, FACT_CARD_HEIGHT) * 1.1);
+
     this.museumCollection.layout({ center, radius });
+    this.orbitCircle.position(center);
+    this.orbitCircle.radius(Math.max(0, radius + ORBIT_RADIUS_OFFSET));
 
     if (!this.factCard.getGroup().isDragging()) {
       this.factCard.resetPosition(center);
