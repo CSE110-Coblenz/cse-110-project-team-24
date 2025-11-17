@@ -55,7 +55,7 @@ export class LAMapView {
      x: 0,
      y: 0,
      width: 250,
-     height: 700,
+     height: 2000,
      fill: "#78BFEA",
    });
    sea.listening(false);
@@ -66,7 +66,7 @@ export class LAMapView {
      x: 0,
      y: 0,
      width: 600,
-     height: 800,
+     height: 2000,
      fill: "#78BFEA",
    });
        sea2.listening(false);
@@ -76,8 +76,8 @@ export class LAMapView {
    const land = new Konva.Rect({
      x: 250,
      y: 0,
-     width: 1400,
-     height: 620,
+     width: 4000,
+     height: 2000,
      fill: "#E8D4A2",
    });
        land.listening(false);
@@ -87,8 +87,8 @@ export class LAMapView {
    const land2 = new Konva.Rect({
      x: 600,
      y: 600,
-     width: 700,
-     height: 620,
+     width: 2000,
+     height: 3000,
      fill: "#E8D4A2",
    });
        land2.listening(false);
