@@ -23,7 +23,12 @@ export type Screen =
   | { type: "about" }
   | { type: "home" }
   | { type: "game" }
-  | { type: "result"; score: number }
+  | {
+      type: "result";
+      score: number;
+      outcome?: "win" | "loss";
+      message?: string;
+    }
   | { type: "blank" }
   | { type: "newyork" }
   | { type: "boston" }

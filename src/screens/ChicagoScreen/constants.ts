@@ -32,7 +32,8 @@ export const MUSEUM_MATCH_STROKE_COLOR = "#3a6b49";
 export const MUSEUM_LABEL_BACKGROUND = "#ffffff";
 export const MUSEUM_LABEL_TEXT_COLOR = "#152033";
 export const MUSEUM_LABEL_FONT_SIZE = 16;
-export const MUSEUM_LABEL_FONT_FAMILY = "Inter, 'Helvetica Neue', Arial, sans-serif";
+export const MUSEUM_LABEL_FONT_FAMILY =
+  "Inter, 'Helvetica Neue', Arial, sans-serif";
 export const MUSEUM_IMAGE_SHADOW_COLOR = "rgba(15, 44, 92, 0.35)";
 export const MUSEUM_IMAGE_SHADOW_BLUR = 18;
 

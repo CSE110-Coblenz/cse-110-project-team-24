@@ -150,8 +150,11 @@ class App implements ScreenSwitcher {
         break;
 
       case "result":
-        // Show results screen with the final score
-        // This displays the player's performance after completing the game
+        // Show results screen with the final score and optional outcome metadata
+        this.resultsController.setOutcomeContext(
+          screen.outcome,
+          screen.message
+        );
         this.resultsController.showResults(screen.score);
         break;
 

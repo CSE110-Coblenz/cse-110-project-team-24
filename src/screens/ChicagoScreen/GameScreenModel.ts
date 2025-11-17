@@ -9,6 +9,8 @@ export class GameScreenModel {
   private facts: MuseumFact[] = [];
   private currentIndex = 0;
   private matchedMuseumIds: Set<string> = new Set();
+  private wrongGuessCount = 0;
+  private readonly maxWrongGuesses = 3;
 
   /**
    * Prepare data for a new game session
@@ -18,6 +20,7 @@ export class GameScreenModel {
     this.facts = this.shuffle([...CHICAGO_MUSEUM_FACTS]);
     this.currentIndex = 0;
     this.matchedMuseumIds.clear();
+    this.wrongGuessCount = 0;
   }
 
   /**
@@ -57,6 +60,22 @@ export class GameScreenModel {
 
   getTotalFacts(): number {
     return this.facts.length;
+  }
+
+  recordWrongGuess(): number {
+    this.wrongGuessCount = Math.min(
+      this.maxWrongGuesses,
+      this.wrongGuessCount + 1
+    );
+    return this.wrongGuessCount;
+  }
+
+  getRemainingAttempts(): number {
+    return Math.max(0, this.maxWrongGuesses - this.wrongGuessCount);
+  }
+
+  hasAttemptsRemaining(): boolean {
+    return this.wrongGuessCount < this.maxWrongGuesses;
   }
 
   /**
