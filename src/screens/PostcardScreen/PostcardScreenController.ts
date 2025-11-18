@@ -52,8 +52,7 @@ export class PostcardScreenController extends ScreenController {
 
   //Exit to home screen
   exitToHome(): void {
-    //TODO: Implement screen switcher to go back to home screen
-    //this.screenSwitcher.switchToScreen({ type: "menu" });
+    this.screenSwitcher.switchToScreen({ type: "home" });
   }
 
 

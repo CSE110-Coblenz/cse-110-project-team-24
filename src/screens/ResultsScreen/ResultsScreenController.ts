@@ -1,13 +1,7 @@
 import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
-import {
-  ResultsScreenModel,
-  type LeaderboardEntry,
-} from "./ResultsScreenModel.ts";
-import { ResultsScreenView } from "./ResultsScreenView.ts";
-
-const LEADERBOARD_KEY = "lemonClickerLeaderboard";
-const MAX_LEADERBOARD_ENTRIES = 5;
+import { ResultsScreenModel } from "./ResultsScreenModel.ts";
+import { ResultsScreenView, type ResultOutcome } from "./ResultsScreenView.ts";
 
 /**
  * ResultsScreenController - Handles results screen interactions
@@ -16,6 +10,8 @@ export class ResultsScreenController extends ScreenController {
   private model: ResultsScreenModel;
   private view: ResultsScreenView;
   private screenSwitcher: ScreenSwitcher;
+  private pendingOutcome: ResultOutcome = "win";
+  private pendingMessage: string | undefined;
 
   private gameOverSound: HTMLAudioElement;
 
@@ -32,47 +28,25 @@ export class ResultsScreenController extends ScreenController {
   /**
    * Show results screen with final score
    */
+  setOutcomeContext(outcome?: ResultOutcome, message?: string): void {
+    this.pendingOutcome = outcome ?? "win";
+    this.pendingMessage = message;
+  }
+
   showResults(finalScore: number): void {
+    const outcome = this.pendingOutcome;
+    const message = this.pendingMessage;
+    this.pendingOutcome = "win";
+    this.pendingMessage = undefined;
     this.model.setFinalScore(finalScore);
     this.view.updateFinalScore(finalScore);
-
-    // Load and update leaderboard
-    const entries = this.loadLeaderboard();
-    entries.push({
-      score: finalScore,
-      timestamp: new Date().toLocaleString(),
-    });
-    entries.sort((a, b) => b.score - a.score); // Sort descending
-    const top5 = entries.slice(0, MAX_LEADERBOARD_ENTRIES); // Keep top 5
-    this.saveLeaderboard(top5);
-    this.model.setLeaderboard(top5);
-    this.view.updateLeaderboard(top5);
+    this.view.updateOutcome(outcome, message);
 
     this.view.show();
 
     // TODO: Task 4 - Play the game over sound
     this.gameOverSound.play();
     this.gameOverSound.currentTime = 0;
-  }
-
-  /**
-   * Load leaderboard from localStorage
-   */
-  private loadLeaderboard(): LeaderboardEntry[] {
-    // TODO: Task 5 - Load leaderboard from localStorage
-    localStorage.getItem(LEADERBOARD_KEY) || [];
-    return JSON.parse(
-      localStorage.getItem(LEADERBOARD_KEY) || "[]"
-    ) as LeaderboardEntry[];
-  }
-
-  /**
-   * Save leaderboard to localStorage
-   */
-  private saveLeaderboard(entries: LeaderboardEntry[]): void {
-    // TODO: Task 5 - Save leaderboard to localStorage
-    const jsonString = JSON.stringify(entries);
-    localStorage.setItem(LEADERBOARD_KEY, jsonString);
   }
 
   /**
