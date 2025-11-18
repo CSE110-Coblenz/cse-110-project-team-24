@@ -69,10 +69,7 @@ export class GameScreenController extends ScreenController {
           "That's three misses—tour's over! Let's try again."
         );
         this.view.lockFactCard();
-        this.endGame({
-          outcome: "loss",
-          message: "You ran out of guesses. Tap Play Again to restart.",
-        });
+        this.endGame();
         return;
       }
     }
@@ -83,19 +80,13 @@ export class GameScreenController extends ScreenController {
 
     if (!this.model.hasNextFact()) {
       this.model.advanceToNextFact();
-      this.endGame({
-        outcome: "win",
-        message: "Chicago’s museums are no match for you!",
-      });
+      this.endGame();
       return;
     }
 
     const nextFact = this.model.advanceToNextFact();
     if (!nextFact) {
-      this.endGame({
-        outcome: "win",
-        message: "Chicago’s museums are no match for you!",
-      });
+      this.endGame();
       return;
     }
 
@@ -107,22 +98,10 @@ export class GameScreenController extends ScreenController {
   /**
    * End the game and transition to the results screen
    */
-  private endGame(options?: {
-    outcome?: "win" | "loss";
-    message?: string;
-  }): void {
-    const outcome = options?.outcome ?? "win";
-    const message =
-      options?.message ??
-      (outcome === "win"
-        ? "You matched every Chicago museum fact!"
-        : "Out of attempts—give it another go.");
-
+  private endGame(): void {
     this.screenSwitcher.switchToScreen({
       type: "result",
       score: this.model.getMatchedCount(),
-      outcome,
-      message,
     });
   }
 
