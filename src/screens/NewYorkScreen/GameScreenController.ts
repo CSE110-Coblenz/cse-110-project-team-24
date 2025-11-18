@@ -3,7 +3,11 @@ import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
 import { GAME_DURATION } from "../../constants.ts";
-import { getFactPairByIndex, getCorrectFactIndex } from "./NewYorkFacts.ts";
+import {
+  getFactPairByIndex,
+  getCorrectFactIndex,
+  NEW_YORK_FACT_PAIRS,
+} from "./NewYorkFacts.ts";
 
 /**
  * GameScreenController - Coordinates game logic between Model and View
@@ -21,6 +25,10 @@ export class GameScreenController extends ScreenController {
   private currentRoundLocked: boolean = false; // true if wrong taxi clicked before correct one
   private correctTaxiClickedThisRound: boolean = false; // true if correct taxi has been clicked
   private lastFactIndex: number = -1; // track when facts change to reset round state
+  private isGameActive: boolean = false;
+  private readonly totalRounds = NEW_YORK_FACT_PAIRS.length;
+  private roundsCompleted: number = 0;
+  private hasAttemptedCurrentRound: boolean = false;
 
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
@@ -29,7 +37,8 @@ export class GameScreenController extends ScreenController {
     this.model = new GameScreenModel();
     this.view = new GameScreenView(
       () => this.handleTaxiClick(1),
-      () => this.handleTaxiClick(2)
+      () => this.handleTaxiClick(2),
+      () => this.handleCycleComplete()
     );
   }
 
@@ -44,9 +53,15 @@ export class GameScreenController extends ScreenController {
     this.currentRoundLocked = false;
     this.correctTaxiClickedThisRound = false;
     this.lastFactIndex = -1;
+    this.isGameActive = true;
+    this.roundsCompleted = 0;
+    this.hasAttemptedCurrentRound = false;
 
     // Update score display
     this.view.updateScore(this.model.getScore());
+    this.view.hideRetryOverlay();
+    this.view.resetGameState();
+    this.view.setTaxiInteractivity(true);
 
     // Show the view
     this.view.show();
@@ -88,6 +103,10 @@ export class GameScreenController extends ScreenController {
    * @param taxiNumber - 1 for taxi1 (fact1), 2 for taxi2 (fact2)
    */
   private handleTaxiClick(taxiNumber: 1 | 2): void {
+    if (!this.isGameActive) {
+      return;
+    }
+
     // Get current fact pair
     const currentFactIndex = this.view.getCurrentFactIndex();
     const factPair = getFactPairByIndex(currentFactIndex);
@@ -98,6 +117,7 @@ export class GameScreenController extends ScreenController {
       this.currentRoundLocked = false;
       this.correctTaxiClickedThisRound = false;
       this.lastFactIndex = currentFactIndex;
+      this.hasAttemptedCurrentRound = false;
     }
 
     // Determine which taxi has the correct answer based on current assignment
@@ -112,8 +132,17 @@ export class GameScreenController extends ScreenController {
         ? 2
         : 1;
 
+    if (!this.hasAttemptedCurrentRound) {
+      this.hasAttemptedCurrentRound = true;
+      this.roundsCompleted++;
+    }
+
     // If clicked taxi is correct
     if (taxiNumber === correctTaxi) {
+      if (this.correctTaxiClickedThisRound) {
+        return;
+      }
+
       // If round is locked (wrong taxi clicked first), don't give points
       if (this.currentRoundLocked) {
         // No points, but we can still track that correct taxi was clicked
@@ -138,6 +167,10 @@ export class GameScreenController extends ScreenController {
       // TODO: Play wrong answer sound
       // this.wrongSound.play();
     }
+
+    if (this.roundsCompleted >= this.totalRounds) {
+      this.finalizeGame();
+    }
   }
 
   /**
@@ -153,6 +186,23 @@ export class GameScreenController extends ScreenController {
     });
   }
 
+  private handleCycleComplete(): void {
+    if (!this.isGameActive) {
+      return;
+    }
+
+    if (this.roundsCompleted < this.totalRounds) {
+      return;
+    }
+
+    this.finalizeGame();
+  }
+
+  private handleRetry(): void {
+    this.view.hideRetryOverlay();
+    this.startGame();
+  }
+
   /**
    * Get final score
    */
@@ -165,5 +215,38 @@ export class GameScreenController extends ScreenController {
    */
   getView(): GameScreenView {
     return this.view;
+  }
+
+  private finalizeGame(): void {
+    if (!this.isGameActive) {
+      return;
+    }
+
+    this.isGameActive = false;
+    this.view.setTaxiInteractivity(false);
+    this.view.stopAnimations();
+
+    const score = this.model.getScore();
+
+    if (score === this.totalRounds) {
+      this.view.hideRetryOverlay();
+      this.screenSwitcher.switchToScreen({
+        type: "result",
+        score,
+      });
+      return;
+    }
+
+    this.view.showRetryOverlay(
+      score,
+      this.totalRounds,
+      () => {
+        this.handleRetry();
+      },
+      () => {
+        this.view.hideRetryOverlay();
+        this.screenSwitcher.switchToScreen({ type: "home" });
+      }
+    );
   }
 }

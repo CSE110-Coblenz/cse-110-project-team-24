@@ -13,8 +13,8 @@ export class PostcardScreenView implements View {
   //Values for consistency
   private centerValueX: number = STAGE_WIDTH / 2;
   private centerValueY: number = STAGE_HEIGHT / 2;
-  private PostcardWidth: number = STAGE_WIDTH / 4.3;
-  private PostcardHeight: number = STAGE_HEIGHT / 4.3;
+  private PostcardWidth: number = STAGE_WIDTH / 4.9;
+  private PostcardHeight: number = STAGE_HEIGHT / 4.9;
 
 
 
@@ -89,22 +89,22 @@ export class PostcardScreenView implements View {
 
       // Load the tape images after the main image is loaded
       Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
-        tapeImg.width(image1 ? image1.width() / 2 : 0);
-        tapeImg.height(image1 ? image1.height() / 2 : 0);
+        tapeImg.width(image1 ? image1.width() / 3 : 0);
+        tapeImg.height(image1 ? image1.height() / 3 : 0);
         tapeImg.offsetX(tapeImg.width() / 2);
         tapeImg.offsetY(tapeImg.height() / 2);
-        tapeImg.x(-(image1 ? image1.width() / 2 : 0) + tapeImg.width() / 2 + 650);
-        tapeImg.y(-(image1 ? image1.height() / 2 : 0) + tapeImg.height() / 2 + -80);
+        tapeImg.x((image1 ? (image1.getPosition().x + image1.width() / 2.2) : 0));
+        tapeImg.y((image1 ? (image1.getPosition().y - image1.height() / 2.2) : 0));
         groupPostcard.add(tapeImg);
       });
 
       Konva.Image.fromURL("/public/Postcards/TapeImage.png", (tapeImg) => {
-        tapeImg.width(image1 ? image1.width() / 2 : 0);
-        tapeImg.height(image1 ? image1.height() / 2 : 0);
+        tapeImg.width(image1 ? image1.width() / 3 : 0);
+        tapeImg.height(image1 ? image1.height() / 3 : 0);
         tapeImg.offsetX(tapeImg.width() / 2);
         tapeImg.offsetY(tapeImg.height() / 2);
-        tapeImg.x(-(image1 ? image1.width() / 2 : 0) + tapeImg.width() / 2 + -190);
-        tapeImg.y(-(image1 ? image1.height() / 2 : 0) + tapeImg.height() / 2 + 420);
+        tapeImg.x((image1 ? (image1.getPosition().x - image1.width() / 2.2) : 0));
+        tapeImg.y((image1 ? (image1.getPosition().y + image1.height() / 2.2) : 0));
         groupPostcard.add(tapeImg);
       });
 
@@ -122,8 +122,8 @@ export class PostcardScreenView implements View {
       // Position the group after all images are added
       groupPostcard.offsetX(groupPostcard.width() / 2);
       groupPostcard.offsetY(groupPostcard.height() / 2);
-      groupPostcard.x(this.centerValueX + xPos);
-      groupPostcard.y(this.centerValueY - yPos);
+      groupPostcard.x((STAGE_WIDTH / 100) * xPos);
+      groupPostcard.y((STAGE_HEIGHT / 100) * -yPos + STAGE_HEIGHT);
 
       // Add the group to the main group
       this.group.add(groupPostcard);
@@ -137,9 +137,9 @@ export class PostcardScreenView implements View {
 
     // dashed line
     const redLine = new Konva.Line({
-      points: [this.centerValueX + x1 - 300,this.centerValueX - y1 + -1000, this.centerValueX + x2 - 450, this.centerValueX - y2 + -1000],
+      points: [((STAGE_WIDTH / 100) * x1),((STAGE_HEIGHT / 100) * -y1 + STAGE_HEIGHT), ((STAGE_WIDTH / 100) * x2), ((STAGE_HEIGHT / 100) * -y2 + STAGE_HEIGHT)],
       stroke: 'red',
-      strokeWidth: 15,
+      strokeWidth: 5,
       lineJoin: 'round',
       dash: [33, 10]
     });
@@ -185,9 +185,9 @@ export class PostcardScreenView implements View {
     //City name text
     const cityText = new Konva.Text({
       x: this.centerValueX,
-      y: this.centerValueY + 640,
+      y: this.centerValueY + (this.PostcardHeight),
       text: cityName,
-      fontSize: 120,
+      fontSize: 70,
       fontFamily: 'Arial',
       fill: 'white',
       align: 'center',
@@ -197,10 +197,10 @@ export class PostcardScreenView implements View {
 
     //Exit zoom button
     Konva.Image.fromURL("/public/Postcards/PinImage.png", (img) => {
-      img.width(150);
-      img.height(150);
-      img.x(STAGE_WIDTH - img.width() - 30);
-      img.y(30);
+      img.width(100);
+      img.height(100);
+      img.x(STAGE_WIDTH - img.width() - 10);
+      img.y(10);
       img.on("click", () => {
         exitZoom();
 
@@ -240,7 +240,8 @@ export class PostcardScreenView implements View {
     this.group.visible(true);
     this.group.add(this.lineGroup);
     this.lineGroup.visible(true);
-    this.lineGroup.moveToTop();
+    this.lineGroup.moveToBottom();
+    this.lineGroup.moveUp();
     this.group.getLayer()?.draw();
   }
 
