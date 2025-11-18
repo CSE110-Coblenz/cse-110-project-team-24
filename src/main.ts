@@ -4,11 +4,14 @@ import { MenuScreenController } from "./screens/StartScreen/StartScreenControlle
 import { AboutScreenController } from "./screens/AboutScreen/AboutScreenController.ts";
 import { GameScreenController } from "./screens/HomeScreen/GameScreenController.ts";
 import { GameScreenController as BostonScreenController } from "./screens/BostonScreen/GameScreenController.ts";
-import { GameScreenController as ChicagoScreenController } from "./screens/ChicagoScreen/GameScreenController.ts";
 import { ResultsScreenController } from "./screens/ResultsScreen/ResultsScreenController.ts";
 import { BlankScreenController } from "./screens/BlankScreen/BlankScreenController.ts";
 import { GameScreenController as NewYorkScreenController } from "./screens/NewYorkScreen/GameScreenController.ts";
+import { GameScreenController as DCScreenController } from "./screens/DCScreen/GameScreenController.ts";
+import { PostcardScreenController } from "./screens/PostcardScreen/PostcardScreenController.ts";
+import { GameScreenController as SanDiegoScreenController } from "./screens/SanDiegoScreen/GameScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
+import { LAMapController } from "./screens/LosAngelesScreen/LosAngelesGameController.ts";
 
 /**
  * Main Application - Coordinates all screens
@@ -31,7 +34,10 @@ class App implements ScreenSwitcher {
   private resultsController: ResultsScreenController;
   private blankController: BlankScreenController;
   private newYorkController: NewYorkScreenController;
-  private chicagoController: ChicagoScreenController;
+  private dcController: DCScreenController;
+  private postcardController: PostcardScreenController;
+  private sanDiegoController: SanDiegoScreenController;
+  private losAnglesController: LAMapController;
 
   /**
    * Constructor - Initializes the application and sets up all screens
@@ -67,8 +73,10 @@ class App implements ScreenSwitcher {
     this.resultsController = new ResultsScreenController(this);
     this.blankController = new BlankScreenController();
     this.newYorkController = new NewYorkScreenController(this);
-    this.chicagoController = new ChicagoScreenController(this);
-
+    this.dcController = new DCScreenController(this);
+    this.postcardController = new PostcardScreenController(this);
+    this.sanDiegoController = new SanDiegoScreenController(this);
+    this.losAnglesController = new LAMapController(this);
     // Add all screen groups to the layer
     // All screens exist simultaneously but only one is visible at a time
     // This allows for smooth transitions between screens without re-rendering
@@ -79,7 +87,10 @@ class App implements ScreenSwitcher {
     this.layer.add(this.resultsController.getView().getGroup());
     this.layer.add(this.blankController.getView().getGroup());
     this.layer.add(this.newYorkController.getView().getGroup());
-    this.layer.add(this.chicagoController.getView().getGroup());
+    this.layer.add(this.dcController.getView().getGroup());
+    this.layer.add(this.postcardController.getView().getGroup());
+    this.layer.add(this.sanDiegoController.getView().getGroup());
+    this.layer.add(this.losAnglesController.getView().getGroup());
 
     // Draw the layer (render everything to the canvas)
     // This initial render makes all screens available, though only one will be visible
@@ -122,7 +133,10 @@ class App implements ScreenSwitcher {
     this.resultsController.hide();
     this.blankController.hide();
     this.newYorkController.hide();
-    this.chicagoController.hide();
+    this.dcController.hide();
+    this.postcardController.hide();
+    this.sanDiegoController.hide();
+    this.losAnglesController.hide();
 
     // Show the requested screen based on the screen type
     // Each screen type has its own initialization logic
@@ -150,11 +164,8 @@ class App implements ScreenSwitcher {
         break;
 
       case "result":
-        // Show results screen with the final score and optional outcome metadata
-        this.resultsController.setOutcomeContext(
-          screen.outcome,
-          screen.message
-        );
+        // Show results screen with the final score
+        // This displays the player's performance after completing the game
         this.resultsController.showResults(screen.score);
         break;
 
@@ -173,9 +184,24 @@ class App implements ScreenSwitcher {
         this.bostonController.startGame();
         break;
 
-      case "chicago":
-        // Show Chicago museum matching mini-game
-        this.chicagoController.startGame();
+      case "postcard":
+        // Show postcard collection screen
+        this.postcardController.show();
+        break;
+
+      case "dc":
+        // Show Washington DC memory matching mini-game
+        this.dcController.startGame();
+        break;
+
+      case "losangeles":
+        // Show Los Angeles game
+        this.losAnglesController.startGame();
+        break;
+
+      case "sandiego":
+        // Show San Diego Wordle mini-game
+        this.sanDiegoController.startGame();
         break;
     }
   }
