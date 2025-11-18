@@ -21,6 +21,7 @@ export interface View {
  * - "postcard": Postcard collection screen
  * - "losangeles": Los Angeles mini-game screen
  * - "sandiego": San Diego Wordle mini-game screen
+ * - "chicago": Chicago museum matching mini-game screen
  */
 export type Screen =
   | { type: "menu" }
@@ -34,7 +35,8 @@ export type Screen =
   | { type: "dc" }
   | { type: "postcard" }
   | { type: "losangeles" }
-  | { type: "sandiego" };
+  | { type: "sandiego" }
+  | { type: "chicago" };
 
 export abstract class ScreenController {
   abstract getView(): View;
