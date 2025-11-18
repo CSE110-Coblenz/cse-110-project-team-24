@@ -13,6 +13,7 @@ import { GameScreenController as SanDiegoScreenController } from "./screens/SanD
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 import { LAMapController } from "./screens/LosAngelesScreen/LosAngelesGameController.ts";
 import { GameScreenController as ChicagoScreenController } from "./screens/ChicagoScreen/GameScreenController.ts";
+import { CityInfoController } from "./screens/CityInfoScreen/CityInfoScreenController.ts";
 
 /**
  * Main Application - Coordinates all screens
@@ -35,11 +36,13 @@ class App implements ScreenSwitcher {
   private resultsController: ResultsScreenController;
   private blankController: BlankScreenController;
   private newYorkController: NewYorkScreenController;
+  
   private dcController: DCScreenController;
   private postcardController: PostcardScreenController;
   private sanDiegoController: SanDiegoScreenController;
   private losAnglesController: LAMapController;
   private chicagoController: ChicagoScreenController;
+  private cityInfoController: CityInfoController;
 
   /**
    * Constructor - Initializes the application and sets up all screens
@@ -75,11 +78,14 @@ class App implements ScreenSwitcher {
     this.resultsController = new ResultsScreenController(this);
     this.blankController = new BlankScreenController();
     this.newYorkController = new NewYorkScreenController(this);
+    
+
     this.dcController = new DCScreenController(this);
     this.postcardController = new PostcardScreenController(this);
     this.sanDiegoController = new SanDiegoScreenController(this);
     this.losAnglesController = new LAMapController(this);
     this.chicagoController = new ChicagoScreenController(this);
+    this.cityInfoController = new CityInfoController(this);
     // Add all screen groups to the layer
     // All screens exist simultaneously but only one is visible at a time
     // This allows for smooth transitions between screens without re-rendering
@@ -90,11 +96,13 @@ class App implements ScreenSwitcher {
     this.layer.add(this.resultsController.getView().getGroup());
     this.layer.add(this.blankController.getView().getGroup());
     this.layer.add(this.newYorkController.getView().getGroup());
+    
     this.layer.add(this.dcController.getView().getGroup());
     this.layer.add(this.postcardController.getView().getGroup());
     this.layer.add(this.sanDiegoController.getView().getGroup());
     this.layer.add(this.losAnglesController.getView().getGroup());
     this.layer.add(this.chicagoController.getView().getGroup());
+    this.layer.add(this.cityInfoController.getView().getGroup());
 
     // Draw the layer (render everything to the canvas)
     // This initial render makes all screens available, though only one will be visible
@@ -137,11 +145,13 @@ class App implements ScreenSwitcher {
     this.resultsController.hide();
     this.blankController.hide();
     this.newYorkController.hide();
+    
     this.dcController.hide();
     this.postcardController.hide();
     this.sanDiegoController.hide();
     this.losAnglesController.hide();
     this.chicagoController.hide();
+    this.cityInfoController.hide();
 
     // Show the requested screen based on the screen type
     // Each screen type has its own initialization logic
@@ -212,6 +222,11 @@ class App implements ScreenSwitcher {
       case "chicago":
         // Show Chicago museum matching mini-game
         this.chicagoController.startGame();
+        break;
+        
+      case "cityinfo":
+        // Show city information screen for the specified city
+        this.cityInfoController.displayCityInfo(screen.cityName);
         break;
     }
   }

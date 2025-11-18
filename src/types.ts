@@ -36,7 +36,8 @@ export type Screen =
   | { type: "postcard" }
   | { type: "losangeles" }
   | { type: "sandiego" }
-  | { type: "chicago" };
+  | { type: "chicago" }
+  | { type: "cityinfo"; cityName: string };
 
 export abstract class ScreenController {
   abstract getView(): View;
