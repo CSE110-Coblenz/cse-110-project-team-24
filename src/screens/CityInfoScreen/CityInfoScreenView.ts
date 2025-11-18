@@ -57,7 +57,7 @@ export class CityInfoView implements View {
             x: 0 + STAGE_WIDTH / 10,
             y: 0 + STAGE_HEIGHT / 20,
             text: cityInfo.cityName,
-            fontSize: 100,
+            fontSize: 50,
             fontFamily: 'Arial',
             fill: 'black',
         });
@@ -69,7 +69,7 @@ export class CityInfoView implements View {
             x: 0 + STAGE_WIDTH / 5.5,
             y: 0 + STAGE_HEIGHT / 8,
             text: cityInfo.description,
-            fontSize: 70,
+            fontSize: 29,
             fontFamily: 'Arial',
             fill: 'black',
             width: STAGE_WIDTH - STAGE_WIDTH / 1.4,
@@ -107,7 +107,7 @@ export class CityInfoView implements View {
             x: STAGE_WIDTH - (STAGE_WIDTH / 10) * 3,
             y: STAGE_HEIGHT / 20,
             text: cityInfo.minigameTitle,
-            fontSize: 100,
+            fontSize: 50,
             fontFamily: 'Arial',
             fill: 'black',
         });
@@ -119,7 +119,7 @@ export class CityInfoView implements View {
             x: STAGE_WIDTH - STAGE_WIDTH / 5.5,
             y: 0 + STAGE_HEIGHT / 8,
             text: cityInfo.minigameInfo,
-            fontSize: 70,
+            fontSize: 29,
             fontFamily: 'Arial',
             fill: 'black',
             width: STAGE_WIDTH - STAGE_WIDTH / 1.4,
@@ -131,8 +131,8 @@ export class CityInfoView implements View {
         const playButton = new Konva.Rect({
             x: STAGE_WIDTH - STAGE_WIDTH / 5 - 150,
             y: STAGE_HEIGHT / 2.5,
-            width: 500,
-            height: 300,
+            width: STAGE_WIDTH / 6,
+            height: STAGE_HEIGHT / 6,
             fill: 'green',
             cornerRadius: 20,
         });
@@ -151,7 +151,7 @@ export class CityInfoView implements View {
             x: playButton.x() + playButton.width() / 2,
             y: playButton.y() + playButton.height() / 2,
             text: "Play Minigame",
-            fontSize: 70,
+            fontSize: 40,
             fontFamily: 'Arial',
             fill: 'white',
         });
