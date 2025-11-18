@@ -1,12 +1,10 @@
 import type { Group } from "konva/lib/Group";
 
-
 export interface View {
- getGroup(): Group;
- show(): void;
- hide(): void;
+  getGroup(): Group;
+  show(): void;
+  hide(): void;
 }
-
 
 /**
  * Screen types for navigation
@@ -25,37 +23,31 @@ export interface View {
  * - "sandiego": San Diego Wordle mini-game screen
  */
 export type Screen =
- | { type: "menu" }
- | { type: "about" }
- | { type: "home" }
- | { type: "game" }
- | { type: "result"; score: number }
- | { type: "blank" }
- | { type: "newyork" }
- | { type: "boston" }
- | { type: "dc" }
- | { type: "postcard" }
- | { type: "losangeles" }
- | { type: "sandiego" };
+  | { type: "menu" }
+  | { type: "about" }
+  | { type: "home" }
+  | { type: "game" }
+  | { type: "result"; score: number }
+  | { type: "blank" }
+  | { type: "newyork" }
+  | { type: "boston" }
+  | { type: "dc" }
+  | { type: "postcard" }
+  | { type: "losangeles" }
+  | { type: "sandiego" };
 
 export abstract class ScreenController {
- abstract getView(): View;
+  abstract getView(): View;
 
+  show(): void {
+    this.getView().show();
+  }
 
- show(): void {
-   this.getView().show();
- }
-
-
- hide(): void {
-   this.getView().hide();
- }
+  hide(): void {
+    this.getView().hide();
+  }
 }
-
 
 export interface ScreenSwitcher {
- switchToScreen(screen: Screen): void;
+  switchToScreen(screen: Screen): void;
 }
-
-
-
