@@ -77,7 +77,7 @@ export class LAMapView {
      x: 250,
      y: 0,
      width: 4000,
-     height: 2000,
+     height: 620,
      fill: "#E8D4A2",
    });
        land.listening(false);
@@ -88,7 +88,7 @@ export class LAMapView {
      x: 600,
      y: 600,
      width: 2000,
-     height: 3000,
+     height: 4000,
      fill: "#E8D4A2",
    });
        land2.listening(false);
