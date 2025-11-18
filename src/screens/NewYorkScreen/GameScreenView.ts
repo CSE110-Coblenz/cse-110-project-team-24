@@ -2,7 +2,7 @@ import Konva from "konva";
 import type { View } from "../../types.ts";
 import { Road } from "./Road.ts";
 import { Taxi } from "./Taxi.ts";
-import { STAGE_WIDTH } from "../../constants.ts";
+import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
 import { getFactPairByIndex, NEW_YORK_FACT_PAIRS } from "./NewYorkFacts.ts";
 import {
   createLeftToRightAnimation,
@@ -25,9 +25,21 @@ export class GameScreenView implements View {
   private taxi2Text!: Konva.Text;
   private scoreText!: Konva.Text;
   private isFact1OnTaxi1Flag: boolean = true; // Randomized assignment per round
+  private roundsSeenSinceReset: number = 0;
+  private retryOverlayGroup: Konva.Group;
+  private retryMessage: Konva.Text;
+  private retryButtonGroup: Konva.Group;
+  private exitButtonGroup: Konva.Group;
 
-  constructor(onTaxi1Click: () => void, onTaxi2Click: () => void) {
+  private onCycleComplete?: () => void;
+
+  constructor(
+    onTaxi1Click: () => void,
+    onTaxi2Click: () => void,
+    onCycleComplete?: () => void
+  ) {
     this.group = new Konva.Group({ visible: false });
+    this.onCycleComplete = onCycleComplete;
 
     // Create roads with lane dividers
     // Note: roadHeight parameter is ignored, calculated internally from percentages
@@ -81,9 +93,105 @@ export class GameScreenView implements View {
       text: "Score: 0",
       fontSize: 32,
       fontFamily: "Arial",
-      fill: "black",
+      fill: "white",
     });
     this.group.add(this.scoreText);
+
+    // Retry overlay (hidden by default)
+    this.retryOverlayGroup = new Konva.Group({ visible: false });
+    const overlayBg = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: STAGE_WIDTH,
+      height: STAGE_HEIGHT,
+      fill: "rgba(0, 0, 0, 0.55)",
+    });
+    this.retryOverlayGroup.add(overlayBg);
+
+    const panel = new Konva.Rect({
+      x: STAGE_WIDTH / 2 - 220,
+      y: STAGE_HEIGHT / 2 - 140,
+      width: 440,
+      height: 280,
+      fill: "#ffffff",
+      cornerRadius: 16,
+      stroke: "#1f2937",
+      strokeWidth: 3,
+    });
+    this.retryOverlayGroup.add(panel);
+
+    this.retryMessage = new Konva.Text({
+      x: STAGE_WIDTH / 2,
+      y: STAGE_HEIGHT / 2 - 90,
+      text: "",
+      fontSize: 26,
+      fontFamily: "Arial",
+      fill: "#111827",
+      width: 400,
+      align: "center",
+    });
+    this.retryMessage.offsetX(this.retryMessage.width() / 2);
+    this.retryOverlayGroup.add(this.retryMessage);
+
+    this.retryButtonGroup = new Konva.Group({
+      x: STAGE_WIDTH / 2 - 180,
+      y: STAGE_HEIGHT / 2 + 30,
+    });
+    const retryRect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 160,
+      height: 50,
+      fill: "#16a34a",
+      cornerRadius: 10,
+      stroke: "#15803d",
+      strokeWidth: 2,
+    });
+    const retryText = new Konva.Text({
+      x: 80,
+      y: 15,
+      text: "Try Again",
+      fontSize: 20,
+      fontFamily: "Arial",
+      fill: "#ffffff",
+      align: "center",
+      width: 160,
+    });
+    retryText.offsetX(retryText.width() / 2);
+    this.retryButtonGroup.add(retryRect);
+    this.retryButtonGroup.add(retryText);
+
+    this.exitButtonGroup = new Konva.Group({
+      x: STAGE_WIDTH / 2 + 20,
+      y: STAGE_HEIGHT / 2 + 30,
+    });
+    const exitRect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 160,
+      height: 50,
+      fill: "#2563eb",
+      cornerRadius: 10,
+      stroke: "#1d4ed8",
+      strokeWidth: 2,
+    });
+    const exitText = new Konva.Text({
+      x: 80,
+      y: 15,
+      text: "Exit",
+      fontSize: 20,
+      fontFamily: "Arial",
+      fill: "#ffffff",
+      align: "center",
+      width: 160,
+    });
+    exitText.offsetX(exitText.width() / 2);
+    this.exitButtonGroup.add(exitRect);
+    this.exitButtonGroup.add(exitText);
+
+    this.retryOverlayGroup.add(this.retryButtonGroup);
+    this.retryOverlayGroup.add(this.exitButtonGroup);
+    this.group.add(this.retryOverlayGroup);
   }
 
   /**
@@ -105,6 +213,12 @@ export class GameScreenView implements View {
     this.taxi2Text.text(
       this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1
     );
+
+    this.roundsSeenSinceReset =
+      (this.roundsSeenSinceReset + 1) % NEW_YORK_FACT_PAIRS.length;
+    if (this.currentFactIndex === 0 && this.roundsSeenSinceReset === 0) {
+      this.onCycleComplete?.();
+    }
   }
 
   /**
@@ -132,8 +246,7 @@ export class GameScreenView implements View {
       this.taxi2,
       layer,
       TAXI_WIDTH,
-      TAXI_SPEED,
-      () => this.updateToNextFact()
+      TAXI_SPEED
     );
   }
 
@@ -162,6 +275,34 @@ export class GameScreenView implements View {
   }
 
   /**
+   * Stop taxi animations
+   */
+  stopAnimations(): void {
+    this.taxi1Animation?.stop();
+    this.taxi2Animation?.stop();
+  }
+
+  /**
+   * Reset facts and taxi positions for a fresh game
+   */
+  resetGameState(): void {
+    this.currentFactIndex = 0;
+    const factPair = getFactPairByIndex(this.currentFactIndex);
+    this.isFact1OnTaxi1Flag = Math.random() < 0.5;
+    this.taxi1Text.text(
+      this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2
+    );
+    this.taxi2Text.text(
+      this.isFact1OnTaxi1Flag ? factPair.fact2 : factPair.fact1
+    );
+    // Reset taxi positions to start off-screen like initial load
+    this.taxi1.x(-TAXI_WIDTH);
+    this.taxi2.x(STAGE_WIDTH);
+    this.roundsSeenSinceReset = 0;
+    this.group.getLayer()?.draw();
+  }
+
+  /**
    * Update score display
    */
   updateScore(score: number): void {
@@ -185,5 +326,43 @@ export class GameScreenView implements View {
 
   getGroup(): Konva.Group {
     return this.group;
+  }
+
+  /**
+   * Toggle taxi clickability
+   */
+  setTaxiInteractivity(enabled: boolean): void {
+    this.taxi1.listening(enabled);
+    this.taxi2.listening(enabled);
+  }
+
+  /**
+   * Show retry overlay with callbacks
+   */
+  showRetryOverlay(
+    score: number,
+    total: number,
+    onRetry: () => void,
+    onExit: () => void
+  ): void {
+    this.retryMessage.text(
+      `You scored ${score} out of ${total}.\nKeep trying to nail every fact!`
+    );
+    this.retryMessage.offsetX(this.retryMessage.width() / 2);
+
+    this.retryButtonGroup.off("click");
+    this.exitButtonGroup.off("click");
+    this.retryButtonGroup.on("click", onRetry);
+    this.exitButtonGroup.on("click", onExit);
+
+    this.retryOverlayGroup.visible(true);
+    this.group.getLayer()?.draw();
+  }
+
+  hideRetryOverlay(): void {
+    this.retryOverlayGroup.visible(false);
+    this.retryButtonGroup.off("click");
+    this.exitButtonGroup.off("click");
+    this.group.getLayer()?.draw();
   }
 }

@@ -269,7 +269,8 @@ export class GameScreenView implements View {
         //     this.group.getLayer()?.draw();
         // });
 
-        const cgButtons = new Konva.Group();
+        // Play Again button group
+        const cgPlayAgainGroup = new Konva.Group();
         const cgPlayRect = new Konva.Rect({
             x: STAGE_WIDTH / 2 - 210,
             y: STAGE_HEIGHT / 2 + 95,
@@ -290,9 +291,11 @@ export class GameScreenView implements View {
             align: "center",
         });
         cgPlayText.offsetX(cgPlayText.width() / 2);
-        cgButtons.add(cgPlayRect);
-        cgButtons.add(cgPlayText);
+        cgPlayAgainGroup.add(cgPlayRect);
+        cgPlayAgainGroup.add(cgPlayText);
 
+        // Menu button group
+        const cgMenuGroup = new Konva.Group();
         const cgMenuRect = new Konva.Rect({
             x: STAGE_WIDTH / 2 + 30,
             y: STAGE_HEIGHT / 2 + 95,
@@ -313,14 +316,15 @@ export class GameScreenView implements View {
             align: "center",
         });
         cgMenuText.offsetX(cgMenuText.width() / 2);
-        cgButtons.add(cgMenuRect);
-        cgButtons.add(cgMenuText);
+        cgMenuGroup.add(cgMenuRect);
+        cgMenuGroup.add(cgMenuText);
 
         this.congratsGroup.add(cgBg);
         this.congratsGroup.add(cgTitle);
         this.congratsGroup.add(cgImageHolder);
         this.congratsGroup.add(cgImageText);
-        this.congratsGroup.add(cgButtons);
+        this.congratsGroup.add(cgPlayAgainGroup);
+        this.congratsGroup.add(cgMenuGroup);
         this.group.add(this.congratsGroup);
     }
 
