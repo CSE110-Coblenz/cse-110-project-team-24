@@ -17,22 +17,24 @@ export interface View {
  *   - score: Final score to display on results screen
  * - "newyork": New York mini-game screen
  * - "boston": Boston trivia mini-game screen
+ * - "dc": Washington DC memory matching mini-game screen
+ * - "postcard": Postcard collection screen
+ * - "losangeles": Los Angeles mini-game screen
+ * - "sandiego": San Diego Wordle mini-game screen
  */
 export type Screen =
   | { type: "menu" }
   | { type: "about" }
   | { type: "home" }
   | { type: "game" }
-  | {
-      type: "result";
-      score: number;
-      outcome?: "win" | "loss";
-      message?: string;
-    }
+  | { type: "result"; score: number }
   | { type: "blank" }
   | { type: "newyork" }
   | { type: "boston" }
-  | { type: "chicago" };
+  | { type: "dc" }
+  | { type: "postcard" }
+  | { type: "losangeles" }
+  | { type: "sandiego" };
 
 export abstract class ScreenController {
   abstract getView(): View;
