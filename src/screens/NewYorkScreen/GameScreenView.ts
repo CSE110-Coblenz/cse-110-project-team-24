@@ -30,6 +30,7 @@ export class GameScreenView implements View {
   private retryMessage: Konva.Text;
   private retryButtonGroup: Konva.Group;
   private exitButtonGroup: Konva.Group;
+  private questionText: Konva.Text;
 
   private onCycleComplete?: () => void;
 
@@ -96,6 +97,27 @@ export class GameScreenView implements View {
       fill: "white",
     });
     this.group.add(this.scoreText);
+
+    // Question prompt in center of screen
+    const initialFactPair = getFactPairByIndex(this.currentFactIndex);
+    this.questionText = new Konva.Text({
+      x: STAGE_WIDTH / 2,
+      y: STAGE_HEIGHT / 2,
+      text: initialFactPair.question,
+      fontSize: 48,
+      fontFamily: "Arial",
+      fill: "#000000",
+      align: "center",
+      fontStyle: "bold",
+      shadowColor: "rgba(255, 255, 255, 0.8)",
+      shadowBlur: 8,
+      shadowOffsetX: 2,
+      shadowOffsetY: 2,
+      width: STAGE_WIDTH * 0.8,
+    });
+    this.questionText.offsetX(this.questionText.width() / 2);
+    this.questionText.offsetY(this.questionText.height() / 2);
+    this.group.add(this.questionText);
 
     // Retry overlay (hidden by default)
     this.retryOverlayGroup = new Konva.Group({ visible: false });
@@ -203,6 +225,11 @@ export class GameScreenView implements View {
       (this.currentFactIndex + 1) % NEW_YORK_FACT_PAIRS.length;
     const factPair = getFactPairByIndex(this.currentFactIndex);
 
+    // Update question text
+    this.questionText.text(factPair.question);
+    this.questionText.offsetX(this.questionText.width() / 2);
+    this.questionText.offsetY(this.questionText.height() / 2);
+
     // Randomize assignment each round
     this.isFact1OnTaxi1Flag = Math.random() < 0.5;
 
@@ -289,6 +316,12 @@ export class GameScreenView implements View {
     this.currentFactIndex = 0;
     const factPair = getFactPairByIndex(this.currentFactIndex);
     this.isFact1OnTaxi1Flag = Math.random() < 0.5;
+
+    // Update question text
+    this.questionText.text(factPair.question);
+    this.questionText.offsetX(this.questionText.width() / 2);
+    this.questionText.offsetY(this.questionText.height() / 2);
+
     this.taxi1Text.text(
       this.isFact1OnTaxi1Flag ? factPair.fact1 : factPair.fact2
     );
@@ -356,11 +389,13 @@ export class GameScreenView implements View {
     this.exitButtonGroup.on("click", onExit);
 
     this.retryOverlayGroup.visible(true);
+    this.questionText.visible(false);
     this.group.getLayer()?.draw();
   }
 
   hideRetryOverlay(): void {
     this.retryOverlayGroup.visible(false);
+    this.questionText.visible(true);
     this.retryButtonGroup.off("click");
     this.exitButtonGroup.off("click");
     this.group.getLayer()?.draw();
