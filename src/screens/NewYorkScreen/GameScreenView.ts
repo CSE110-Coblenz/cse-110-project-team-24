@@ -225,6 +225,9 @@ export class GameScreenView implements View {
       (this.currentFactIndex + 1) % NEW_YORK_FACT_PAIRS.length;
     const factPair = getFactPairByIndex(this.currentFactIndex);
 
+    // Reset bubble colors before updating to new facts
+    this.resetTaxiBubbleColors();
+
     // Update question text
     this.questionText.text(factPair.question);
     this.questionText.offsetX(this.questionText.width() / 2);
@@ -317,6 +320,9 @@ export class GameScreenView implements View {
     const factPair = getFactPairByIndex(this.currentFactIndex);
     this.isFact1OnTaxi1Flag = Math.random() < 0.5;
 
+    // Reset bubble colors
+    this.resetTaxiBubbleColors();
+
     // Update question text
     this.questionText.text(factPair.question);
     this.questionText.offsetX(this.questionText.width() / 2);
@@ -398,6 +404,62 @@ export class GameScreenView implements View {
     this.questionText.visible(true);
     this.retryButtonGroup.off("click");
     this.exitButtonGroup.off("click");
+    this.group.getLayer()?.draw();
+  }
+
+  /**
+   * Highlight a taxi's text bubble green (correct answer)
+   */
+  highlightTaxiCorrect(taxiNumber: 1 | 2): void {
+    const taxiGroup = taxiNumber === 1 ? this.taxi1 : this.taxi2;
+    const textBubbleGroup = taxiGroup.children[1] as Konva.Group;
+    if (textBubbleGroup && textBubbleGroup.children[0] instanceof Konva.Rect) {
+      const bubbleRect = textBubbleGroup.children[0] as Konva.Rect;
+      bubbleRect.fill("#10b981"); // Green
+      bubbleRect.stroke("#059669"); // Darker green border
+      this.group.getLayer()?.draw();
+    }
+  }
+
+  /**
+   * Highlight a taxi's text bubble red (wrong answer)
+   */
+  highlightTaxiWrong(taxiNumber: 1 | 2): void {
+    const taxiGroup = taxiNumber === 1 ? this.taxi1 : this.taxi2;
+    const textBubbleGroup = taxiGroup.children[1] as Konva.Group;
+    if (textBubbleGroup && textBubbleGroup.children[0] instanceof Konva.Rect) {
+      const bubbleRect = textBubbleGroup.children[0] as Konva.Rect;
+      bubbleRect.fill("#ef4444"); // Red
+      bubbleRect.stroke("#dc2626"); // Darker red border
+      this.group.getLayer()?.draw();
+    }
+  }
+
+  /**
+   * Reset text bubble colors to default (white)
+   */
+  resetTaxiBubbleColors(): void {
+    const taxi1BubbleGroup = this.taxi1.children[1] as Konva.Group;
+    const taxi2BubbleGroup = this.taxi2.children[1] as Konva.Group;
+
+    if (
+      taxi1BubbleGroup &&
+      taxi1BubbleGroup.children[0] instanceof Konva.Rect
+    ) {
+      const bubble1Rect = taxi1BubbleGroup.children[0] as Konva.Rect;
+      bubble1Rect.fill("white");
+      bubble1Rect.stroke("black");
+    }
+
+    if (
+      taxi2BubbleGroup &&
+      taxi2BubbleGroup.children[0] instanceof Konva.Rect
+    ) {
+      const bubble2Rect = taxi2BubbleGroup.children[0] as Konva.Rect;
+      bubble2Rect.fill("white");
+      bubble2Rect.stroke("black");
+    }
+
     this.group.getLayer()?.draw();
   }
 }
