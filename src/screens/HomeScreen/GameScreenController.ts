@@ -18,23 +18,23 @@ export class GameScreenController extends ScreenController {
    super();
    this.screenSwitcher = screenSwitcher;
 
-   this.model = new GameScreenModel();
-   this.view = new GameScreenView(() => {});
-   // When a city is clicked, navigate to the appropriate screen
-   this.view.setCityClickHandler((city: City) => {
-     if (city === "New York") {
-       this.screenSwitcher.switchToScreen({ type: "newyork" });
-     } else if (city === "Boston") {
-       this.screenSwitcher.switchToScreen({ type: "boston" });
-    } else if (city === "Los Angeles") {
-      this.screenSwitcher.switchToScreen({ type: "losangeles" });
-    } else if (city === "San Diego") {
-      this.screenSwitcher.switchToScreen({ type: "sandiego" });
-    } else {
-       // For other cities, show blank screen for now
-       this.screenSwitcher.switchToScreen({ type: "blank" });
-     }
-   });
+    this.model = new GameScreenModel();
+    this.view = new GameScreenView(() => {});
+    // When a city is clicked, navigate to the appropriate screen
+    this.view.setCityClickHandler((city: City) => {
+      if (city === "New York") {
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "newyork" });
+      } else if (city === "Boston") {
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "boston" });
+      } else if (city === "Los Angeles") {
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "losangeles" });
+      } else if (city === "San Diego") {
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "sandiego" });
+      } else {
+        // For other cities, show blank screen for now
+        this.screenSwitcher.switchToScreen({ type: "blank" });
+      }
+    });
 
   // Set up postcard button to navigate to postcard screen
   this.view.setPostcardButtonHandler(() => {

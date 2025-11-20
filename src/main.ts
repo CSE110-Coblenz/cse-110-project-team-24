@@ -11,6 +11,7 @@ import { PostcardScreenController } from "./screens/PostcardScreen/PostcardScree
 import { GameScreenController as SanDiegoScreenController } from "./screens/SanDiegoScreen/GameScreenController.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 import { LAMapController } from "./screens/LosAngelesScreen/LosAngelesGameController.ts";
+import { CityInfoController } from "./screens/CityInfoScreen/CityInfoScreenController.ts";
 
 
 /**
@@ -37,6 +38,7 @@ class App implements ScreenSwitcher {
  private postcardController: PostcardScreenController;
  private sanDiegoController: SanDiegoScreenController;
  private losAnglesController: LAMapController;
+ private cityInfoController: CityInfoController;
 
 
  /**
@@ -77,6 +79,7 @@ class App implements ScreenSwitcher {
   this.postcardController = new PostcardScreenController(this);
   this.sanDiegoController = new SanDiegoScreenController(this);
   this.losAnglesController = new LAMapController(this);
+  this.cityInfoController = new CityInfoController(this);
    // Add all screen groups to the layer
    // All screens exist simultaneously but only one is visible at a time
    // This allows for smooth transitions between screens without re-rendering
@@ -89,7 +92,8 @@ class App implements ScreenSwitcher {
    this.layer.add(this.newYorkController.getView().getGroup());
   this.layer.add(this.postcardController.getView().getGroup());
   this.layer.add(this.sanDiegoController.getView().getGroup());
-   this.layer.add(this.losAnglesController.getView().getGroup());
+  this.layer.add(this.losAnglesController.getView().getGroup());
+  this.layer.add(this.cityInfoController.getView().getGroup());
 
 
    // Draw the layer (render everything to the canvas)
@@ -137,7 +141,8 @@ class App implements ScreenSwitcher {
    this.newYorkController.hide();
   this.postcardController.hide();
   this.sanDiegoController.hide();
-   this.losAnglesController.hide();
+  this.losAnglesController.hide();
+  this.cityInfoController.hide();
 
 
    // Show the requested screen based on the screen type
@@ -208,6 +213,10 @@ class App implements ScreenSwitcher {
     case "sandiego":
        // Show San Diego Wordle mini-game
        this.sanDiegoController.startGame();
+       break;
+     case "cityinfo":
+       // Show city information screen for the specified city
+       this.cityInfoController.displayCityInfo(screen.cityName);
        break;
    }
  }
