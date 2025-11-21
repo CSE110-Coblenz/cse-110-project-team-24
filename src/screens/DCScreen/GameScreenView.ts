@@ -56,6 +56,7 @@ export class GameScreenView implements View {
 
 	// UI elements
 	private matchesText: Konva.Text; // Displays "Matches: X/8"
+	private timerText: Konva.Text; // Displays "Time: XXs"
 	private completionPopup: Konva.Group | null = null; // Completion popup (shown when game is complete)
 
 	// Game state
@@ -98,6 +99,19 @@ export class GameScreenView implements View {
 			fontStyle: "bold",
 		});
 		this.group.add(this.matchesText);
+
+		// Block 3a: Create timer display (top-left corner)
+		// Shows remaining time like "Time: 90s"
+		this.timerText = new Konva.Text({
+			x: 20,
+			y: 20,
+			text: "Time: 90s",
+			fontSize: 24,
+			fontFamily: "Arial",
+			fill: "#1a1a1a",
+			fontStyle: "bold",
+		});
+		this.group.add(this.timerText);
 	}
 
 	/**
@@ -440,6 +454,19 @@ export class GameScreenView implements View {
 	 * @param matchesFound - Number of matches found so far
 	 * @param totalPairs - Total number of pairs to match
 	 */
+	/**
+	 * Update the timer display
+	 * 
+	 * @param timeRemaining - The remaining time in seconds
+	 */
+	updateTimer(timeRemaining: number): void {
+		// Change color to red when time is running low (less than 15 seconds)
+		const color = timeRemaining <= 15 ? "#dc2626" : "#1a1a1a";
+		this.timerText.text(`Time: ${timeRemaining}s`);
+		this.timerText.fill(color);
+		this.group.getLayer()?.draw();
+	}
+
 	updateMatches(matchesFound: number, totalPairs: number): void {
 		// Update the text to show current progress
 		this.matchesText.text(`Matches: ${matchesFound}/${totalPairs}`);
@@ -486,14 +513,16 @@ export class GameScreenView implements View {
 	}
 
 	/**
-	 * Show completion popup - Called when all pairs have been matched
+	 * Show completion popup - Called when game ends (win or lose)
 	 * 
 	 * Displays a popup with:
-	 * - "Game Complete" message
-	 * - "You have completed Washington DC" message
+	 * - Win/Lose message
+	 * - Appropriate message text
 	 * - "Return to Home" button
+	 * 
+	 * @param result - "win" if all pairs matched, "loss" if time ran out
 	 */
-	showCompletionPopup(): void {
+	showCompletionPopup(result: "win" | "loss" = "win"): void {
 		// Block 1: Remove existing popup if it exists
 		if (this.completionPopup) {
 			this.completionPopup.destroy();
@@ -508,6 +537,8 @@ export class GameScreenView implements View {
 		// Block 3: Create popup background panel
 		const panelWidth = 500;
 		const panelHeight = 300;
+		// Use different colors for win vs loss
+		const borderColor = result === "win" ? "#22c55e" : "#dc2626"; // Green for win, red for loss
 		const panel = new Konva.Rect({
 			x: -panelWidth / 2,
 			y: -panelHeight / 2,
@@ -515,38 +546,60 @@ export class GameScreenView implements View {
 			height: panelHeight,
 			fill: "rgba(255, 255, 255, 0.98)", // White background with slight transparency
 			cornerRadius: 20,
-			stroke: "#22c55e", // Green border to match matched cards
+			stroke: borderColor,
 			strokeWidth: 4,
 			shadowColor: "black",
 			shadowBlur: 15,
 			shadowOpacity: 0.5,
 		});
 
-		// Block 4: Create "Game Complete!" title text
-		const titleText = new Konva.Text({
-			x: 0,
-			y: -100,
-			text: "Game Complete!",
-			fontSize: 48,
-			fontFamily: "Arial",
-			fill: "#22c55e", // Green color
-			fontStyle: "bold",
-			align: "center",
-		});
+		// Block 4: Create title text based on result
+		const titleText = result === "win" 
+			? new Konva.Text({
+				x: 0,
+				y: -100,
+				text: "You Win!",
+				fontSize: 48,
+				fontFamily: "Arial",
+				fill: "#22c55e", // Green color
+				fontStyle: "bold",
+				align: "center",
+			})
+			: new Konva.Text({
+				x: 0,
+				y: -100,
+				text: "Time's Up!",
+				fontSize: 48,
+				fontFamily: "Arial",
+				fill: "#dc2626", // Red color
+				fontStyle: "bold",
+				align: "center",
+			});
 		// Center the text using offsetX (shift text so its center aligns with x position)
 		titleText.offsetX(titleText.width() / 2);
 
-		// Block 5: Create completion message
-		const messageText = new Konva.Text({
-			x: 0,
-			y: -30,
-			text: "You have completed Washington DC!",
-			fontSize: 24,
-			fontFamily: "Arial",
-			fill: "#1a1a1a",
-			align: "center",
-			width: panelWidth - 40, // Allow text to wrap if needed
-		});
+		// Block 5: Create message text based on result
+		const messageText = result === "win"
+			? new Konva.Text({
+				x: 0,
+				y: -30,
+				text: "You have completed Washington DC!",
+				fontSize: 24,
+				fontFamily: "Arial",
+				fill: "#1a1a1a",
+				align: "center",
+				width: panelWidth - 40, // Allow text to wrap if needed
+			})
+			: new Konva.Text({
+				x: 0,
+				y: -30,
+				text: "Time ran out! Try again to earn your postcard.",
+				fontSize: 24,
+				fontFamily: "Arial",
+				fill: "#1a1a1a",
+				align: "center",
+				width: panelWidth - 40, // Allow text to wrap if needed
+			});
 		// Center the text using offsetX
 		messageText.offsetX(messageText.width() / 2);
 

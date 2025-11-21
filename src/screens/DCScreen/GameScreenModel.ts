@@ -5,6 +5,7 @@
  * - Tracking which presidents and accomplishments have been matched
  * - Counting how many matches have been found
  * - Determining when the game is complete
+ * - Managing the game timer
  * 
  * The Model does NOT handle visual display - that's the View's job.
  * The Model does NOT handle game logic - that's the Controller's job.
@@ -19,6 +20,10 @@ export class GameScreenModel {
 	private matchedPresidents: Set<string> = new Set();
 	// Set of accomplishments that have been successfully matched
 	private matchedAccomplishments: Set<string> = new Set();
+	// Timer state - time remaining in seconds (90 seconds total)
+	private timeRemaining: number = 90;
+	// Whether the game has ended (either win or lose)
+	private gameEnded: boolean = false;
 
 	/**
 	 * Constructor - Initialize the model with the total number of pairs
@@ -41,6 +46,10 @@ export class GameScreenModel {
 		this.matchedPresidents.clear();
 		// Clear all matched accomplishments
 		this.matchedAccomplishments.clear();
+		// Reset timer to 90 seconds
+		this.timeRemaining = 90;
+		// Reset game ended flag
+		this.gameEnded = false;
 	}
 
 	/**
@@ -136,5 +145,71 @@ export class GameScreenModel {
 	 */
 	isGameComplete(): boolean {
 		return this.matchesFound >= this.totalPairs;
+	}
+
+	/**
+	 * Decrement the timer by 1 second
+	 * 
+	 * Called by the Controller every second to update the timer
+	 * 
+	 * @returns The remaining time in seconds
+	 */
+	decrementTimer(): number {
+		if (this.timeRemaining > 0) {
+			this.timeRemaining--;
+		}
+		return this.timeRemaining;
+	}
+
+	/**
+	 * Get the current time remaining
+	 * 
+	 * @returns The remaining time in seconds
+	 */
+	getTimeRemaining(): number {
+		return this.timeRemaining;
+	}
+
+	/**
+	 * Check if time has run out (game lost)
+	 * 
+	 * @returns true if time has run out, false otherwise
+	 */
+	isTimeUp(): boolean {
+		return this.timeRemaining <= 0;
+	}
+
+	/**
+	 * Mark the game as ended
+	 */
+	setGameEnded(): void {
+		this.gameEnded = true;
+	}
+
+	/**
+	 * Check if the game has ended
+	 * 
+	 * @returns true if the game has ended, false otherwise
+	 */
+	hasGameEnded(): boolean {
+		return this.gameEnded;
+	}
+
+	/**
+	 * Get the game result
+	 * 
+	 * @returns "win" if all pairs matched, "loss" if time ran out, null if game is still in progress
+	 */
+	getGameResult(): "win" | "loss" | null {
+		if (!this.gameEnded) {
+			return null;
+		}
+		if (this.isGameComplete()) {
+			return "win";
+		}
+		if (this.isTimeUp()) {
+			return "loss";
+		}
+		return null;
 	}
 }
