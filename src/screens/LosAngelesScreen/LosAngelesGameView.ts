@@ -439,6 +439,10 @@ export class LAMapView {
     this.layer.draw();
   }
 
+    public getLayer(): Konva.Layer {
+    return this.layer;
+  }
+
 }
 
 export let cityProgress: Record<string, boolean> = {

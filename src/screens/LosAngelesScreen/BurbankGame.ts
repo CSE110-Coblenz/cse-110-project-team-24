@@ -6,6 +6,14 @@ export function resetBBScore(){
   score = 0; 
 }
 
+export function cleanupBBGame(layer: Konva.Layer) {
+  if (layer) {
+    layer.destroyChildren();
+    layer.draw();
+  }
+}
+
+
 
 export function startBBGame(layer: Konva.Layer) {
     score = 0;

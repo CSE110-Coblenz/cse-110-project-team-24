@@ -1,16 +1,16 @@
 import type { ScreenSwitcher } from "../../types";
 import { LAMapView, cityProgress } from "./LosAngelesGameView";
 
-import { resetHWScore } from "./HollywoodGame";
-import { resetBBScore } from "./BurbankGame";
-import { resetIGScore } from "./InglewoodGame";
-import { resetLBScore } from "./LongBeachGame";
-import { resetMPScore } from "./MontereyParkGame";
-import { resetSFSScore } from "./SantaFeSpringsGame";
-import { resetSMScore } from "./SantaMonicaGame";
-import { resetPDScore } from "./PasadenaGame";
-import { resetLAXScore } from "./LAXgame";
-import { resetUSScore } from "./UnionStationGame";
+import { resetHWScore, cleanupHWGame } from "./HollywoodGame";
+import { resetBBScore, cleanupBBGame } from "./BurbankGame";
+import { resetIGScore, cleanupIGGame } from "./InglewoodGame";
+import { resetLBScore, cleanupLBGame } from "./LongBeachGame";
+import { resetMPScore, cleanupMPGame } from "./MontereyParkGame";
+import { resetSFSScore, cleanupSFSGame } from "./SantaFeSpringsGame";
+import { resetSMScore, cleanupSMGame } from "./SantaMonicaGame";
+import { resetPDScore, cleanupPDGame } from "./PasadenaGame";
+import { resetLAXScore, cleanupLAXGame } from "./LAXgame";
+import { resetUSScore, cleanupUSGame } from "./UnionStationGame";
 
 
 export class LAMapController {
@@ -19,7 +19,7 @@ export class LAMapController {
 
   private timerId: number | null = null;
   private startTime = 0;
-  private TIME_LIMIT = 3 * 60 * 1000; // 3 minutes
+  private TIME_LIMIT = 1000 * 3 * 60 ; // 3 minutes
   private finished = false;
   // private controller: LAMapController;
 
@@ -80,6 +80,18 @@ export class LAMapController {
     resetSFSScore();
     resetSMScore();
     resetUSScore();
+
+    cleanupHWGame(this.view.getLayer());
+    cleanupBBGame(this.view.getLayer());
+    cleanupIGGame(this.view.getLayer());
+    cleanupLBGame(this.view.getLayer());
+    cleanupSMGame(this.view.getLayer());
+    cleanupPDGame(this.view.getLayer());
+    cleanupLAXGame(this.view.getLayer());
+    cleanupUSGame(this.view.getLayer());
+    cleanupSFSGame(this.view.getLayer());
+    cleanupMPGame(this.view.getLayer());
+
 
     const cities = [
       "Burbank",

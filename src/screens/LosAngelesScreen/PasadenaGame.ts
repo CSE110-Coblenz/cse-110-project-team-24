@@ -6,6 +6,14 @@ export function resetPDScore(){
   score = 0; 
 }
 
+export function cleanupPDGame(layer: Konva.Layer) {
+  if (layer) {
+    layer.destroyChildren();
+    layer.draw();
+  }
+}
+
+
 export function startPDGame(layer: Konva.Layer) {
     score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
