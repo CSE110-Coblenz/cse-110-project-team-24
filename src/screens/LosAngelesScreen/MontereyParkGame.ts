@@ -2,6 +2,18 @@ import Konva from "konva";
 
 let score = 0; 
 
+export function resetMPScore(){
+  score = 0; 
+}
+
+export function cleanupMPGame(layer: Konva.Layer) {
+  if (layer) {
+    layer.destroyChildren();
+    layer.draw();
+  }
+}
+
+
 export function startMPGame(layer: Konva.Layer) {
     score = 0;
   layer.find(".popup").forEach((n) => n.destroy());

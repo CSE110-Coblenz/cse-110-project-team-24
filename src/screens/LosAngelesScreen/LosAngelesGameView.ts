@@ -1,7 +1,7 @@
 import Konva from "konva";
 import type { ScreenSwitcher } from "../../types";
 
-import { startBBGame } from "./BurbankGame";
+import { startBBGame} from "./BurbankGame";
 import { startHWGame } from "./HollywoodGame";
 import { startIGGame } from "./InglewoodGame";
 import { startLAXGame } from "./LAXgame";
@@ -11,17 +11,23 @@ import { startPDGame } from "./PasadenaGame";
 import { startSFSGame } from "./SantaFeSpringsGame";
 import { startSMGame } from "./SantaMonicaGame";
 import { startUSGame } from "./UnionStationGame";
+import { LAMapController } from "./LosAngelesGameController";
+
 
 export class LAMapView {
   private group: Konva.Group;
   private layer: Konva.Layer;
   private screenSwitcher: ScreenSwitcher;
+  private timerText!: Konva.Text;
+  private controller: LAMapController;
 
-  constructor(screenSwitcher: ScreenSwitcher) {
+
+  constructor(screenSwitcher: ScreenSwitcher, controller:LAMapController) {
     this.group = new Konva.Group({ visible: false });
     this.layer = new Konva.Layer();
     this.layer.add(this.group);
     this.screenSwitcher = screenSwitcher;
+    this.controller = controller;
   }
 
   getGroup(): Konva.Group {
@@ -36,6 +42,7 @@ export class LAMapView {
     this.drawRegions();
     this.drawDirection();
     this.writeStatus();
+    this.drawTimer();
     this.drawFinishBtn();
     this.group.visible(true);
     this.group.getStage()?.draw();
@@ -400,7 +407,10 @@ export class LAMapView {
           break;
         }
       }
-      if (finish) this.screenSwitcher.switchToScreen({ type: "home" });
+      if (finish) {
+        this.controller.completeAllCities();
+        this.screenSwitcher.switchToScreen({ type: "home" });
+      }
       else {
         alert("Please explore all communities in LA before leaving! ");
       }
@@ -408,9 +418,34 @@ export class LAMapView {
     this.group.add(btn);
     this.group.add(text);
   }
+
+  private drawTimer() {
+    this.timerText = new Konva.Text({
+      x: 900,
+      y: 20,
+      text: "Time: 180s",
+      fontSize: 26,
+      fill: "red",
+      fontStyle: "bold",
+    });
+
+    this.group.add(this.timerText);
+  }
+
+
+  public updateTimer(ms: number) {
+    const sec = Math.max(0, Math.floor(ms / 1000));
+    this.timerText.text(`Time: ${sec}s`);
+    this.layer.draw();
+  }
+
+    public getLayer(): Konva.Layer {
+    return this.layer;
+  }
+
 }
 
-let cityProgress: Record<string, boolean> = {
+export let cityProgress: Record<string, boolean> = {
   Burbank: false,
   Hollywood: false,
   Inglewood: false,
