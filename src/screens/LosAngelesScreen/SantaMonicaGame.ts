@@ -2,6 +2,10 @@ import Konva from "konva";
 
 let score = 0; 
 
+export function resetSMScore(){
+  score = 0; 
+}
+
 export function startSMGame(layer: Konva.Layer) {
   score = 0;
   layer.find(".popup").forEach((n) => n.destroy());

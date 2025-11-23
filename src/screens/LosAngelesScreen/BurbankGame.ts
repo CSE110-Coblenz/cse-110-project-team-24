@@ -2,7 +2,9 @@ import Konva from "konva";
 
 let score = 0; 
 
-
+export function resetBBScore(){
+  score = 0; 
+}
 
 
 export function startBBGame(layer: Konva.Layer) {

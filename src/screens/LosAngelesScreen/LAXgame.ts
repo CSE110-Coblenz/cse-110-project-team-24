@@ -2,6 +2,10 @@ import Konva from "konva";
 
 let score = 0; 
 
+export function resetLAXScore(){
+  score = 0; 
+}
+
 export function startLAXGame(layer: Konva.Layer) {
   score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
