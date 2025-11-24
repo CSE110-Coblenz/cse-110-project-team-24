@@ -72,7 +72,7 @@ export class GameScreenController extends ScreenController {
 		this.view.initializeGame(DC_PRESIDENT_PAIRS);
 		// Update the matches display (shows "Matches: 0/8")
 		this.view.updateMatches(this.model.getMatchesFound(), this.model.getTotalPairs());
-		// Update the timer display (shows "Time: 90s")
+		// Update the timer display (shows "Time: 120s")
 		this.view.updateTimer(this.model.getTimeRemaining());
 		// Make the game screen visible
 		this.view.show();

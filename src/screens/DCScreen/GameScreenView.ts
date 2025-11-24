@@ -101,11 +101,11 @@ export class GameScreenView implements View {
 		this.group.add(this.matchesText);
 
 		// Block 3a: Create timer display (top-left corner)
-		// Shows remaining time like "Time: 90s"
+		// Shows remaining time like "Time: 120s"
 		this.timerText = new Konva.Text({
 			x: 20,
 			y: 20,
-			text: "Time: 90s",
+			text: "Time: 120s",
 			fontSize: 24,
 			fontFamily: "Arial",
 			fill: "#1a1a1a",

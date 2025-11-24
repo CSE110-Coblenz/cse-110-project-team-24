@@ -20,8 +20,8 @@ export class GameScreenModel {
 	private matchedPresidents: Set<string> = new Set();
 	// Set of accomplishments that have been successfully matched
 	private matchedAccomplishments: Set<string> = new Set();
-	// Timer state - time remaining in seconds (90 seconds total)
-	private timeRemaining: number = 90;
+	// Timer state - time remaining in seconds (2 minutes = 120 seconds total)
+	private timeRemaining: number = 120;
 	// Whether the game has ended (either win or lose)
 	private gameEnded: boolean = false;
 
@@ -46,8 +46,8 @@ export class GameScreenModel {
 		this.matchedPresidents.clear();
 		// Clear all matched accomplishments
 		this.matchedAccomplishments.clear();
-		// Reset timer to 90 seconds
-		this.timeRemaining = 90;
+		// Reset timer to 2 minutes (120 seconds)
+		this.timeRemaining = 120;
 		// Reset game ended flag
 		this.gameEnded = false;
 	}
