@@ -38,6 +38,14 @@ export class CityInfoController extends ScreenController {
             this.screenSwitcher.switchToScreen({ type: "newyork" });
         } else if (cityName === "boston") {
             this.screenSwitcher.switchToScreen({ type: "boston" });
+        } else if (cityName === "dc") {
+            this.screenSwitcher.switchToScreen({ type: "dc" });
+        } else if (cityName === "losangeles") {
+            this.screenSwitcher.switchToScreen({ type: "losangeles" });
+        } else if (cityName === "sandiego") {
+            this.screenSwitcher.switchToScreen({ type: "sandiego" });
+        } else if (cityName === "chicago") {
+            this.screenSwitcher.switchToScreen({ type: "chicago" });
         } else {
             console.warn(`No minigame available for city: ${cityName}`);
         }

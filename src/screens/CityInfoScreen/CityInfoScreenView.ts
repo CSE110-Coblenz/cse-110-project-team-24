@@ -150,7 +150,7 @@ export class CityInfoView implements View {
         const playButtonText = new Konva.Text({
             x: playButton.x() + playButton.width() / 2,
             y: playButton.y() + playButton.height() / 2,
-            text: "Play Minigame",
+            text: "Next",
             fontSize: 40,
             fontFamily: 'Arial',
             fill: 'white',

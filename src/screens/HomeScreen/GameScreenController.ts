@@ -22,17 +22,17 @@ export class GameScreenController extends ScreenController {
     // When a city is clicked, navigate to the appropriate screen
     this.view.setCityClickHandler((city: City) => {
       if (city === "New York") {
-        this.screenSwitcher.switchToScreen({ type: "newyork" });
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "newyork" });
       } else if (city === "Boston") {
-        this.screenSwitcher.switchToScreen({ type: "boston" });
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "boston" });
       } else if (city === "Washington, D.C.") {
-        this.screenSwitcher.switchToScreen({ type: "dc" });
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "dc" });
       } else if (city === "Los Angeles") {
-        this.screenSwitcher.switchToScreen({ type: "losangeles" });
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "losangeles" });
       } else if (city === "San Diego") {
-        this.screenSwitcher.switchToScreen({ type: "sandiego" });
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "sandiego" });
       } else if (city === "Chicago") {
-        this.screenSwitcher.switchToScreen({ type: "chicago" });
+        this.screenSwitcher.switchToScreen({ type: "cityinfo", cityName: "chicago" });
       } else {
         // For other cities, show blank screen for now
         this.screenSwitcher.switchToScreen({ type: "blank" });
