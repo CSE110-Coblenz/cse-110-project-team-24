@@ -1,43 +1,20 @@
 /**
- * Represents a single leaderboard entry
- */
-export type LeaderboardEntry = {
-	score: number;
-	timestamp: string; // formatted timestamp
-};
-
-/**
- * ResultsScreenModel - Stores final score and leaderboard
+ * ResultsScreenModel - Stores final score for the session
  */
 export class ResultsScreenModel {
-	private finalScore = 0;
-	private leaderboard: LeaderboardEntry[] = [];
+  private finalScore = 0;
 
-	/**
-	 * Set the final score
-	 */
-	setFinalScore(score: number): void {
-		this.finalScore = score;
-	}
+  /**
+   * Set the final score
+   */
+  setFinalScore(score: number): void {
+    this.finalScore = score;
+  }
 
-	/**
-	 * Get the final score
-	 */
-	getFinalScore(): number {
-		return this.finalScore;
-	}
-
-	/**
-	 * Set the leaderboard entries
-	 */
-	setLeaderboard(entries: LeaderboardEntry[]): void {
-		this.leaderboard = entries;
-	}
-
-	/**
-	 * Get the leaderboard entries
-	 */
-	getLeaderboard(): LeaderboardEntry[] {
-		return this.leaderboard;
-	}
+  /**
+   * Get the final score
+   */
+  getFinalScore(): number {
+    return this.finalScore;
+  }
 }

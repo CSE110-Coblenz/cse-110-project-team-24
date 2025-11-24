@@ -75,5 +75,9 @@ export class CityInfoModel {
         return this.cityInfoData.find(city => city.cityIDtype === cityIDtype);
     }
 
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> origin/main

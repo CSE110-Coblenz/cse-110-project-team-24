@@ -10,14 +10,15 @@ The NewYorkScreen directory contains a fast-paced educational mini-game where pl
 
 - **Dual Taxi Animation**: Two taxis move continuously across the screen in opposite directions (left-to-right and right-to-left)
 - **True/False Fact Pairs**: Each round displays two NYC facts - one true, one false
-- **Scoring System**: Players earn points by clicking the correct taxi
-- **Speed Challenge**: After clicking the correct taxi first, players can click it multiple times to test their clicking speed and maximize points
+- **Scoring System**: Players earn exactly one point by selecting the correct taxi before making a mistake
+- **Perfect Run Challenge**: Completing every fact pair without a wrong first click is required to reach the global results screen; otherwise, the player must immediately retry
 
 ### Scoring Rules
 
-- **Correct First Click**: If the player clicks the correct taxi first, they can click it unlimited times during that round for maximum points
+- **Single Point Ceiling**: Only the first correct click per round counts—subsequent clicks on the correct taxi do not add extra points
 - **Wrong First Click Penalty**: If the player clicks the wrong taxi before the correct one, that round is "locked" and no points can be earned for the remainder of that question
 - **Round Reset**: Each time a new fact pair appears (when taxis reset their positions), the round state resets and players get a fresh chance
+- **Cycle Completion**: After all fact pairs have appeared once, the game pauses; a perfect score triggers the global results screen, otherwise a retry overlay is displayed
 
 ### Visual Features
 
@@ -71,7 +72,7 @@ NewYorkScreen/
 **Key Responsibilities**:
 
 - Handles taxi click events and scoring logic
-- Enforces scoring rules (locked rounds, unlimited correct clicks)
+- Enforces scoring rules (single-point rounds, locked rounds on incorrect guesses)
 - Manages game lifecycle (start, end, timer)
 - Coordinates between Model and View
 - Tracks round state for each question
@@ -96,13 +97,12 @@ User clicks taxi
 Check if new question (fact index changed)
     ↓ Yes → Reset round state
     ↓
-Check if clicked taxi is correct
-    ↓ Yes → Check if round is locked
-        ↓ No → Award point, mark correct taxi clicked
-        ↓ Yes → No points (round was locked)
-    ↓ No → Check if correct taxi already clicked
-        ↓ No → Lock round (wrong taxi clicked first)
-        ↓ Yes → Round remains unlocked
+Check if correct taxi already credited
+    ↓ Yes → Ignore click (no extra points)
+    ↓ No
+        ↓ Correct taxi?
+            ↓ No → Lock round (future points blocked)
+            ↓ Yes → If round unlocked, award point and mark as credited
 ```
 
 ---
@@ -511,29 +511,27 @@ Potential improvements based on TODO comments in code:
 
 ### Scoring Rules
 
-**Scenario 1: Correct First Click**
+**Scenario 1: Perfect First Click**
 
 1. Question appears with two facts
-2. Player clicks correct taxi → Score +1
-3. Player clicks correct taxi again → Score +1
-4. Player clicks correct taxi 5 more times → Score +5
-5. **Result**: 7 points earned
+2. Player clicks correct taxi immediately → Score +1
+3. Additional clicks on the same taxi → No change (score remains +1)
+4. **Result**: 1 point earned
 
 **Scenario 2: Wrong First Click**
 
 1. Question appears with two facts
 2. Player clicks wrong taxi → Round locked
-3. Player clicks correct taxi → No points
-4. Player clicks correct taxi again → No points
-5. **Result**: 0 points earned
+3. Player clicks correct taxi → No points (round already locked)
+4. **Result**: 0 points earned
 
-**Scenario 3: Correct Then Wrong**
+**Scenario 3: Cycle Outcome**
 
-1. Question appears with two facts
-2. Player clicks correct taxi → Score +1, round unlocked
-3. Player clicks wrong taxi → No penalty (round stays unlocked)
-4. Player clicks correct taxi again → Score +1
-5. **Result**: 2 points earned
+1. Player works through all 8 fact pairs
+2. Score equals 8 → Game advances to the global results screen
+3. Score less than 8 → Retry overlay appears with Try Again / Exit options
+4. Selecting Try Again restarts the cycle with fresh scoring
+5. **Result**: A perfect run is required to finish the mini-game
 
 ### Fact Rotation
 

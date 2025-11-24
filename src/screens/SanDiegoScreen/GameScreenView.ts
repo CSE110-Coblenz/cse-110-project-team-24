@@ -22,7 +22,9 @@ export class GameScreenView implements View {
   private readonly MAX_GUESSES = 6;
   private readonly BOX_SIZE = 60;
   private readonly BOX_GAP = 10;
-  private readonly GRID_START_X = STAGE_WIDTH / 2 - ((this.WORD_LENGTH * (this.BOX_SIZE + this.BOX_GAP)) - this.BOX_GAP) / 2;
+  private readonly GRID_START_X =
+    STAGE_WIDTH / 2 -
+    (this.WORD_LENGTH * (this.BOX_SIZE + this.BOX_GAP) - this.BOX_GAP) / 2;
   private readonly GRID_START_Y = 150;
 
   constructor() {
@@ -220,7 +222,7 @@ export class GameScreenView implements View {
     for (let row = 0; row < this.MAX_GUESSES; row++) {
       const rowBoxes: Konva.Rect[] = [];
       const rowTexts: Konva.Text[] = [];
-      
+
       for (let col = 0; col < this.WORD_LENGTH; col++) {
         const x = this.GRID_START_X + col * (this.BOX_SIZE + this.BOX_GAP);
         const y = this.GRID_START_Y + row * (this.BOX_SIZE + this.BOX_GAP);
@@ -282,9 +284,16 @@ export class GameScreenView implements View {
       row.forEach((key, colIndex) => {
         const isSpecial = key === "ENTER" || key === "BACK";
         const width = isSpecial ? keyWidth * 1.5 : keyWidth;
-        const x = startX + colIndex * (keyWidth + keyGap) + (isSpecial && key === "ENTER" ? -keyWidth * 0.25 : 0) + (isSpecial && key === "BACK" ? keyWidth * 0.25 : 0);
+        const x =
+          startX +
+          colIndex * (keyWidth + keyGap) +
+          (isSpecial && key === "ENTER" ? -keyWidth * 0.25 : 0) +
+          (isSpecial && key === "BACK" ? keyWidth * 0.25 : 0);
 
-        const buttonGroup = new Konva.Group({ x: x, y: startY + rowIndex * rowHeight });
+        const buttonGroup = new Konva.Group({
+          x: x,
+          y: startY + rowIndex * rowHeight,
+        });
         const rect = new Konva.Rect({
           x: 0,
           y: 0,
@@ -391,7 +400,7 @@ export class GameScreenView implements View {
         // Recalculate offsets for proper centering
         text.offsetX(text.width() / 2);
         text.offsetY(text.height() / 2 - 4); // Small adjustment for better vertical centering
-        
+
         const color = this.getColorForState(guess.states[colIndex]);
         this.guessBoxes[rowIndex][colIndex].fill(color);
         this.guessBoxes[rowIndex][colIndex].stroke(color);
@@ -419,9 +428,13 @@ export class GameScreenView implements View {
         this.guessBoxes[currentRow][colIndex].fill("#ffffff");
         this.guessBoxes[currentRow][colIndex].stroke("#ccc");
       });
-      
+
       // Clear any remaining boxes in the current row that don't have letters
-      for (let colIndex = currentLetters.length; colIndex < this.WORD_LENGTH; colIndex++) {
+      for (
+        let colIndex = currentLetters.length;
+        colIndex < this.WORD_LENGTH;
+        colIndex++
+      ) {
         const text = this.guessTexts[currentRow][colIndex];
         text.text("");
         text.offsetX(0);
@@ -464,9 +477,11 @@ export class GameScreenView implements View {
         const currentState = letterStates.get(letter);
 
         // Priority: correct > wrong-position > not-in-word
-        if (!currentState || 
-            (currentState === "not-in-word" && state !== "not-in-word") ||
-            (currentState === "wrong-position" && state === "correct")) {
+        if (
+          !currentState ||
+          (currentState === "not-in-word" && state !== "not-in-word") ||
+          (currentState === "wrong-position" && state === "correct")
+        ) {
           letterStates.set(letter, state);
         }
       });
@@ -519,7 +534,7 @@ export class GameScreenView implements View {
   /**
    * Show win screen
    */
-  showWinScreen(guessCount: number): void {
+  showWinScreen(_guessCount: number): void {
     // Hide game elements
     this.gridGroup.visible(false);
     this.keyboardGroup.visible(false);

@@ -21,42 +21,43 @@ export class PostcardScreenModel {
 
     constructor() {
         // Initialize postcards
+        //Note: xPos and yPos are relative to percentages of screen size
         this.postcards = [
                         {
                 title: "Boston",
                 postcardImageSrc: "/public/Postcards/BostonPostcard.jpg",
-                xPos: 700,
-                yPos: -900,
+                xPos: 42,
+                yPos: 65,
             },
             {
                 title: "New York",
                 postcardImageSrc: "/public/Postcards/NewYorkPostcard.jpg",
-                xPos: 1500,
-                yPos: 0,
+                xPos: 80,
+                yPos: 80,
             },
             {
                 title: "Washington DC",
                 postcardImageSrc: "/public/Postcards/DCPostcard.jpg",
-                xPos: -1600,
-                yPos: 0,
+                xPos: 15,
+                yPos: 85,
             },
             {
                 title: "San Francisco",
                 postcardImageSrc: "/public/Postcards/SFPostcard.jpg",
-                xPos: -700,
-                yPos: -900,
+                xPos: 20,
+                yPos:15,
             },
             {
                 title: "Los Angeles",
                 postcardImageSrc: "/public/Postcards/LAPostcard.jpg",
-                xPos: 500,
-                yPos: 600,
+                xPos: 55,
+                yPos: 25,
             },
             {
                 title: "San Diego",
                 postcardImageSrc: "/public/Postcards/SanDiegoPostcard.jpg",
-                xPos: -1300,
-                yPos: 950,
+                xPos: 85,
+                yPos: 15,
             },
 
 
