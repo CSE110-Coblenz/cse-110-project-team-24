@@ -14,6 +14,7 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
 import { LAMapController } from "./screens/LosAngelesScreen/LosAngelesGameController.ts";
 import { GameScreenController as ChicagoScreenController } from "./screens/ChicagoScreen/GameScreenController.ts";
 import { CityInfoController } from "./screens/CityInfoScreen/CityInfoScreenController.ts";
+import { GameStateManager } from "./GameStateManager.ts";
 
 /**
  * Main Application - Coordinates all screens
@@ -43,6 +44,7 @@ class App implements ScreenSwitcher {
   private losAnglesController: LAMapController;
   private chicagoController: ChicagoScreenController;
   private cityInfoController: CityInfoController;
+  private gameStateManager: GameStateManager;
 
   /**
    * Constructor - Initializes the application and sets up all screens
@@ -62,6 +64,12 @@ class App implements ScreenSwitcher {
       width: STAGE_WIDTH, // Initial width from constants
       height: STAGE_HEIGHT, // Initial height from constants
     });
+
+    // Initialize game state manager
+    this.gameStateManager = new GameStateManager();
+    if (!this.gameStateManager.checkSingletonPresence()) {
+      console.error("GameStateManager singleton instance not present!");
+    }
 
     // Create a layer (screens will be added to this layer)
     // A layer is a container for Konva nodes that can be drawn together
@@ -86,6 +94,7 @@ class App implements ScreenSwitcher {
     this.losAnglesController = new LAMapController(this);
     this.chicagoController = new ChicagoScreenController(this);
     this.cityInfoController = new CityInfoController(this);
+
     // Add all screen groups to the layer
     // All screens exist simultaneously but only one is visible at a time
     // This allows for smooth transitions between screens without re-rendering
@@ -120,6 +129,8 @@ class App implements ScreenSwitcher {
     // Start with menu screen visible
     // Show the menu screen when the application first loads
     this.menuController.getView().show();
+
+    
   }
 
   /**
