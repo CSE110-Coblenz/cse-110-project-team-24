@@ -2,6 +2,16 @@ import Konva from "konva";
 
 let score = 0; 
 
+export function resetBBScore(){
+  score = 0; 
+}
+
+export function cleanupBBGame(layer: Konva.Layer) {
+  if (layer) {
+    layer.destroyChildren();
+    layer.draw();
+  }
+}
 
 
 

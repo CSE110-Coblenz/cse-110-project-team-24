@@ -2,6 +2,18 @@ import Konva from "konva";
 
 let score = 0; 
 
+export function resetIGScore(){
+  score = 0; 
+}
+
+export function cleanupIGGame(layer: Konva.Layer) {
+  if (layer) {
+    layer.destroyChildren();
+    layer.draw();
+  }
+}
+
+
 export function startIGGame(layer: Konva.Layer) {
     score = 0;
   layer.find(".popup").forEach((n) => n.destroy());
