@@ -4,7 +4,7 @@ import { PostcardScreenController } from "../../../src/screens/PostcardScreen/Po
 describe("PostcardScreenController", () => {
     it("should be defined", () => {
         const mockScreenSwitcher = {
-            switchToScreen: () => { },
+            switchToScreen: vi.fn(),
         };
         const controller = new PostcardScreenController(mockScreenSwitcher);
         expect(controller).toBeDefined();
