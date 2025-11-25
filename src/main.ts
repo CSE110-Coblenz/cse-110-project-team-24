@@ -67,6 +67,9 @@ class App implements ScreenSwitcher {
 
     // Initialize game state manager
     this.gameStateManager = new GameStateManager();
+    if (!this.gameStateManager.checkSingletonPresence()) {
+      console.error("GameStateManager singleton instance not present!");
+    }
 
     // Create a layer (screens will be added to this layer)
     // A layer is a container for Konva nodes that can be drawn together
@@ -126,6 +129,8 @@ class App implements ScreenSwitcher {
     // Start with menu screen visible
     // Show the menu screen when the application first loads
     this.menuController.getView().show();
+
+    
   }
 
   /**

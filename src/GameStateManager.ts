@@ -45,6 +45,9 @@ export class GameStateManager {
       }
 
 
+    public checkSingletonPresence(): boolean {
+        return GameStateManager.instance === this;
+    }
 
     /* Manage Lives */
 
@@ -120,7 +123,7 @@ export class GameStateManager {
 
     //For testing purposes
     public resetGameState(): void {
-        this.completedCities = {};
+    
         this.completedCities["newyork"] = false;
         this.completedCities["boston"] = false;
         this.completedCities["dc"] = false;
