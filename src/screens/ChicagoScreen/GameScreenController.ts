@@ -105,11 +105,10 @@ export class GameScreenController extends ScreenController {
     const total = this.model.getTotalFacts();
 
     if (score === total) {
-      // Perfect score - go directly to results
-      this.view.hideRetryOverlay();
-      this.screenSwitcher.switchToScreen({
-        type: "result",
-        score,
+      // Perfect score - show win overlay
+      this.view.showWinOverlay(score, total, () => {
+        this.view.hideRetryOverlay();
+        this.screenSwitcher.switchToScreen({ type: "home" });
       });
       return;
     }

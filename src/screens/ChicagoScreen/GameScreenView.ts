@@ -47,6 +47,7 @@ export class GameScreenView implements View {
   private readonly retryMessage: Konva.Text;
   private readonly retryButtonGroup: Konva.Group;
   private readonly exitButtonGroup: Konva.Group;
+  private readonly homeButtonGroup: Konva.Group;
 
   constructor(onFactDrop: FactDropHandler, onNext: NextHandler) {
     this.onFactDrop = onFactDrop;
@@ -226,8 +227,40 @@ export class GameScreenView implements View {
     this.exitButtonGroup.add(exitText);
     this.exitButtonGroup.listening(true);
 
+    // Home button for win popup (centered)
+    this.homeButtonGroup = new Konva.Group({
+      x: STAGE_WIDTH / 2 - 80,
+      y: STAGE_HEIGHT / 2 + 30,
+    });
+    const homeRect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 160,
+      height: 50,
+      fill: "#16a34a",
+      cornerRadius: 10,
+      stroke: "#15803d",
+      strokeWidth: 2,
+    });
+    const homeText = new Konva.Text({
+      x: 80,
+      y: 15,
+      text: "Home",
+      fontSize: 20,
+      fontFamily: "Arial",
+      fill: "#ffffff",
+      align: "center",
+      width: 160,
+    });
+    homeText.offsetX(homeText.width() / 2);
+    this.homeButtonGroup.add(homeRect);
+    this.homeButtonGroup.add(homeText);
+    this.homeButtonGroup.listening(true);
+    this.homeButtonGroup.visible(false); // Hidden by default
+
     this.retryOverlayGroup.add(this.retryButtonGroup);
     this.retryOverlayGroup.add(this.exitButtonGroup);
+    this.retryOverlayGroup.add(this.homeButtonGroup);
     this.group.add(this.retryOverlayGroup);
 
     this.resizeHandler = () => this.updateLayout();
@@ -355,6 +388,11 @@ export class GameScreenView implements View {
     );
     this.retryMessage.offsetX(this.retryMessage.width() / 2);
 
+    // Show retry and exit buttons, hide home button
+    this.retryButtonGroup.visible(true);
+    this.exitButtonGroup.visible(true);
+    this.homeButtonGroup.visible(false);
+
     this.retryButtonGroup.off("click");
     this.exitButtonGroup.off("click");
     this.retryButtonGroup.on("click", onRetry);
@@ -368,6 +406,26 @@ export class GameScreenView implements View {
     this.retryOverlayGroup.visible(false);
     this.retryButtonGroup.off("click");
     this.exitButtonGroup.off("click");
+    this.homeButtonGroup.off("click");
+    this.group.getLayer()?.draw();
+  }
+
+  /**
+   * Show win overlay with callbacks
+   */
+  showWinOverlay(score: number, total: number, onHome: () => void): void {
+    this.retryMessage.text(`${score}/${total} You win!`);
+    this.retryMessage.offsetX(this.retryMessage.width() / 2);
+
+    // Hide retry and exit buttons, show home button
+    this.retryButtonGroup.visible(false);
+    this.exitButtonGroup.visible(false);
+    this.homeButtonGroup.visible(true);
+
+    this.homeButtonGroup.off("click");
+    this.homeButtonGroup.on("click", onHome);
+
+    this.retryOverlayGroup.visible(true);
     this.group.getLayer()?.draw();
   }
 
