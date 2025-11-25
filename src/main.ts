@@ -70,7 +70,6 @@ class App implements ScreenSwitcher {
     if (!this.gameStateManager.checkSingletonPresence()) {
       console.error("GameStateManager singleton instance not present!");
     }
-    GameStateManager.getInstance().resetGameState();
     
     // Create a layer (screens will be added to this layer)
     // A layer is a container for Konva nodes that can be drawn together
