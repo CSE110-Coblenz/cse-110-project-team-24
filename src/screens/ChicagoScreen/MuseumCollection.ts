@@ -53,6 +53,12 @@ export class MuseumCollection {
     this.nodes.get(museumId)?.markMatched();
   }
 
+  resetAll(): void {
+    for (const node of this.nodes.values()) {
+      node.resetMatched();
+    }
+  }
+
   hitTest(point: { x: number; y: number }, extraRadius = 0): string | null {
     for (const [museumId, node] of this.nodes.entries()) {
       if (node.isHit(point, extraRadius)) {

@@ -43,6 +43,10 @@ export class GameScreenView implements View {
   private readonly resizeHandler: () => void;
   private readonly orbitCircle: Konva.Circle;
   private readonly centerGlow: Konva.Circle;
+  private readonly retryOverlayGroup: Konva.Group;
+  private readonly retryMessage: Konva.Text;
+  private readonly retryButtonGroup: Konva.Group;
+  private readonly exitButtonGroup: Konva.Group;
 
   constructor(onFactDrop: FactDropHandler, onNext: NextHandler) {
     this.onFactDrop = onFactDrop;
@@ -128,6 +132,104 @@ export class GameScreenView implements View {
     this.nextButton = new NextButton(() => this.onNext());
     this.group.add(this.nextButton.getGroup());
 
+    // Retry overlay (hidden by default)
+    this.retryOverlayGroup = new Konva.Group({ visible: false });
+    const overlayBg = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: STAGE_WIDTH,
+      height: STAGE_HEIGHT,
+      fill: "rgba(0, 0, 0, 0.55)",
+    });
+    this.retryOverlayGroup.add(overlayBg);
+
+    const panel = new Konva.Rect({
+      x: STAGE_WIDTH / 2 - 220,
+      y: STAGE_HEIGHT / 2 - 140,
+      width: 440,
+      height: 280,
+      fill: "#ffffff",
+      cornerRadius: 16,
+      stroke: "#1f2937",
+      strokeWidth: 3,
+    });
+    this.retryOverlayGroup.add(panel);
+
+    this.retryMessage = new Konva.Text({
+      x: STAGE_WIDTH / 2,
+      y: STAGE_HEIGHT / 2 - 90,
+      text: "",
+      fontSize: 26,
+      fontFamily: "Arial",
+      fill: "#111827",
+      width: 400,
+      align: "center",
+    });
+    this.retryMessage.offsetX(this.retryMessage.width() / 2);
+    this.retryOverlayGroup.add(this.retryMessage);
+
+    this.retryButtonGroup = new Konva.Group({
+      x: STAGE_WIDTH / 2 - 180,
+      y: STAGE_HEIGHT / 2 + 30,
+    });
+    const retryRect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 160,
+      height: 50,
+      fill: "#16a34a",
+      cornerRadius: 10,
+      stroke: "#15803d",
+      strokeWidth: 2,
+    });
+    const retryText = new Konva.Text({
+      x: 80,
+      y: 15,
+      text: "Try Again",
+      fontSize: 20,
+      fontFamily: "Arial",
+      fill: "#ffffff",
+      align: "center",
+      width: 160,
+    });
+    retryText.offsetX(retryText.width() / 2);
+    this.retryButtonGroup.add(retryRect);
+    this.retryButtonGroup.add(retryText);
+    this.retryButtonGroup.listening(true);
+
+    this.exitButtonGroup = new Konva.Group({
+      x: STAGE_WIDTH / 2 + 20,
+      y: STAGE_HEIGHT / 2 + 30,
+    });
+    const exitRect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 160,
+      height: 50,
+      fill: "#2563eb",
+      cornerRadius: 10,
+      stroke: "#1d4ed8",
+      strokeWidth: 2,
+    });
+    const exitText = new Konva.Text({
+      x: 80,
+      y: 15,
+      text: "Exit",
+      fontSize: 20,
+      fontFamily: "Arial",
+      fill: "#ffffff",
+      align: "center",
+      width: 160,
+    });
+    exitText.offsetX(exitText.width() / 2);
+    this.exitButtonGroup.add(exitRect);
+    this.exitButtonGroup.add(exitText);
+    this.exitButtonGroup.listening(true);
+
+    this.retryOverlayGroup.add(this.retryButtonGroup);
+    this.retryOverlayGroup.add(this.exitButtonGroup);
+    this.group.add(this.retryOverlayGroup);
+
     this.resizeHandler = () => this.updateLayout();
     window.addEventListener("resize", this.resizeHandler);
 
@@ -173,6 +275,14 @@ export class GameScreenView implements View {
    */
   markMuseumMatched(museumId: string): void {
     this.museumCollection.markMatched(museumId);
+    this.group.getLayer()?.draw();
+  }
+
+  /**
+   * Reset all museums to their unmatched visual state
+   */
+  resetAllMuseums(): void {
+    this.museumCollection.resetAll();
     this.group.getLayer()?.draw();
   }
 
@@ -228,6 +338,36 @@ export class GameScreenView implements View {
    */
   hide(): void {
     this.group.visible(false);
+    this.group.getLayer()?.draw();
+  }
+
+  /**
+   * Show retry overlay with callbacks
+   */
+  showRetryOverlay(
+    score: number,
+    total: number,
+    onRetry: () => void,
+    onExit: () => void
+  ): void {
+    this.retryMessage.text(
+      `You scored ${score} out of ${total}.\nKeep trying to nail every fact!`
+    );
+    this.retryMessage.offsetX(this.retryMessage.width() / 2);
+
+    this.retryButtonGroup.off("click");
+    this.exitButtonGroup.off("click");
+    this.retryButtonGroup.on("click", onRetry);
+    this.exitButtonGroup.on("click", onExit);
+
+    this.retryOverlayGroup.visible(true);
+    this.group.getLayer()?.draw();
+  }
+
+  hideRetryOverlay(): void {
+    this.retryOverlayGroup.visible(false);
+    this.retryButtonGroup.off("click");
+    this.exitButtonGroup.off("click");
     this.group.getLayer()?.draw();
   }
 
