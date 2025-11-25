@@ -147,6 +147,7 @@ export class GameScreenController extends ScreenController {
       if (this.currentRoundLocked) {
         // No points, but we can still track that correct taxi was clicked
         this.correctTaxiClickedThisRound = true;
+        this.view.highlightTaxiCorrect(taxiNumber);
         // TODO: Play success sound
         // this.successSound.play();
         return;
@@ -156,10 +157,12 @@ export class GameScreenController extends ScreenController {
       this.correctTaxiClickedThisRound = true;
       this.model.incrementScore();
       this.view.updateScore(this.model.getScore());
+      this.view.highlightTaxiCorrect(taxiNumber);
       // TODO: Play success sound
       // this.successSound.play();
     } else {
       // Wrong taxi clicked
+      this.view.highlightTaxiWrong(taxiNumber);
       if (!this.correctTaxiClickedThisRound) {
         // Wrong taxi clicked before correct one - lock this round
         this.currentRoundLocked = true;
