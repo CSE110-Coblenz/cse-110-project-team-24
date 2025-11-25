@@ -14,6 +14,11 @@ vi.mock("../../../src/screens/BostonScreen/GameScreenView.ts", () => {
     show = vi.fn();
     hide = vi.fn();
     getGroup = vi.fn(() => ({ visible: false }));
+    
+    // Constructor accepts callbacks but we don't need to use them
+    constructor(_onChoiceSelected?: any, _onNext?: any) {
+      // Mock constructor - accepts parameters but doesn't need to do anything
+    }
   }
 
   return {
@@ -27,6 +32,7 @@ describe("GameScreenController", () => {
   let mockView: any;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     mockScreenSwitcher = {
       switchToScreen: vi.fn(),
     };
