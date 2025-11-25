@@ -2,29 +2,47 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { GameScreenController } from "../../../src/screens/SanDiegoScreen/GameScreenController.ts";
 import type { ScreenSwitcher } from "../../../src/types.ts";
 
+// Mock the view
+vi.mock("../../../src/screens/SanDiegoScreen/GameScreenView.ts", () => {
+  class MockGameScreenView {
+    updateGuesses = vi.fn();
+    updateKeyboard = vi.fn();
+    showMessage = vi.fn();
+    showWinScreen = vi.fn();
+    hideWinScreen = vi.fn();
+    setHandlers = vi.fn();
+    show = vi.fn();
+    hide = vi.fn();
+    getGroup = vi.fn(() => ({ visible: false }));
+  }
+
+  return {
+    GameScreenView: MockGameScreenView,
+  };
+});
+
 describe("GameScreenController", () => {
   let controller: GameScreenController;
   let mockScreenSwitcher: ScreenSwitcher;
+  let mockView: any;
 
   beforeEach(() => {
     mockScreenSwitcher = {
       switchToScreen: vi.fn(),
     };
     controller = new GameScreenController(mockScreenSwitcher);
+    mockView = controller.getView();
   });
 
   describe("startGame", () => {
     it("should initialize the game and show the view", () => {
-      const view = controller.getView();
-      const showSpy = vi.spyOn(view, "show");
-      const showMessageSpy = vi.spyOn(view, "showMessage");
-      const hideWinScreenSpy = vi.spyOn(view, "hideWinScreen");
-
       controller.startGame();
 
-      expect(hideWinScreenSpy).toHaveBeenCalled();
-      expect(showMessageSpy).toHaveBeenCalled();
-      expect(showSpy).toHaveBeenCalled();
+      expect(mockView.hideWinScreen).toHaveBeenCalled();
+      expect(mockView.showMessage).toHaveBeenCalled();
+      expect(mockView.updateGuesses).toHaveBeenCalled();
+      expect(mockView.updateKeyboard).toHaveBeenCalled();
+      expect(mockView.show).toHaveBeenCalled();
     });
   });
 
@@ -34,12 +52,11 @@ describe("GameScreenController", () => {
     });
 
     it("should add letter and update view", () => {
-      const view = controller.getView();
-      const updateGuessesSpy = vi.spyOn(view, "updateGuesses");
-
+      vi.clearAllMocks();
       (controller as any).handleLetterInput("A");
 
-      expect(updateGuessesSpy).toHaveBeenCalled();
+      expect(mockView.updateGuesses).toHaveBeenCalled();
+      expect(mockView.updateKeyboard).toHaveBeenCalled();
     });
 
     it("should not add letter if game is over", () => {
@@ -53,14 +70,12 @@ describe("GameScreenController", () => {
         (controller as any).handleEnter();
       }
 
-      const view = controller.getView();
-      const updateGuessesSpy = vi.spyOn(view, "updateGuesses");
-      const initialCallCount = updateGuessesSpy.mock.calls.length;
-
+      vi.clearAllMocks();
       (controller as any).handleLetterInput("A");
 
       // Should not update view if game is over
-      expect(updateGuessesSpy.mock.calls.length).toBe(initialCallCount);
+      expect(mockView.updateGuesses).not.toHaveBeenCalled();
+      expect(mockView.updateKeyboard).not.toHaveBeenCalled();
     });
   });
 
@@ -70,16 +85,14 @@ describe("GameScreenController", () => {
     });
 
     it("should remove letter and update view", () => {
-      const view = controller.getView();
       (controller as any).handleLetterInput("A");
       (controller as any).handleLetterInput("B");
 
-      const updateGuessesSpy = vi.spyOn(view, "updateGuesses");
-      const initialCallCount = updateGuessesSpy.mock.calls.length;
-
+      vi.clearAllMocks();
       (controller as any).handleBackspace();
 
-      expect(updateGuessesSpy.mock.calls.length).toBeGreaterThan(initialCallCount);
+      expect(mockView.updateGuesses).toHaveBeenCalled();
+      expect(mockView.updateKeyboard).toHaveBeenCalled();
     });
   });
 
@@ -89,20 +102,16 @@ describe("GameScreenController", () => {
     });
 
     it("should show error message if guess is less than 5 letters", () => {
-      const view = controller.getView();
-      const showMessageSpy = vi.spyOn(view, "showMessage");
-
+      vi.clearAllMocks();
       (controller as any).handleLetterInput("A");
       (controller as any).handleLetterInput("B");
       (controller as any).handleEnter();
 
-      expect(showMessageSpy).toHaveBeenCalledWith("Word must be 5 letters!", "#D32F2F");
+      expect(mockView.showMessage).toHaveBeenCalledWith("Word must be 5 letters!", "#D32F2F");
     });
 
     it("should submit valid 5-letter guess", () => {
-      const view = controller.getView();
-      const updateGuessesSpy = vi.spyOn(view, "updateGuesses");
-
+      vi.clearAllMocks();
       (controller as any).handleLetterInput("B");
       (controller as any).handleLetterInput("E");
       (controller as any).handleLetterInput("A");
@@ -110,13 +119,13 @@ describe("GameScreenController", () => {
       (controller as any).handleLetterInput("H");
       (controller as any).handleEnter();
 
-      expect(updateGuessesSpy).toHaveBeenCalled();
+      expect(mockView.updateGuesses).toHaveBeenCalled();
+      expect(mockView.updateKeyboard).toHaveBeenCalled();
     });
 
     it("should show win screen when game is won", () => {
-      const view = controller.getView();
-      const showWinScreenSpy = vi.spyOn(view, "showWinScreen");
-
+      vi.clearAllMocks();
+      
       // Get target word and submit it
       const targetWord = (controller as any).model.getTargetWord();
       for (const letter of targetWord) {
@@ -124,13 +133,10 @@ describe("GameScreenController", () => {
       }
       (controller as any).handleEnter();
 
-      expect(showWinScreenSpy).toHaveBeenCalled();
+      expect(mockView.showWinScreen).toHaveBeenCalled();
     });
 
     it("should show game over message when max guesses reached", () => {
-      const view = controller.getView();
-      const showMessageSpy = vi.spyOn(view, "showMessage");
-
       // Submit 6 wrong guesses
       for (let i = 0; i < 6; i++) {
         (controller as any).handleLetterInput("X");
@@ -141,7 +147,7 @@ describe("GameScreenController", () => {
         (controller as any).handleEnter();
       }
 
-      expect(showMessageSpy).toHaveBeenCalledWith(
+      expect(mockView.showMessage).toHaveBeenCalledWith(
         expect.stringContaining("Game Over!"),
         "#D32F2F"
       );
@@ -160,6 +166,7 @@ describe("GameScreenController", () => {
     it("should return the view instance", () => {
       const view = controller.getView();
       expect(view).toBeDefined();
+      expect(view).toBe(mockView);
       expect(view.show).toBeDefined();
       expect(view.hide).toBeDefined();
     });
