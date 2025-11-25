@@ -124,7 +124,7 @@ export class GameScreenView implements View {
     this.museumCollection = new MuseumCollection(this.museumLayer);
 
     this.infoPanel = new InfoPanel(
-      STAGE_WIDTH * 0.8,
+      STAGE_WIDTH * 0.6,
       STAGE_WIDTH / 2,
       STAGE_HEIGHT / 2 + FACT_CARD_HEIGHT / 2 + INFO_PANEL_VERTICAL_MARGIN
     );
@@ -481,7 +481,7 @@ export class GameScreenView implements View {
   private updateLayout(): void {
     const center = this.getCenter();
     const { width, height } = this.getStageSize();
-    const infoWidth = width * 0.8;
+    const infoWidth = width * 0.6;
     const radius = Math.min(width, height) * 0.32;
 
     this.centerGlow.position(center);
