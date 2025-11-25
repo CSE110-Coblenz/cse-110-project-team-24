@@ -10,6 +10,7 @@ vi.mock("../../../src/screens/DCScreen/GameScreenView.ts", () => {
   class MockGameScreenView {
     initializeGame = vi.fn();
     updateMatches = vi.fn();
+    updateTimer = vi.fn();
     show = vi.fn();
     hide = vi.fn();
     flipCard = vi.fn();
@@ -52,6 +53,7 @@ describe("GameScreenController", () => {
 
       expect(mockView.initializeGame).toHaveBeenCalledWith(DC_PRESIDENT_PAIRS);
       expect(mockView.updateMatches).toHaveBeenCalledWith(0, 8);
+      expect(mockView.updateTimer).toHaveBeenCalledWith(120);
       expect(mockView.show).toHaveBeenCalled();
     });
 
