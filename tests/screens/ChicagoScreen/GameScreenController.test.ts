@@ -11,12 +11,16 @@ vi.mock("../../../src/screens/ChicagoScreen/GameScreenView.ts", () => {
     setMuseums = vi.fn();
     setFact = vi.fn();
     markMuseumMatched = vi.fn();
+    resetAllMuseums = vi.fn();
     showDetail = vi.fn();
     showPrompt = vi.fn();
     showNextButton = vi.fn();
     hideNextButton = vi.fn();
     lockFactCard = vi.fn();
     unlockFactCard = vi.fn();
+    showRetryOverlay = vi.fn();
+    hideRetryOverlay = vi.fn();
+    showWinOverlay = vi.fn();
     show = vi.fn();
     hide = vi.fn();
     getGroup = vi.fn(() => ({ visible: false }));
@@ -45,7 +49,9 @@ describe("GameScreenController", () => {
       controller.startGame();
 
       expect(mockView.setMuseums).toHaveBeenCalled();
+      expect(mockView.resetAllMuseums).toHaveBeenCalled();
       expect(mockView.hideNextButton).toHaveBeenCalled();
+      expect(mockView.hideRetryOverlay).toHaveBeenCalled();
       expect(mockView.show).toHaveBeenCalled();
       expect(mockView.showPrompt).toHaveBeenCalled();
       expect(mockView.setFact).toHaveBeenCalled();
@@ -113,10 +119,12 @@ describe("GameScreenController", () => {
           expect.stringContaining("three misses")
         );
         expect(mockView.lockFactCard).toHaveBeenCalled();
-        expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({
-          type: "result",
-          score: expect.any(Number),
-        });
+        expect(mockView.showRetryOverlay).toHaveBeenCalledWith(
+          0,
+          expect.any(Number),
+          expect.any(Function),
+          expect.any(Function)
+        );
       }
     });
   });
@@ -165,10 +173,12 @@ describe("GameScreenController", () => {
         vi.clearAllMocks();
         (controller as any).handleNextRequest();
 
-        expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({
-          type: "result",
-          score: expect.any(Number),
-        });
+        // Perfect score should show win overlay
+        expect(mockView.showWinOverlay).toHaveBeenCalledWith(
+          expect.any(Number),
+          expect.any(Number),
+          expect.any(Function)
+        );
       }
     });
   });
