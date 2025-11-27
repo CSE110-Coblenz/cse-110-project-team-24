@@ -118,6 +118,19 @@ export class MuseumNode {
     this.labelText.fill(MUSEUM_MATCH_STROKE_COLOR);
   }
 
+  resetMatched(): void {
+    this.group.to({
+      scaleX: 1.0,
+      scaleY: 1.0,
+      duration: 0.2,
+    });
+
+    this.circle.fill(MUSEUM_FILL_COLOR);
+    this.circle.stroke(MUSEUM_STROKE_COLOR);
+    this.labelTag.fill(MUSEUM_LABEL_BACKGROUND);
+    this.labelText.fill(MUSEUM_LABEL_TEXT_COLOR);
+  }
+
   setPosition(position: { x: number; y: number }): void {
     this.center = { ...position };
     this.group.position({

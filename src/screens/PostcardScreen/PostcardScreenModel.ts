@@ -2,9 +2,12 @@
  * PostcardScreenModel - Manages postcard view state
  */
 
+import { GameStateManager } from "../../GameStateManager";
+
 // Postcard interface
 export interface Postcard {
     title: string;
+    cityID: string;
     postcardImageSrc: string;
     xPos: number;
     yPos: number;
@@ -25,36 +28,42 @@ export class PostcardScreenModel {
         this.postcards = [
                         {
                 title: "Boston",
+                cityID: "boston",
                 postcardImageSrc: "/public/Postcards/BostonPostcard.jpg",
                 xPos: 42,
                 yPos: 65,
             },
             {
                 title: "New York",
+                cityID: "newyork",
                 postcardImageSrc: "/public/Postcards/NewYorkPostcard.jpg",
                 xPos: 80,
                 yPos: 80,
             },
             {
                 title: "Washington DC",
+                cityID: "dc",
                 postcardImageSrc: "/public/Postcards/DCPostcard.jpg",
                 xPos: 15,
                 yPos: 85,
             },
             {
-                title: "San Francisco",
+                title: "Chicago",
+                cityID: "chicago",
                 postcardImageSrc: "/public/Postcards/SFPostcard.jpg",
                 xPos: 20,
                 yPos:15,
             },
             {
                 title: "Los Angeles",
+                cityID: "losangeles",
                 postcardImageSrc: "/public/Postcards/LAPostcard.jpg",
                 xPos: 55,
                 yPos: 25,
             },
             {
                 title: "San Diego",
+                cityID: "sandiego",
                 postcardImageSrc: "/public/Postcards/SanDiegoPostcard.jpg",
                 xPos: 85,
                 yPos: 15,
@@ -69,9 +78,14 @@ export class PostcardScreenModel {
 
     // Displays the postcards which are unlocked
     getActivePostcards(): Postcard[] {
-        //TODO: Create an array of only postcards unlocked
-        //TODO: Order the array in the order the player collected the cards
-        return this.postcards;
+        const achievedPostcards: Postcard[] = [];
+        for (const postcard of this.postcards) {
+            if (GameStateManager.getInstance().getCompletedCities()[postcard.cityID]) {
+                achievedPostcards.push(postcard);
+
+            }
+        }
+        return achievedPostcards;
     }
 
     // Zoom in on a postcard
