@@ -8,6 +8,7 @@ import {
   getCorrectFactIndex,
   NEW_YORK_FACT_PAIRS,
 } from "./NewYorkFacts.ts";
+import { GameStateManager } from "../../GameStateManager.ts";
 
 /**
  * GameScreenController - Coordinates game logic between Model and View
@@ -17,6 +18,7 @@ export class GameScreenController extends ScreenController {
   private view: GameScreenView;
   private screenSwitcher: ScreenSwitcher;
   private gameTimer: number | null = null;
+  private readonly gameStateManager: GameStateManager | null;
 
   // @ts-ignore - TODO: Implement audio feedback
   private _squeezeSound: HTMLAudioElement;
@@ -33,6 +35,14 @@ export class GameScreenController extends ScreenController {
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
     this.screenSwitcher = screenSwitcher;
+    let manager: GameStateManager | null = null;
+    try {
+      manager =
+        (GameStateManager.getInstance() as GameStateManager | null) ?? null;
+    } catch {
+      manager = null;
+    }
+    this.gameStateManager = manager;
 
     this.model = new GameScreenModel();
     this.view = new GameScreenView(
@@ -182,6 +192,8 @@ export class GameScreenController extends ScreenController {
   private endGame(): void {
     this.stopTimer();
 
+    this.gameStateManager?.MinigameLost("newyork");
+
     // Switch to results screen with final score
     this.screenSwitcher.switchToScreen({
       type: "result",
@@ -232,6 +244,7 @@ export class GameScreenController extends ScreenController {
     const score = this.model.getScore();
 
     if (score === this.totalRounds) {
+      this.gameStateManager?.MinigameWon("newyork");
       this.view.hideRetryOverlay();
       this.screenSwitcher.switchToScreen({
         type: "result",
@@ -240,6 +253,7 @@ export class GameScreenController extends ScreenController {
       return;
     }
 
+    this.gameStateManager?.MinigameLost("newyork");
     this.view.showRetryOverlay(
       score,
       this.totalRounds,

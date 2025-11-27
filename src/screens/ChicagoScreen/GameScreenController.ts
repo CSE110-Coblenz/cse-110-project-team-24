@@ -2,6 +2,7 @@ import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
+import { GameStateManager } from "../../GameStateManager.ts";
 
 /**
  * GameScreenController - Coordinates museum fact matching logic
@@ -10,10 +11,19 @@ export class GameScreenController extends ScreenController {
   private readonly model: GameScreenModel;
   private readonly view: GameScreenView;
   private readonly screenSwitcher: ScreenSwitcher;
+  private readonly gameStateManager: GameStateManager | null;
 
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
     this.screenSwitcher = screenSwitcher;
+    let manager: GameStateManager | null = null;
+    try {
+      manager =
+        (GameStateManager.getInstance() as GameStateManager | null) ?? null;
+    } catch {
+      manager = null;
+    }
+    this.gameStateManager = manager;
 
     this.model = new GameScreenModel();
     this.view = new GameScreenView(
@@ -106,6 +116,7 @@ export class GameScreenController extends ScreenController {
 
     if (score === total) {
       // Perfect score - show win overlay
+      this.gameStateManager?.MinigameWon("chicago");
       this.view.showWinOverlay(score, total, () => {
         this.view.hideRetryOverlay();
         this.screenSwitcher.switchToScreen({ type: "home" });
@@ -114,6 +125,7 @@ export class GameScreenController extends ScreenController {
     }
 
     // Imperfect score - show retry overlay
+    this.gameStateManager?.MinigameLost("chicago");
     this.view.showRetryOverlay(
       score,
       total,
