@@ -443,6 +443,10 @@ export class LAMapView {
     return this.layer;
   }
 
+  public getTimerText():Konva.Text {
+    return this.timerText;
+  }
+
 }
 
 export let cityProgress: Record<string, boolean> = {
