@@ -17,7 +17,7 @@ export const ROAD_HEIGHT_PERCENT = 0.4; // 35% of stage height for each road
 export const ROAD_SPACING_PERCENT = 0.2; // 15% of stage height for spacing between roads
 
 // Animation configuration
-export const TAXI_SPEED = 7; // pixels per frame
+export const TAXI_SPEED = 4; // pixels per frame
 
 // Text bubble configuration
 export const TEXT_BUBBLE_X_OFFSET = -TAXI_WIDTH * 0; // Left offset from taxi center
