@@ -17,16 +17,16 @@ import { LAMapController } from "./LosAngelesGameController";
 export class LAMapView {
   private group: Konva.Group;
   private layer: Konva.Layer;
-  private screenSwitcher: ScreenSwitcher;
+  // private screenSwitcher: ScreenSwitcher;
   private timerText!: Konva.Text;
   private controller: LAMapController;
 
 
-  constructor(screenSwitcher: ScreenSwitcher, controller:LAMapController) {
+  constructor(controller:LAMapController) {
     this.group = new Konva.Group({ visible: false });
     this.layer = new Konva.Layer();
     this.layer.add(this.group);
-    this.screenSwitcher = screenSwitcher;
+    // this.screenSwitcher = screenSwitcher;
     this.controller = controller;
   }
 

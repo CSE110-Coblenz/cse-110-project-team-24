@@ -27,7 +27,7 @@ export class LAMapController {
 
  constructor(screenSwitcher: ScreenSwitcher) {
    this.screenSwitcher = screenSwitcher;
-   this.view = new LAMapView(this.screenSwitcher, this);
+   this.view = new LAMapView(this);
    
  }
 
