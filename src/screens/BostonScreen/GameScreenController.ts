@@ -2,15 +2,25 @@ import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
+import { GameStateManager } from "../../GameStateManager.ts";
 
 export class GameScreenController extends ScreenController {
     private model: GameScreenModel;
     private view: GameScreenView;
     private screenSwitcher: ScreenSwitcher;
+    private readonly gameStateManager: GameStateManager | null;
 
     constructor(screenSwitcher: ScreenSwitcher) {
         super();
         this.screenSwitcher = screenSwitcher;
+        let manager: GameStateManager | null = null;
+        try {
+            manager =
+                (GameStateManager.getInstance() as GameStateManager | null) ?? null;
+        } catch {
+            manager = null;
+        }
+        this.gameStateManager = manager;
 
         this.model = new GameScreenModel();
         this.view = new GameScreenView(
@@ -64,6 +74,13 @@ export class GameScreenController extends ScreenController {
         const score = this.model.getScore();
         const total = this.model.getTotalQuestions();
         const isPerfect = score === total;
+        
+        if (isPerfect) {
+            this.gameStateManager?.MinigameWon("boston");
+        } else {
+            this.gameStateManager?.MinigameLost("boston");
+        }
+        
         this.view.showResults(
             score,
             total,
