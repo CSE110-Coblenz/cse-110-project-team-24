@@ -1,5 +1,5 @@
 import Konva from "konva";
-import type { ScreenSwitcher } from "../../types";
+// import type { ScreenSwitcher } from "../../types";
 
 import { startBBGame} from "./BurbankGame";
 import { startHWGame } from "./HollywoodGame";
