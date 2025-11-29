@@ -245,10 +245,9 @@ export class GameScreenController extends ScreenController {
 
     if (score === this.totalRounds) {
       this.gameStateManager?.MinigameWon("newyork");
-      this.view.hideRetryOverlay();
-      this.screenSwitcher.switchToScreen({
-        type: "result",
-        score,
+      this.view.showWinOverlay(score, this.totalRounds, () => {
+        this.view.hideRetryOverlay();
+        this.screenSwitcher.switchToScreen({ type: "home" });
       });
       return;
     }
