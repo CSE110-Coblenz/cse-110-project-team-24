@@ -12,6 +12,8 @@ import { resetPDScore, cleanupPDGame } from "./PasadenaGame";
 import { resetLAXScore, cleanupLAXGame } from "./LAXgame";
 import { resetUSScore, cleanupUSGame } from "./UnionStationGame";
 
+import { GameStateManager  } from "../../GameStateManager";
+
 
 export class LAMapController {
  private view: LAMapView;
@@ -62,6 +64,7 @@ export class LAMapController {
   completeAllCities() {
     this.stopTimer();
     alert("🎉 You finished the game in 3 minutes");
+    GameStateManager.getInstance().MinigameWon('losangeles');
     this.finished = true;
     return true;
   }
@@ -110,6 +113,7 @@ export class LAMapController {
     }
 
     this.finished = false;
+    GameStateManager.getInstance().MinigameLost('losangeles');
     alert("❌ You failed the challenges. Please restart the game. ");
     this.screenSwitcher.switchToScreen({ type: "home" });
 

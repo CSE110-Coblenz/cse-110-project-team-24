@@ -37,15 +37,15 @@ export const MUSEUM_LABEL_FONT_FAMILY =
 export const MUSEUM_IMAGE_SHADOW_COLOR = "rgba(15, 44, 92, 0.35)";
 export const MUSEUM_IMAGE_SHADOW_BLUR = 18;
 
-export const INFO_TEXT_FONT_SIZE = 20;
+export const INFO_TEXT_FONT_SIZE = 16;
 export const INFO_TEXT_COLOR = "#2f3b52";
 export const INFO_TEXT_LINE_HEIGHT = 1.4;
 export const INFO_PANEL_VERTICAL_MARGIN = 24;
 export const INFO_PANEL_BACKGROUND_COLOR = "#ffffff";
 export const INFO_PANEL_BORDER_COLOR = "#dfe8fb";
 export const INFO_PANEL_SHADOW_COLOR = "rgba(32, 59, 120, 0.12)";
-export const INFO_PANEL_PADDING = 24;
-export const INFO_PANEL_MIN_HEIGHT = 120;
+export const INFO_PANEL_PADDING = 16;
+export const INFO_PANEL_MIN_HEIGHT = 60;
 
 export const PROMPT_TEXT = "Drag the fact card onto the museum it belongs to.";
 

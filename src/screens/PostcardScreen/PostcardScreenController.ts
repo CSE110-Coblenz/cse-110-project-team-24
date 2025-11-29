@@ -24,7 +24,7 @@ export class PostcardScreenController extends ScreenController {
   }
 
   //Update the postcards in the view
-  updatePostcards(): void {
+  public updatePostcards(): void {
     const postcards = this.model.getActivePostcards();
     let previousPostcardx: number | null = null;
     let previousPostcardy: number | null = null;
