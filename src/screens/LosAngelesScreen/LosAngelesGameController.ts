@@ -21,7 +21,7 @@ export class LAMapController {
 
   private timerId: number | null = null;
   private startTime = 0;
-  private TIME_LIMIT = 1000 * 3 * 60 ; // 3 minutes
+  private TIME_LIMIT = 1000 * 60 * 3 ; // 3 minutes
   private finished = false;
   // private controller: LAMapController;
 
@@ -66,6 +66,8 @@ export class LAMapController {
     alert("🎉 You finished the game in 3 minutes");
     GameStateManager.getInstance().MinigameWon('losangeles');
     this.finished = true;
+    document.title = "CSE110 Team 24 Project - GEOQUEST";
+    this.screenSwitcher.switchToScreen({ type: "home" });
     return true;
   }
 
@@ -115,6 +117,7 @@ export class LAMapController {
     this.finished = false;
     GameStateManager.getInstance().MinigameLost('losangeles');
     alert("❌ You failed the challenges. Please restart the game. ");
+    document.title = "CSE110 Team 24 Project - GEOQUEST";
     this.screenSwitcher.switchToScreen({ type: "home" });
 
     return false;

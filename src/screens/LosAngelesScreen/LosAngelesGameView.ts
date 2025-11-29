@@ -409,7 +409,6 @@ export class LAMapView {
       }
       if (finish) {
         this.controller.completeAllCities();
-        this.screenSwitcher.switchToScreen({ type: "home" });
       }
       else {
         alert("Please explore all communities in LA before leaving! ");
