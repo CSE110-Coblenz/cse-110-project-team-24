@@ -2,6 +2,7 @@ import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
+import { GameStateManager } from "../../GameStateManager.ts";
 
 /**
  * GameScreenController - Coordinates Wordle game logic between Model and View
@@ -10,10 +11,19 @@ export class GameScreenController extends ScreenController {
   private model: GameScreenModel;
   private view: GameScreenView;
   private screenSwitcher: ScreenSwitcher;
+  private readonly gameStateManager: GameStateManager | null;
 
   constructor(screenSwitcher: ScreenSwitcher) {
     super();
     this.screenSwitcher = screenSwitcher;
+    let manager: GameStateManager | null = null;
+    try {
+      manager =
+        (GameStateManager.getInstance() as GameStateManager | null) ?? null;
+    } catch {
+      manager = null;
+    }
+    this.gameStateManager = manager;
 
     this.model = new GameScreenModel();
     this.view = new GameScreenView();
@@ -102,10 +112,12 @@ export class GameScreenController extends ScreenController {
 
       if (this.model.isGameWon()) {
         const guessCount = this.model.getGuessCount();
+        this.gameStateManager?.MinigameWon("sandiego");
         // Show win screen
         this.view.showWinScreen(guessCount);
       } else if (this.model.isGameOver()) {
         const targetWord = this.model.getTargetWord();
+        this.gameStateManager?.MinigameLost("sandiego");
         this.view.showMessage(
           `Game Over! The word was: ${targetWord}. Press ENTER to play again.`,
           "#D32F2F"

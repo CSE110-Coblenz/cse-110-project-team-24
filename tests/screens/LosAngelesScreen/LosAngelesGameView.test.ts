@@ -75,14 +75,14 @@ const mockSwitcher = { switchToScreen: vi.fn() };
 describe("LAMapView (Vitest Version)", () => {
 
   test("constructor initializes stage, layer, group", () => {
-    const view = new LAMapView(mockSwitcher as any, {} as any);
+    const view = new LAMapView({} as any);
 
     expect(view.getLayer).toBeDefined();
     expect(view.getGroup).toBeDefined();
   });
 
   test("updateTimer updates text content", () => {
-    const view = new LAMapView(mockSwitcher as any, {} as any);
+    const view = new LAMapView({} as any);
 
     view.drawAll();  // ensures timerText exists
     view.updateTimer(1000);
@@ -96,7 +96,7 @@ describe("LAMapView (Vitest Version)", () => {
 describe("LAMapView Stress Tests", () => {
 
   test("drawAll() creates required objects exactly once (idempotent)", () => {
-    const view = new LAMapView(mockSwitcher as any, {} as any);
+    const view = new LAMapView({} as any);
 
     view.drawAll();
     const firstGroup = view.getGroup();
@@ -116,7 +116,7 @@ describe("LAMapView Stress Tests", () => {
   });
 
   test("updateTimer stress: handles 1000 updates without breaking", () => {
-    const view = new LAMapView(mockSwitcher as any, {} as any);
+    const view = new LAMapView({} as any);
 
     view.drawAll();
 
@@ -129,7 +129,7 @@ describe("LAMapView Stress Tests", () => {
   });
 
   test("Timer displays correct seconds for multiple values", () => {
-    const view = new LAMapView(mockSwitcher as any, {} as any);
+    const view = new LAMapView({} as any);
     view.drawAll();
 
     view.updateTimer(5000);   // 5s
@@ -145,7 +145,7 @@ describe("LAMapView Stress Tests", () => {
   test("Konva constructor calls should not explode with multiple instantiations", () => {
     // Create 200 views (stress test)
     for (let i = 0; i < 200; i++) {
-      const view = new LAMapView(mockSwitcher as any, {} as any);
+      const view = new LAMapView({} as any);
       view.drawAll();
 
       // ensure important parts exist
