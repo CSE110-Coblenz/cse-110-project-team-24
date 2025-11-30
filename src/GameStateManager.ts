@@ -7,7 +7,7 @@ export class GameStateManager {
     private static instance: GameStateManager;
 
     //Handles the current number of lives remaining
-    private lives: number = 3;
+    //private lives: number = 3;
 
     //Dictionary which tracks which cities have been completed
     private completedCities: { [cityID: string]: boolean } = {};
