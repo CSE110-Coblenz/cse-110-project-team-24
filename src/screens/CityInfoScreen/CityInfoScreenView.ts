@@ -128,11 +128,20 @@ export class CityInfoView implements View {
         this.infoGroup.add(minidescription);
 
         //Add play minigame button
+        const rightCenterX = STAGE_WIDTH - STAGE_WIDTH / 5.5;
+        const buttonWidth = STAGE_WIDTH / 6;
+        const buttonHeight = STAGE_HEIGHT / 6;
+        const buttonPadding = 24;
+        let computedButtonY = minidescription.y() + minidescription.height() + buttonPadding;
+        const maxButtonY = STAGE_HEIGHT - buttonHeight - 20;
+        if (computedButtonY > maxButtonY) computedButtonY = maxButtonY;
+        const computedButtonX = rightCenterX - buttonWidth / 2;
+
         const playButton = new Konva.Rect({
-            x: STAGE_WIDTH - STAGE_WIDTH / 5 - 150,
-            y: STAGE_HEIGHT / 2.5,
-            width: STAGE_WIDTH / 6,
-            height: STAGE_HEIGHT / 6,
+            x: computedButtonX,
+            y: computedButtonY,
+            width: buttonWidth,
+            height: buttonHeight,
             fill: 'green',
             cornerRadius: 20,
         });

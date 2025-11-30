@@ -21,7 +21,7 @@ export class CityInfoModel {
             image1Url: "../../../public/USmap.png",
             image2Url: "../../../public/USmap.png",
             minigameTitle: "Taxi Trivia",
-            minigameInfo: "Click on the taxi with the correct answer to the question!",
+            minigameInfo: "Click on the correct taxi that displays the true fact based on the question shown. Two taxis move across the screen with different facts, and you must identify which one is correct to score points.",
         },
         {
             cityIDtype: "boston",
@@ -30,7 +30,7 @@ export class CityInfoModel {
             image1Url: "../../../public/USmap.png",
             image2Url: "../../../public/USmap.png",
             minigameTitle: "Boston History Trivia",
-            minigameInfo: "How well do you know Boston's history?",
+            minigameInfo: "Answer 5 multiple-choice questions about Boston history. Click an answer; you'll see if it's correct and the correct answer is highlighted. Click \"Next\" to continue. Your score is tracked at the top. Answer all 5 correctly to see the congratulations screen. After finishing, you can play again or return to the menu.",
         },
         {
             cityIDtype: "dc",
@@ -39,7 +39,7 @@ export class CityInfoModel {
             image1Url: "../../../public/USmap.png",
             image2Url: "../../../public/USmap.png",
             minigameTitle: "Boston History Trivia",
-            minigameInfo: "How well do you know Boston's history?",
+            minigameInfo: "Match presidents with their accomplishments! Click cards to flip them and find all 8 pairs before your 2 minutes run out. When you flip a president card and its matching accomplishment card, they turn green and stay face-up. If they don't match, both cards flip back. Match all 8 pairs to win and earn your Washington DC postcard!",
         },
         {
             cityIDtype: "losangeles",
@@ -48,7 +48,7 @@ export class CityInfoModel {
             image1Url: "../../../public/USmap.png",
             image2Url: "../../../public/USmap.png",
             minigameTitle: "Boston History Trivia",
-            minigameInfo: "How well do you know Boston's history?",
+            minigameInfo: "In the LA mini game, the users can travel through various neighborhoods in Los Angeles County, and know about the cultures and industries the cities are carrying via answering trivia questions. Users can travel along main highways (e.g. I-5, I-10, I-405) from a city to another, or randomly pick up cities / regions in their preferred order. The neighborhoods represent the industries and functionalities that support the LA economy, such as Long Beach (transportation), Burbank (movie productions), or Pasadena (academia). They also represent the multicultural areas in LA – each city can represent a different cultural zone, such as Monterey Park (Chinese), Inglewood (African), and Santa Fe Springs (Latinos). The rest of the cities represent a public impression of LA (e.g. Santa Monica (Route 66), Hollywood (Movies)) or city transportation terminals for visitors (LAX, Union Station) as if players are visiting the city in person. Players are given 3 minutes to explore all the cities and answer those questions correctly regarding each city.",
         },
         {
             cityIDtype: "sandiego",
@@ -57,7 +57,7 @@ export class CityInfoModel {
             image1Url: "../../../public/USmap.png",
             image2Url: "../../../public/USmap.png",
             minigameTitle: "Boston History Trivia",
-            minigameInfo: "How well do you know Boston's history?",
+            minigameInfo: "Guess the 5-letter word about San Diego. Type letters or click the on-screen keyboard to build your guess. Press ENTER or click ENTER to submit. After each guess, letters turn green (correct position), yellow (wrong position), or gray (not in word). You have 6 guesses. The keyboard shows which letters you've tried. If you win, you'll see a congratulations screen. If you run out of guesses, press ENTER to play again or click MENU to return to the home screen.",
         },
         {
             cityIDtype: "chicago",
@@ -66,7 +66,7 @@ export class CityInfoModel {
             image1Url: "../../../public/USmap.png",
             image2Url: "../../../public/USmap.png",
             minigameTitle: "Boston History Trivia",
-            minigameInfo: "How well do you know Boston's history?",
+            minigameInfo: "Drag and drop museum fact cards onto the correct museum from a circular arrangement of museums. Match each fact to its corresponding museum to learn about Chicago's cultural institutions, with three wrong guesses allowed before the game ends.",
         },
 
     ];
