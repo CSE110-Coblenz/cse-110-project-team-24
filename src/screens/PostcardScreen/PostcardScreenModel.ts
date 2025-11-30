@@ -80,7 +80,7 @@ export class PostcardScreenModel {
     getActivePostcards(): Postcard[] {
         const achievedPostcards: Postcard[] = [];
         for (const postcard of this.postcards) {
-            if (GameStateManager.getInstance().getCompletedCities()[postcard.cityID]) {
+            if (GameStateManager.getInstance() != null && GameStateManager.getInstance().getCompletedCities()[postcard.cityID]) {
                 achievedPostcards.push(postcard);
 
             }
