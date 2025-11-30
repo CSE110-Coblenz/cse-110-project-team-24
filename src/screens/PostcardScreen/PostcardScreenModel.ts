@@ -50,7 +50,7 @@ export class PostcardScreenModel {
             {
                 title: "Chicago",
                 cityID: "chicago",
-                postcardImageSrc: "/public/Postcards/SFPostcard.jpg",
+                postcardImageSrc: "/public/Postcards/ChicagoPostcard.jpg",
                 xPos: 20,
                 yPos:15,
             },
