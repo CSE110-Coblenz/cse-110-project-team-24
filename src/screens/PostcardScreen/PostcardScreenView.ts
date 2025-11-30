@@ -33,7 +33,7 @@ export class PostcardScreenView implements View {
     this.group.add(bg);
 
     //Button to return home
-    Konva.Image.fromURL("/public/Postcards/PinImage.png", (img) => {
+    Konva.Image.fromURL("/public/HomeButton.png", (img) => {
       img.width(100);
       img.height(100);
       img.x(STAGE_WIDTH - img.width() - 20);
@@ -196,7 +196,7 @@ export class PostcardScreenView implements View {
     this.zoomedInGroup.add(cityText);
 
     //Exit zoom button
-    Konva.Image.fromURL("/public/Postcards/PinImage.png", (img) => {
+    Konva.Image.fromURL("/public/HomeButton.png", (img) => {
       img.width(100);
       img.height(100);
       img.x(STAGE_WIDTH - img.width() - 10);
