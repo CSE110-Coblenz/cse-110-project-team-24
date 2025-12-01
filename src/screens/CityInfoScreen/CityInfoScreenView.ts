@@ -69,7 +69,7 @@ export class CityInfoView implements View {
             x: 0 + STAGE_WIDTH / 5.5,
             y: 0 + STAGE_HEIGHT / 8,
             text: cityInfo.description,
-            fontSize: 29,
+            fontSize: cityInfo.cityIDtype === "newyork" ? 22 : 29,
             fontFamily: 'Arial',
             fill: 'black',
             width: STAGE_WIDTH - STAGE_WIDTH / 1.4,
