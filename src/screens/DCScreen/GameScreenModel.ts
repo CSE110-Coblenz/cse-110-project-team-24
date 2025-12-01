@@ -194,22 +194,4 @@ export class GameScreenModel {
 	hasGameEnded(): boolean {
 		return this.gameEnded;
 	}
-
-	/**
-	 * Get the game result
-	 * 
-	 * @returns "win" if all pairs matched, "loss" if time ran out, null if game is still in progress
-	 */
-	getGameResult(): "win" | "loss" | null {
-		if (!this.gameEnded) {
-			return null;
-		}
-		if (this.isGameComplete()) {
-			return "win";
-		}
-		if (this.isTimeUp()) {
-			return "loss";
-		}
-		return null;
-	}
 }

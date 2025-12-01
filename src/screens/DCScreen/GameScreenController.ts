@@ -3,6 +3,7 @@ import type { ScreenSwitcher } from "../../types.ts";
 import { GameScreenModel } from "./GameScreenModel.ts";
 import { GameScreenView } from "./GameScreenView.ts";
 import { DC_PRESIDENT_PAIRS, isValidMatch } from "./DCPresidents.ts";
+import { GameStateManager } from "../../GameStateManager.ts";
 
 /**
  * GameScreenController - Coordinates game logic for the memory matching game
@@ -25,8 +26,6 @@ export class GameScreenController extends ScreenController {
 	private isProcessingMatch: boolean = false;
 	// Timer interval ID for the countdown timer
 	private timerInterval: number | null = null;
-	// Callback function to notify the main app of game results
-	private onGameResult: ((result: "win" | "loss") => void) | null = null;
 
 	/**
 	 * Constructor - Sets up the controller with model and view
@@ -36,9 +35,6 @@ export class GameScreenController extends ScreenController {
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
 		this.screenSwitcher = screenSwitcher;
-		// TODO: Connect onGameResult callback to game state handler
-		// This will be called when game ends with "win" or "loss"
-		// Example: this.onGameResult = (result) => gameStateHandler.handleDCResult(result);
 
 		// Initialize model with the total number of president pairs (8 pairs = 16 cards)
 		this.model = new GameScreenModel(DC_PRESIDENT_PAIRS.length);
@@ -51,6 +47,7 @@ export class GameScreenController extends ScreenController {
 			() => this.returnToHome()
 		);
 	}
+
 
 	/**
 	 * Start the game - Called when navigating to the DC screen
@@ -240,7 +237,7 @@ export class GameScreenController extends ScreenController {
 	/**
 	 * End the game - Called when game is complete (win or lose)
 	 * 
-	 * Shows a completion popup in the view and notifies the game state handler of the result
+	 * Shows a completion popup in the view and updates the game state
 	 * 
 	 * @param result - "win" if all pairs matched, "loss" if time ran out
 	 */
@@ -248,13 +245,16 @@ export class GameScreenController extends ScreenController {
 		// Show the completion popup in the view with the appropriate message
 		this.view.showCompletionPopup(result);
 
-		// Notify the game state handler of the game result
-		// TODO: Connect this to your game state handler
-		// When implemented, this will:
-		// - On win: Award postcard for Washington DC
-		// - On loss: Deduct a life
-		if (this.onGameResult) {
-			this.onGameResult(result);
+		// Update game state directly
+		const gameStateManager = GameStateManager.getInstance();
+		
+		if (result === "win") {
+			// Player won - mark DC as completed and award postcard
+			gameStateManager.MinigameWon("dc");
+			console.log("DC game won! Postcard awarded.");
+		} else {
+			// Player lost - deduct a life
+			gameStateManager.MinigameLost("dc");
 		}
 	}
 
@@ -265,13 +265,6 @@ export class GameScreenController extends ScreenController {
 	 */
 	private returnToHome(): void {
 		this.screenSwitcher.switchToScreen({ type: "home" });
-	}
-
-	/**
-	 * Get final score - Required by interface but returns 0 since scoring is removed
-	 */
-	getFinalScore(): number {
-		return 0;
 	}
 
 	/**

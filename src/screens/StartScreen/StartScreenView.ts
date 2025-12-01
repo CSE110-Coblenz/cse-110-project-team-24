@@ -17,8 +17,9 @@ export class MenuScreenView implements View {
 	 * 
 	 * @param onStartClick - Callback function executed when the START GAME button is clicked
 	 * @param onAboutClick - Callback function executed when the ABOUT button is clicked
+	 * @param onResetClick - Callback function executed when the RESET button is clicked
 	 */
-	constructor(onStartClick: () => void, onAboutClick: () => void) {
+	constructor(onStartClick: () => void, onAboutClick: () => void, onResetClick: () => void) {
 		// Create the main group container for all menu screen elements
 		this.group = new Konva.Group({ visible: true });
 
@@ -154,6 +155,58 @@ export class MenuScreenView implements View {
 		// Attach click handler to the entire button group
 		aboutButtonGroup.on("click", onAboutClick);
 		this.group.add(aboutButtonGroup);
+
+		// RESET button - Small button at bottom right corner
+		const resetButtonGroup = new Konva.Group({
+			listening: true, // Ensure the group can receive click events
+		});
+		const resetButton = new Konva.Rect({
+			x: STAGE_WIDTH - 120,
+			y: STAGE_HEIGHT - 50,
+			width: 100,
+			height: 35,
+			fill: "#dc2626", // Red color
+			cornerRadius: 8,
+			stroke: "#991b1b", // Dark red border
+			strokeWidth: 2,
+			shadowColor: "#991b1b",
+			shadowBlur: 5,
+			shadowOpacity: 0.2,
+			listening: true, // Ensure the rect can receive click events
+		});
+		const resetText = new Konva.Text({
+			x: STAGE_WIDTH - 120 + 50,
+			y: STAGE_HEIGHT - 50 + 17.5,
+			text: "RESET",
+			fontSize: 14,
+			fontFamily: "Arial",
+			fill: "#ffffff",
+			align: "center",
+			listening: false, // Text doesn't need to listen, clicks pass through to rect
+		});
+		resetText.offsetX(resetText.width() / 2);
+		resetText.offsetY(resetText.height() / 2);
+		resetButtonGroup.add(resetButton);
+		resetButtonGroup.add(resetText);
+		// Attach click handler to the group
+		resetButtonGroup.on("click", () => {
+			console.log("Reset button clicked!");
+			onResetClick();
+		});
+		// Add hover effect for better UX
+		resetButtonGroup.on("mouseenter", () => {
+			resetButton.fill("#b91c1c"); // Darker red on hover
+			document.body.style.cursor = "pointer";
+			this.group.getLayer()?.draw();
+		});
+		resetButtonGroup.on("mouseleave", () => {
+			resetButton.fill("#dc2626"); // Original red
+			document.body.style.cursor = "default";
+			this.group.getLayer()?.draw();
+		});
+		this.group.add(resetButtonGroup);
+		// Move reset button to top to ensure it's clickable above other elements
+		resetButtonGroup.moveToTop();
 	}
 
 	/**
