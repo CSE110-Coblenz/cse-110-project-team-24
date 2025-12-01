@@ -583,7 +583,7 @@ export class GameScreenView implements View {
 			? new Konva.Text({
 				x: 0,
 				y: -30,
-				text: "You have completed Washington DC!",
+				text: "You have completed Washington DC! You've earned the postcard!",
 				fontSize: 24,
 				fontFamily: "Arial",
 				fill: "#1a1a1a",
