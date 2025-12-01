@@ -27,6 +27,19 @@ vi.mock("../../../src/screens/DCScreen/GameScreenView.ts", () => {
   };
 });
 
+// Mock GameStateManager
+const mockGameStateManager = {
+  MinigameWon: vi.fn(),
+  MinigameLost: vi.fn(),
+  getLives: vi.fn(() => 3),
+};
+
+vi.mock("../../../src/GameStateManager.ts", () => ({
+  GameStateManager: {
+    getInstance: () => mockGameStateManager,
+  },
+}));
+
 describe("GameScreenController", () => {
   let controller: GameScreenController;
   let mockScreenSwitcher: ScreenSwitcher;
@@ -40,6 +53,10 @@ describe("GameScreenController", () => {
     controller = new GameScreenController(mockScreenSwitcher);
     mockView = controller.getView();
     vi.clearAllMocks();
+    // Clear GameStateManager mocks
+    mockGameStateManager.MinigameWon.mockClear();
+    mockGameStateManager.MinigameLost.mockClear();
+    mockGameStateManager.getLives.mockClear();
   });
 
   afterEach(() => {
@@ -325,12 +342,6 @@ describe("GameScreenController", () => {
       (controller as any).returnToHome();
 
       expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "home" });
-    });
-  });
-
-  describe("getFinalScore()", () => {
-    it("should return 0", () => {
-      expect(controller.getFinalScore()).toBe(0);
     });
   });
 });

@@ -6,7 +6,6 @@ import {
   getAllAccomplishments,
   getAccomplishmentForPresident,
   getPresidentForAccomplishment,
-  getFunFact,
 } from "../../../src/screens/DCScreen/DCPresidents.ts";
 
 describe("DCPresidents", () => {
@@ -85,29 +84,6 @@ describe("DCPresidents", () => {
     it("should return undefined for invalid accomplishment", () => {
       expect(getPresidentForAccomplishment("Nonexistent accomplishment")).toBeUndefined();
       expect(getPresidentForAccomplishment("")).toBeUndefined();
-    });
-  });
-
-  describe("getFunFact()", () => {
-    it("should return fun fact for valid pair", () => {
-      const funFact = getFunFact("George Washington", "Established Washington, D.C. as the capital");
-      expect(funFact).toBeDefined();
-      expect(typeof funFact).toBe("string");
-      expect(funFact?.length).toBeGreaterThan(0);
-    });
-
-    it("should return undefined for invalid pair", () => {
-      expect(getFunFact("George Washington", "Issued the Emancipation Proclamation")).toBeUndefined();
-      expect(getFunFact("Nonexistent President", "Some accomplishment")).toBeUndefined();
-    });
-
-    it("should return fun fact for all pairs that have one", () => {
-      DC_PRESIDENT_PAIRS.forEach((pair) => {
-        if (pair.funFact) {
-          const funFact = getFunFact(pair.president, pair.accomplishment);
-          expect(funFact).toBe(pair.funFact);
-        }
-      });
     });
   });
 

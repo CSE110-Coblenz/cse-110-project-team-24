@@ -1,6 +1,7 @@
 import { ScreenController } from "../../types.ts";
 import type { ScreenSwitcher } from "../../types.ts";
 import { MenuScreenView } from "./StartScreenView.ts";
+import { GameStateManager } from "../../GameStateManager.ts";
 
 /**
  * MenuScreenController - Handles menu interactions and navigation
@@ -27,7 +28,8 @@ export class MenuScreenController extends ScreenController {
     // These callbacks handle navigation to the game or about screens
     this.view = new MenuScreenView(
       () => this.handleStartClick(),
-      () => this.handleAboutClick()
+      () => this.handleAboutClick(),
+      () => this.handleResetClick()
     );
   }
 
@@ -50,6 +52,24 @@ export class MenuScreenController extends ScreenController {
    */
   private handleAboutClick(): void {
     this.screenSwitcher.switchToScreen({ type: "about" });
+  }
+
+  /**
+   * Handle reset button click - Resets all game progress
+   * 
+   * Called when the user clicks the "RESET" button on the menu screen.
+   * This resets all completed cities and clears saved game state.
+   */
+  private handleResetClick(): void {
+    console.log("handleResetClick called!");
+    const gameStateManager = GameStateManager.getInstance();
+    if (!gameStateManager) {
+      console.error("GameStateManager instance not found!");
+      return;
+    }
+    gameStateManager.resetGameState();
+    console.log("Game progress reset! Completed cities:", gameStateManager.getCompletedCities());
+    alert("Game progress has been reset!");
   }
 
   /**
