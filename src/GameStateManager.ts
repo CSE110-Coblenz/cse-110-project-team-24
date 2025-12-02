@@ -7,7 +7,7 @@ export class GameStateManager {
     private static instance: GameStateManager;
 
     //Handles the current number of lives remaining
-    private lives: number = 3;
+    //private lives: number = 3;
 
     //Dictionary which tracks which cities have been completed
     private completedCities: { [cityID: string]: boolean } = {};
@@ -49,9 +49,9 @@ export class GameStateManager {
         return GameStateManager.instance === this;
     }
 
-    /* Manage Lives */
+    /* Manage Lives - DEPRECIATED 
 
-    //Get the current number of lives
+    //Get the current number of lives 
     public getLives(): number {
         return this.lives;
     }
@@ -66,7 +66,7 @@ export class GameStateManager {
     public isGameOver(): boolean {
         return this.lives <= 0;
     }
-
+*/
 
 
     /* Manage win/loss of minigames */
@@ -83,7 +83,7 @@ export class GameStateManager {
     //Handle losing a minigame
     public MinigameLost(cityID : string): void {
         console.log(`Minigame for city ${cityID} lost!`);
-        this.decreaseLives();
+ 
     }
 
     /* Manage completed cities */
