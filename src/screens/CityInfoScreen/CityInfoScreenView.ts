@@ -26,9 +26,9 @@ export class CityInfoView implements View {
         this.group.add(background);
 
             //Button to return home
-            Konva.Image.fromURL("/public/Postcards/PinImage.png", (img) => {
-              img.width(100);
-              img.height(100);
+            Konva.Image.fromURL("/public/HomeButton.png", (img) => {
+              img.width(80);
+              img.height(80);
               img.x(STAGE_WIDTH - img.width() - 20);
               img.y(20);
               img.on("click", () => {
